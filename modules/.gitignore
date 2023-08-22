@@ -1,0 +1,4 @@
+.DS_Store
+.terraform*
+.terra*
+terragrunt-debug.tfvars.json
