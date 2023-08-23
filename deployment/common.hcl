@@ -3,6 +3,7 @@ locals {
  # Default value, can be overridden in root terragrunt.hcl
   aws_region = "us-west-2"
   env = get_env("BRANCH")
+  aws_profile = get_env("BRANCH")
 }
 
 # Generate the provider.tf file
@@ -15,6 +16,7 @@ generate "provider" {
 provider "aws" {
 
   region  = "${local.aws_region}"
+  profile = "${local.aws_profile}"
   default_tags {
     tags = {
       managed = "terraform_managed"

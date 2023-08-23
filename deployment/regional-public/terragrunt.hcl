@@ -7,41 +7,50 @@ locals {
   component = basename(get_terragrunt_dir())
 
 # Common variable reference comming from common_config.hcl 
-  region                        = local.common_vars.locals.region
-  region_abbr                   = local.common_vars.locals.region_abbr
-  environment                   = local.common_vars.locals.environment
-  admin_contact                 = local.common_vars.locals.admin_contact
-  service_id                    = local.common_vars.locals.service_id
-  service_data                  = local.common_vars.locals.service_data
-  aws_profile                   = local.common_vars.locals.aws_profile
+  region                            = local.common_vars.locals.region
+  region_abbr                       = local.common_vars.locals.region_abbr
+  environment                       = local.common_vars.locals.environment
+  admin_contact                     = local.common_vars.locals.admin_contact
+  service_id                        = local.common_vars.locals.service_id
+  service_data                      = local.common_vars.locals.service_data
+  aws_profile                       = local.common_vars.locals.aws_profile
 
-# Cluster specific variables coming from <env-component>.hcl
-  public_version_no             = local.env_vars.locals.public_version_no
-  public_server_purpose         = local.env_vars.locals.public_server_purpose
-  public_eks_name               = local.env_vars.locals.public_eks_name
-  public_nodename               = local.env_vars.locals.public_nodename
-  public_instance_types         = local.env_vars.locals.public_instance_types
-  public_ami_type               = local.env_vars.locals.public_ami_type
-  public_desired_size           = local.env_vars.locals.public_desired_size
-  public_max_size               = local.env_vars.locals.public_max_size
-  public_min_size               = local.env_vars.locals.public_min_size
-  public_vpc_id                 = local.env_vars.locals.public_vpc_id
-  public_cidr_block             = local.env_vars.locals.public_cidr_block
-  public_vpc_private_subnet_ids     = local.env_vars.locals.public_vpc_private_subnet_ids
+# EKS Speicific Configs coming from <env-component>.hcl
+  version_no                        = local.env_vars.locals.version_no
+  server_purpose                    = local.env_vars.locals.server_purpose
+  eks_name                          = local.env_vars.locals.eks_name
+  nodename                          = local.env_vars.locals.nodename
+  instance_types                    = local.env_vars.locals.instance_types
+  ami_type                          = local.env_vars.locals.ami_type
+  desired_size                      = local.env_vars.locals.desired_size
+  max_size                          = local.env_vars.locals.max_size
+  min_size                          = local.env_vars.locals.min_size
+  vpc_id                            = local.env_vars.locals.vpc_id
+  cidr_block                        = local.env_vars.locals.cidr_block
+  private_subnet_ids                = local.env_vars.locals.vpc_private_subnet_ids
 
-# Cluster specific variables coming from <env-component>.hcl for RDS Module
-  db_instance_class             = local.env_vars.locals.db_instance_class
-  db_username                   = local.env_vars.locals.db_username
-  db_engine                     = local.env_vars.locals.db_engine
-  db_engine_version             = local.env_vars.locals.db_engine_version
-  db_password                   = local.env_vars.locals.db_password     # pass it while applying/planning
-  db_identifier                 = local.env_vars.locals.db_identifier
-  db_subnet_group_name          = local.env_vars.locals.db_subnet_group_name
-  publicly_accessible           = local.env_vars.locals.publicly_accessible //this should be passed as false in case of private .
-  rds_private_subnet_ids        = local.env_vars.locals.rds_private_subnet_ids//privateDB-A and privateDB-B
-  vpc_id                        = local.env_vars.locals.vpc_id
+#ingress-private-nlb Specific Configurations           
+  private_vpc_cidr                  = local.env_vars.locals.private_vpc_cidr       
+  private_acm_certificate           = local.env_vars.locals.private_acm_certificate
+  privatesubnetids                  = local.env_vars.locals.privatesubnetids       
+  private_DNS                       = local.env_vars.locals.private_DNS            
+
+# "EKS-privatelink" Specific Configurations
+  eks_endpoint_service_name         = local.env_vars.locals.eks_endpoint_service_name
+  vpc_id                            = local.env_vars.locals.vpc_id            
+  cidr_block                        = local.env_vars.locals.cidr_block        
+  eks_vpc_endpointname              = local.env_vars.locals.eks_vpc_endpointname     
+  public_subnet_id                  = local.env_vars.locals.public_subnet_id         
+  region                            = local.env_vars.locals.region                   
+  vpc_keyspacesep                   = local.env_vars.locals.vpc_keyspacesep          
+  nlbname                           = local.env_vars.locals.nlbname                  
+  ports                             = local.env_vars.locals.ports                    
+  acm_certificate                   = local.env_vars.locals.acm_certificate          
+  public_subnet_id_1                = local.env_vars.locals.public_subnet_id_1       
+  public_subnet_id_2                = local.env_vars.locals.public_subnet_id_2       
+
 }
-
+   
 # Include the common.hcl
 include "common"{
   path = "${get_path_to_repo_root()}/deployment/common.hcl"
@@ -49,48 +58,94 @@ include "common"{
 
 }
 
-# Generate block for main.tf
+# Generate main.tf which calls all the custom modules
 generate "main" {
   path      = "main.tf"
   if_exists = "overwrite"
   contents = <<EOF
-  module "RDS" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
-    environment                   = "${local.env}"
-    region                        = "${local.region}"
+module "Private-EKS" {
+    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
+    version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
-    rds_private_subnet_ids        =  ${jsonencode(local.rds_private_subnet_ids)}
-    db_subnet_group_name          = "${local.db_subnet_group_name}"
-    db_instance_class             = "${local.db_instance_class}"
-    db_password                   = "${local.db_password}"
-    db_engine                     = "${local.db_engine}"
-    db_engine_version             = "${local.db_engine_version}"
-    db_username                   = "${local.db_username}"
-    db_identifier                 = "${local.db_identifier}"
-    publicly_accessible           = "${local.publicly_accessible}"
+    vpc_private_subnet_ids        = ${jsonencode(local.vpc_private_subnet_ids)}
+    ment                          = "${local.environment}"
+    eks_name                      = "${local.eks_name}" 
+    cidr_block                    = ${jsonencode(local.cidr_block)}
+    nodename                      = "${local.nodename}"
+    instance_types                = ${jsonencode(local.instance_types)}
+    ami_type                      = "${local.ami_type}"
+    desired_size                  = "${local.desired_size}"
+    max_size                      = "${local.max_size}"
+    min_size                      = "${local.min_size}"
     admin_contact                 = "${local.admin_contact}"
     service_id                    = "${local.service_id}"
     service_data                  = "${local.service_data}"
+}
+module "ingress-private-nlb" {
+    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
+    eks_name                      = "${local.eks_name}"
+    environment                   = "${local.environment}"
+    region                        = "${local.region}"
+    private_vpc_cidr              = "${jsonencode(local.private_vpc_cidr)}"
+    private_acm_certificate       = "${local.private_acm_certificate}"
+    privatesubnetids              = "${jsonencode(local.privatesubnetids)}"
+    private_DNS                   = "${local.private_DNS}"
+    depends_on                    = [module.eks, module.ingress-public-nlb]
 }
 
-module "Public-EKS" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//public-EKS"
-    public_version_no             = "${local.public_version_no}"
-    public_vpc_id                 = "${local.public_vpc_id}"
-    public_vpc_private_subnet_ids = ${jsonencode(local.public_vpc_private_subnet_ids)}
-    environment                   = "${local.environment}"
-    public_eks_name               = "${local.public_eks_name}" 
-    public_cidr_block             = ${jsonencode(local.public_cidr_block)}
-    public_nodename               = "${local.public_nodename}"
-    public_instance_types         = ${jsonencode(local.public_instance_types)}
-    public_ami_type               = "${local.public_ami_type}"
-    public_desired_size           = "${local.public_desired_size}"
-    public_max_size               = "${local.public_max_size}"
-    public_min_size               = "${local.public_min_size}"
-    admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
+resource "time_sleep" "wait_for_lb" {
+    create_duration               = "400s"
+    depends_on                    = [module.ingress-private-nlb]
 }
+
+data "aws_lb" "load_balancer" {
+  tags = {
+      environment                 = "${local.environment}"
+  }
+  depends_on                      = [module.ingress-private-nlb, time_sleep.wait_for_lb]
+}
+
+module "EKS-privatelink" {
+    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS-privatelink"
+    network_load_balancer_arns    = data.aws_lb.load_balancer.arn
+    eks_endpoint_service_name     = "${local.eks_endpoint_service_name}"
+    public_vpc_id                 = "${local.public_vpc_id}"
+    public_cidr_block             = "${jsonencode(local.public_cidr_block)}"
+    eks_vpc_endpointname          = "${local.eks_vpc_endpointname}"
+    public_subnet_id              = "${jsonencode(local.public_subnet_id)}"
+    region                        = "${local.region}"
+    vpc_keyspacesep               = "${local.vpc_keyspacesep}"
+    nlbname                       = "${local.nlbname}"
+    ports                         = "${local.ports}"
+    acm_certificate               = "${local.acm_certificate}"
+    public_subnet_id_1            = "${jsonencode(local.public_subnet_id_1)}"
+    public_subnet_id_2            = "${jsonencode(local.public_subnet_id_2)}"
+    depends_on                    = [module.ingress-private-nlb]
+}
+
+
+EOF
+}
+
+# Generating Output.tf 
+generate "output"{
+  path = "output.tf"
+  contents = <<EOF
+  output "EKS" {
+    value = module.eks
+  }
+  
+  output "RDS" {
+      value = module.rds
+  }
+  
+  output "REDIS" {
+      value = module.redis
+  }
+  
+  output "public_EKS"{
+      value = module.public_eks
+  }
 
 EOF
 }
