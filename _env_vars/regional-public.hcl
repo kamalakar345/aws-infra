@@ -9,7 +9,7 @@ locals{
   aws_profile = "dev"
   env      = "reg"
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Existing VPC Variables >>>>>>>>>>>>>>>>>>>>>private-2 >>>>>>>regional>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  vpc_id = "vpc-09f70ff07824f90d1"
+  vpc_id = "vpc-0d1e952fc353044a4"
   private_cidr_block = ["10.155.174.0/23"]
   private_subnet_ids = ["subnet-0ffbe443e963d1d98","subnet-086c3785688451a9f"]//privateA and privateB
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< EKS Cluster and NodeGroup Creation >>>>>>>Details Private>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -76,7 +76,7 @@ locals{
   public_aws_profile = "dev"
   public_env      = "reg"
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Public-public<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Existing VPC Variables >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  public_vpc_id = "vpc-046a1e3c37a49af8b"
+  public_vpc_id = "vpc-0d1e952fc353044a4"
   public_cidr_block = ["10.155.176.0/23"]
   public_vpc_private_subnet_ids = ["subnet-0a32febdf57b6c702", "subnet-0f6e35a6bfcfc5e96"]
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< EKS Cluster and NodeGroup Creation >>>>>>>>>>>>public>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

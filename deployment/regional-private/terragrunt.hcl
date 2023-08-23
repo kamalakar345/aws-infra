@@ -55,7 +55,7 @@ generate "main" {
   if_exists = "overwrite"
   contents = <<EOF
   module "RDS" {
-    source = "${get_repo_root()}/modules/RDS"
+    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
     environment                   = "${local.env}"
     region                        = "${local.region}"
     vpc_id                        = "${local.vpc_id}"
@@ -74,7 +74,7 @@ generate "main" {
 }
 
 module "Public-EKS" {
-    source = "${get_repo_root()}/modules/public-EKS"
+    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//public-EKS"
     public_version_no             = "${local.public_version_no}"
     public_vpc_id                 = "${local.public_vpc_id}"
     public_vpc_private_subnet_ids = ${jsonencode(local.public_vpc_private_subnet_ids)}
