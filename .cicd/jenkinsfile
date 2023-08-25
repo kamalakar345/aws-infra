@@ -9,6 +9,8 @@ stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
             script{
+                    // env.AWS_DEFAULT_PROFILE = "${env.BRANCH_NAME}"
+                    env.AWS_DEFAULT_PROFILE = "sandbox"
                     sh "terragrunt --version"
                     sh "aws sts get-caller-identity --profile sandbox"
                 def folders = ["regional-private", "regional-public"]
