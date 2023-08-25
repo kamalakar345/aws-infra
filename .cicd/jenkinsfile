@@ -13,10 +13,11 @@ stage('Terragrunt-Init'){
                     sh "aws sts get-caller-identity --profile sandbox"
                 def folders = ["regional-private", "regional-public"]
                     for (int i = 0; i < folders.size(); ++i) { 
-                        sh "cd deployment/${folders[i]}"
+                        dir(${folders[i]}){
                         sh  "terragrunt init --terragrunt-log-level debug --terragrunt-debug --reconfigure"
                         
-                        sh  "ls -lrta deployment/${folders[i]}"
+                        sh  "ls -lrta "
+                        }
 
                     }
                 }
