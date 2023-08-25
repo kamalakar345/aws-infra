@@ -14,9 +14,9 @@ stages{
                         sh "terragrunt --version"
                         sh "aws sts get-caller-identity --profile sandbox"
                     def folders = ["regional-private", "regional-public"]
-                    for folder in folders:
+                    for folder in folders{
                     sh "cd $folder && terragrunt init --terragrunt-log-level debug --terragrunt-debug --reconfigure"
-                        // sh "aws ecr get-login-password --region ${env.region} --profile ${env.awsProfile} | helm registry login --username AWS --password-stdin ${env.awsAccountId}.dkr.ecr.${env.region}.amazonaws.com"
+                      }  // sh "aws ecr get-login-password --region ${env.region} --profile ${env.awsProfile} | helm registry login --username AWS --password-stdin ${env.awsAccountId}.dkr.ecr.${env.region}.amazonaws.com"
 
                         // sh "aws ecr describe-repositories --repository-names ${env.chart_name} --region ${env.region} --profile ${env.awsProfile} || aws ecr create-repository --repository-name ${env.chart_name} --region ${env.region} --profile ${env.awsProfile}"
 
