@@ -15,7 +15,7 @@ stages{
                 script{
                     def VERSION = sh(script: """awk -F: '/version/{print \$2; exit}' ${env.chart_name}/Chart.yaml| tr -d '\n' | sed 's/^ //'""", returnStdout: true)
                     VERSION += '.tgz'
-                        env.awsAccountId = sh(returnStdout: true, script : "aws sts get-caller-identity --output text --query Account --profile ${env.awsProfile}").trim()
+                        //env.awsAccountId = sh(returnStdout: true, script : "aws sts get-caller-identity --output text --query Account --profile ${env.awsProfile}").trim()
                         sh "terragrunt --version"
                         sh "aws sts get-caller-identity --profile sandbox"
                         // sh "aws ecr get-login-password --region ${env.region} --profile ${env.awsProfile} | helm registry login --username AWS --password-stdin ${env.awsAccountId}.dkr.ecr.${env.region}.amazonaws.com"
