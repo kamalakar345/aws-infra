@@ -63,12 +63,12 @@ generate "main" {
   path      = "main.tf"
   if_exists = "overwrite"
   contents = <<EOF
-module "Private-EKS" {
+module "EKS" {
     source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
     version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
     vpc_private_subnet_ids        = ${jsonencode(local.vpc_private_subnet_ids)}
-    ment                          = "${local.environment}"
+    environment                   = "${local.environment}"
     eks_name                      = "${local.eks_name}" 
     cidr_block                    = ${jsonencode(local.cidr_block)}
     nodename                      = "${local.nodename}"

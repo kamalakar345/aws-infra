@@ -19,7 +19,10 @@ provider "aws" {
   profile = "${local.aws_profile}"
   default_tags {
     tags = {
-      managed = "terraform_managed"
+      managed         = "terraform_managed"
+      admin_contact   = "aware.infra.admins@qti.qualcomm.com"
+      service_id      = "QCSS Aware"
+      service_data    = "env=TST"
     }
   }
 }
@@ -35,7 +38,7 @@ remote_state {
     # key            = "${path_relative_to_include()}/terraform.tfstate"
     key            = "${basename(path_relative_to_include())}.tfstate"
     region         = local.aws_region
-    # dynamodb_table = "terraform-locks"
+    profile = "${local.aws_profile}"
   }
   generate = {
     path      = "backend.tf"

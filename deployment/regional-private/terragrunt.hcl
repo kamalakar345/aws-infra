@@ -26,15 +26,16 @@ locals {
   max_size                          = local.env_vars.locals.max_size
   min_size                          = local.env_vars.locals.min_size
   vpc_id                            = local.env_vars.locals.vpc_id
-  cidr_block                        = local.env_vars.locals.cidr_block
+  private_cidr_block                = local.env_vars.locals.private_cidr_block
   private_subnet_ids                = local.env_vars.locals.private_subnet_ids
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
-  db_instance_class                 = local.env_vars.locals.db_instance_class
-  db_username                       = local.env_vars.locals.db_username
+  instance_class                    = local.env_vars.locals.instance_class
+  database_user                     = local.env_vars.locals.database_user
   db_engine                         = local.env_vars.locals.db_engine
   db_engine_version                 = local.env_vars.locals.db_engine_version
-  db_password                       = local.env_vars.locals.db_password     # pass it while applying/planning
+  database_port                     = local.env_vars.locals.database_port
+  database_password                 = local.env_vars.locals.database_password     # pass it while applying/planning
   db_identifier                     = local.env_vars.locals.db_identifier
   db_subnet_group_name              = local.env_vars.locals.db_subnet_group_name
   publicly_accessible               = local.env_vars.locals.publicly_accessible //this should be passed as false in case of private .
@@ -112,33 +113,29 @@ generate "main" {
   if_exists = "overwrite"
 
   contents = <<EOF
-  module "RDS" {
+  module "rds" {
     source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
-    environment                   = "${local.env}"
-    region                        = "${local.region}"
     vpc_id                        = "${local.vpc_id}"
     rds_private_subnet_ids        =  ${jsonencode(local.rds_private_subnet_ids)}
     db_subnet_group_name          = "${local.db_subnet_group_name}"
-    db_instance_class             = "${local.db_instance_class}"
-    db_password                   = "${local.db_password}"
+    instance_class                = "${local.instance_class}"
+    database_port                 = "${local.database_port}"
+    database_password             = "${local.database_password}"
     db_engine                     = "${local.db_engine}"
     db_engine_version             = "${local.db_engine_version}"
-    db_username                   = "${local.db_username}"
+    database_user                 = "${local.database_user}"
     db_identifier                 = "${local.db_identifier}"
     publicly_accessible           = "${local.publicly_accessible}"
-    admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
 }
 
-module "EKS" {
+module "eks" {
     source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
+    environment                   = "${local.environment}"
     version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
     private_subnet_ids            = ${jsonencode(local.private_subnet_ids)}
-    ment                          = "${local.environment}"
     eks_name                      = "${local.eks_name}" 
-    cidr_block                    = ${jsonencode(local.cidr_block)}
+    private_cidr_block            = ${jsonencode(local.private_cidr_block)}
     nodename                      = "${local.nodename}"
     instance_types                = ${jsonencode(local.instance_types)}
     ami_type                      = "${local.ami_type}"
@@ -151,7 +148,7 @@ module "EKS" {
 }
 
 module "redis" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//REDIS/"
+    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//REDIS"
     environment                   = "${local.environment}"
     region                        = "${local.region}"
     vpc_id                        = "${local.vpc_id}"
@@ -165,10 +162,11 @@ module "redis" {
     admin_contact                 = "${local.admin_contact}"
     service_id                    = "${local.service_id}"
     service_data                  = "${local.service_data}"
+    private_subnet_ids            = ${jsonencode(local.private_subnet_ids)}
 }
 
 module "msk" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK/"
+    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK"
     cluster_name                  = "${local.cluster_name }"
     kafka_version                 = "${local.kafka_version}"
     broker_nodes                  = "${local.broker_nodes }"
@@ -180,7 +178,7 @@ module "msk" {
  }
 
 module "MSKPrivatelink_nlb" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//nlb"
+    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/nlb"
     nlb_name                      = "${local.nlb_name}"
     vpc_id                        = "${local.vpc_id}"
     port                          = "${local.port}"
@@ -196,7 +194,7 @@ module "MSKPrivatelink_nlb" {
 }
 
 module "keyspace" {
-  source                          = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//AWSKeyspaceGlobal/"
+  source                          = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//AWSKeyspaceGlobal"
   keyspace_name                   = "${local.keyspace_name}"
 }
 
@@ -217,7 +215,7 @@ module "MSKPrivatelink_VPC_endpoint" {
     vpc_id                        = "${local.vpc_id}"
     subnet_id                     = ${jsonencode(local.subnet_id)}
     subnet_id1                    = ${jsonencode(local.subnet_id1)}
-    cidr_block                    = ${jsonencode(local.cidr_block)}
+    cidr_block                    = ${jsonencode(local.private_cidr_block)}
     cidr_block1                   = ${jsonencode(local.cidr_block1)}
     depends_on                    = [
         module.MSKPrivatelink_endpoint_service
@@ -233,7 +231,7 @@ module "ingress-private-nlb" {
     private_acm_certificate       = "${local.private_acm_certificate}"
     privatesubnetids              = ${jsonencode(local.privatesubnetids)}
     private_DNS                   = "${local.private_DNS}"
-    depends_on                    = [module.eks, module.ingress-public-nlb]
+    depends_on                    = [module.eks]
 }
 
 resource "time_sleep" "wait_for_lb" {
@@ -287,7 +285,7 @@ generate "output"{
   }
   
   output "public_EKS"{
-      value = module.public_eks
+      value = module.eks
   }
 
 EOF

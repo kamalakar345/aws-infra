@@ -17,18 +17,18 @@ locals{
   server_purpose = "eks"
   eks_name = "dev-pentest-reg-priv-eks-cluster"
   nodename = "workernode"
-  ssh_key_name = "dev_pentest_reg_priv"
   instance_types = ["m5.large"]
   ami_type = "AL2_x86_64"
   desired_size = "4"
   max_size = "8"
   min_size = "2"
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< RDS Variables >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  db_instance_class = "db.m5.large"
-  db_username = "postgressuperuser" 
+  database_port = 5432
+  instance_class = "db.m5.large"
+  database_user = "postgressuperuser" 
   db_engine = "postgres"
   db_engine_version = "14.7"
-  db_password = "P0$tgr3$$up3rus3r12E4"     # pass it while applying/planning
+  database_password = "P0$tgr3$$up3rus3r12E4"     # pass it while applying/planning
   db_identifier = "dev-pentest-reg-priv-new-rds-database-psql"
   db_subnet_group_name = "dev-pentest-reg-priv-rds-subnet"
   publicly_accessible = false //this should be passed as false in case of private .

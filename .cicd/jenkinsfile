@@ -1,0 +1,31 @@
+pipeline {
+  agent { label 'aware-jenkins' }
+  environment {
+    region = "us-west-2"
+    awsprofile = "dev_reg_private"
+    chart_name = "aware-core"
+    username = "swatgadd@quicinc.com" // Need to Use Service Prinicipal instead of username
+		password = "Morya412131@" // should remove the password when service prinicipal is working
+    azure_helm_repo = "oci://awarestageacr.azurecr.io/helm" 
+  }
+
+
+    stage('Helm_Aws'){
+            steps{
+                script{
+                    def VERSION = sh(script: """awk -F: '/version/{print \$2; exit}' ${env.chart_name}/Chart.yaml| tr -d '\n' | sed 's/^ //'""", returnStdout: true)
+                    VERSION += '.tgz'
+                        env.awsAccountId = sh(returnStdout: true, script : "aws sts get-caller-identity --output text --query Account --profile ${env.awsProfile}").trim()
+                        sh "terragrunt --version"
+                        sh "aws sts get-caller-identity --profile sandbox"
+                        // sh "aws ecr get-login-password --region ${env.region} --profile ${env.awsProfile} | helm registry login --username AWS --password-stdin ${env.awsAccountId}.dkr.ecr.${env.region}.amazonaws.com"
+
+                        // sh "aws ecr describe-repositories --repository-names ${env.chart_name} --region ${env.region} --profile ${env.awsProfile} || aws ecr create-repository --repository-name ${env.chart_name} --region ${env.region} --profile ${env.awsProfile}"
+
+                        // sh (script: """helm push ${env.chart_name}-${VERSION} oci://${env.awsAccountId}.dkr.ecr.us-west-2.amazonaws.com/""")
+
+                    }
+                }
+            }
+
+}
