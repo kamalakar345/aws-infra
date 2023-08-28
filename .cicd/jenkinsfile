@@ -1,3 +1,6 @@
+def get_branch(branch_name) {
+    return branch_name.split("/")[1]
+}
 pipeline {
   agent { label 'aware-jenkins' }
   environment {
@@ -9,10 +12,7 @@ stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
             script{
-                    def branch_name = env.BRANCH_NAME
-                    // def sandbox_name = branch_name.split("/")[1]
-                    env.BRANCH = branch_name.split("/")[1] 
-                    env.AWS_DEFAULT_PROFILE = "${BRANCH}"
+                    env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
                     sh "printenv"
                     sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
@@ -23,7 +23,6 @@ stage('Terragrunt-Init'){
                         
                         // sh  "ls -lrta deployment/${folders[i]}"
                         }
-                    
                     }
                 }
             script{
@@ -32,6 +31,7 @@ stage('Terragrunt-Init'){
         }
             }
         }
+
 
 }
 }
