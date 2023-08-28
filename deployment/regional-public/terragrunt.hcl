@@ -127,6 +127,7 @@ EOF
 # Generating Output.tf 
 generate "output"{
   path = "output.tf"
+  if_exists = "overwrite"
   contents = <<EOF
   output "EKS" {
     value = module.eks
