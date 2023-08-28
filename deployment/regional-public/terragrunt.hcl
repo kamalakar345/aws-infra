@@ -27,7 +27,7 @@ locals {
   min_size                          = local.env_vars.locals.min_size
   vpc_id                            = local.env_vars.locals.vpc_id
   cidr_block                        = local.env_vars.locals.cidr_block
-  private_subnet_ids                = local.env_vars.locals.vpc_private_subnet_ids
+  private_subnet_ids                = local.env_vars.locals.private_subnet_ids
 
 #ingress-private-nlb Specific Configurations           
   private_vpc_cidr                  = local.env_vars.locals.private_vpc_cidr       
@@ -63,7 +63,7 @@ module "EKS" {
     source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
     version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
-    vpc_private_subnet_ids        = ${jsonencode(local.vpc_private_subnet_ids)}
+    private_subnet_ids            = ${jsonencode(local.private_subnet_ids)}
     environment                   = "${local.environment}"
     eks_name                      = "${local.eks_name}" 
     cidr_block                    = ${jsonencode(local.cidr_block)}
