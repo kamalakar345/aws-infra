@@ -129,7 +129,7 @@ generate "main" {
 }
 
 module "eks" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
+    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
     environment                   = "${local.environment}"
     version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
