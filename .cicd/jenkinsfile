@@ -9,7 +9,7 @@ stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
             script{
-                    env.BRANCH = sh(script: """awk -F "/" '{print $2}' ${env.BRANCH_NAME}""", returnStdout: true)
+                    env.BRANCH = sh(script: """awk -F "/" '{print \$2}' ${env.BRANCH_NAME}""", returnStdout: true)
 
                     env.AWS_DEFAULT_PROFILE = "${env.BRANCH}"
                     sh "printenv"
