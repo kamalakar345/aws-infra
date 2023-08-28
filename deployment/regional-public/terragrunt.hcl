@@ -142,7 +142,7 @@ generate "output"{
   }
   
   output "public_EKS"{
-      value = module.public_eks
+      value = module.eks
   }
 
 EOF
