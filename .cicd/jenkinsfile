@@ -9,7 +9,7 @@ stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
             script{
-                    def BRANCH = branchName.split("/")[1]
+                    def BRANCH = ${env.BRANCH_NAME}.split("/")[1]
                     
                     env.AWS_DEFAULT_PROFILE = "${BRANCH}"
                     sh "printenv"
