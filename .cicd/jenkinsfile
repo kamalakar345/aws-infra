@@ -9,9 +9,9 @@ stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
             script{
-                    env.BRANCH = sh(script: """awk -F "/" '{print \$2}' ${env.BRANCH_NAME}""", returnStdout: true)
-
-                    env.AWS_DEFAULT_PROFILE = "${env.BRANCH}"
+                    def BRANCH = branchName.split("/")[1]
+                    
+                    env.AWS_DEFAULT_PROFILE = "${BRANCH}"
                     sh "printenv"
                     sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
