@@ -26,7 +26,7 @@ locals {
   max_size                          = local.env_vars.locals.max_size
   min_size                          = local.env_vars.locals.min_size
   vpc_id                            = local.env_vars.locals.vpc_id
-  cidr_block                        = local.env_vars.locals.cidr_block
+  private_cidr_block                = local.env_vars.locals.private_cidr_block
   private_subnet_ids                = local.env_vars.locals.private_subnet_ids
 
 #ingress-private-nlb Specific Configurations           
