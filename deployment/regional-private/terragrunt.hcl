@@ -114,7 +114,7 @@ generate "main" {
 
   contents = <<EOF
   module "rds" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
+    source = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
     vpc_id                        = "${local.vpc_id}"
     rds_private_subnet_ids        =  ${jsonencode(local.rds_private_subnet_ids)}
     db_subnet_group_name          = "${local.db_subnet_group_name}"
@@ -129,7 +129,7 @@ generate "main" {
 }
 
 module "eks" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
+    source = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
     environment                   = "${local.environment}"
     version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
@@ -148,7 +148,7 @@ module "eks" {
 }
 
 module "redis" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//REDIS"
+    source                        = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//REDIS"
     environment                   = "${local.environment}"
     region                        = "${local.region}"
     vpc_id                        = "${local.vpc_id}"
@@ -166,7 +166,7 @@ module "redis" {
 }
 
 module "msk" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK"
+    source                        = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK"
     cluster_name                  = "${local.cluster_name }"
     kafka_version                 = "${local.kafka_version}"
     broker_nodes                  = "${local.broker_nodes }"
@@ -178,7 +178,7 @@ module "msk" {
  }
 
 module "MSKPrivatelink_nlb" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/nlb"
+    source                        = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/nlb"
     nlb_name                      = "${local.nlb_name}"
     vpc_id                        = "${local.vpc_id}"
     port                          = "${local.port}"
@@ -194,12 +194,12 @@ module "MSKPrivatelink_nlb" {
 }
 
 module "keyspace" {
-  source                          = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//AWSKeyspaceGlobal"
+  source                          = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//AWSKeyspaceGlobal"
   keyspace_name                   = "${local.keyspace_name}"
 }
 
 module "MSKPrivatelink_endpoint_service" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/endpoint_service"
+    source                        = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/endpoint_service"
     vpc_id                        = "${local.vpc_id}"
     network_load_balancer_arns    = [module.MSKPrivatelink_nlb.arn]
     endpoint_service_name         = "${local.endpoint_service_name}"
@@ -209,7 +209,7 @@ module "MSKPrivatelink_endpoint_service" {
 }
 
 module "MSKPrivatelink_VPC_endpoint" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/VPC_endpoint"
+    source                        = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/VPC_endpoint"
     service_name                  = module.MSKPrivatelink_endpoint_service.service_name
     vpc_endpointname              = "${local.vpc_endpointname}"
     vpc_id                        = "${local.vpc_id}"
@@ -223,7 +223,7 @@ module "MSKPrivatelink_VPC_endpoint" {
 }
 
 module "ingress-private-nlb" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
+    source                        = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
     eks_name                      = "${local.eks_name}"
     environment                   = "${local.environment}"
     region                        = "${local.region}"
@@ -247,7 +247,7 @@ data "aws_lb" "load_balancer" {
 }
 
 module "EKS-privatelink" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS-privatelink"
+    source                        = "github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS-privatelink"
     network_load_balancer_arns    = data.aws_lb.load_balancer.arn
     eks_endpoint_service_name     = "${local.eks_endpoint_service_name}"
     public_vpc_id                 = "${local.public_vpc_id}"
