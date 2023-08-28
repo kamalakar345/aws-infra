@@ -37,6 +37,8 @@ locals {
 
 # "EKS-privatelink" Specific Configurations
   eks_endpoint_service_name         = local.env_vars.locals.eks_endpoint_service_name
+  public_vpc_id                     = local.env_vars.locals.public_vpc_id            
+  public_cidr_block                 = local.env_vars.locals.public_cidr_block 
   eks_vpc_endpointname              = local.env_vars.locals.eks_vpc_endpointname     
   public_subnet_id                  = local.env_vars.locals.public_subnet_id         
   vpc_keyspacesep                   = local.env_vars.locals.vpc_keyspacesep          
@@ -44,7 +46,7 @@ locals {
   acm_certificate                   = local.env_vars.locals.acm_certificate          
   public_subnet_id_1                = local.env_vars.locals.public_subnet_id_1       
   public_subnet_id_2                = local.env_vars.locals.public_subnet_id_2       
-  public_vpc_id                     = local.env_vars.locals.public_vpc_id
+
 }
    
 # Include the common.hcl
