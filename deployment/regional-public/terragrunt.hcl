@@ -41,7 +41,6 @@ locals {
   public_subnet_id                  = local.env_vars.locals.public_subnet_id         
   vpc_keyspacesep                   = local.env_vars.locals.vpc_keyspacesep          
   nlbname                           = local.env_vars.locals.nlbname                  
-  ports                             = local.env_vars.locals.ports                    
   acm_certificate                   = local.env_vars.locals.acm_certificate          
   public_subnet_id_1                = local.env_vars.locals.public_subnet_id_1       
   public_subnet_id_2                = local.env_vars.locals.public_subnet_id_2       
