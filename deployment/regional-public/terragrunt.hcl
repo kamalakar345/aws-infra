@@ -78,7 +78,6 @@ module "eks" {
     min_size                      = "${local.min_size}"
     admin_contact                 = "${local.admin_contact}"
     service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
 }
 
 
