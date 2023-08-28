@@ -37,7 +37,6 @@ locals {
 
 # "EKS-privatelink" Specific Configurations
   eks_endpoint_service_name         = local.env_vars.locals.eks_endpoint_service_name
-  cidr_block                        = local.env_vars.locals.cidr_block        
   eks_vpc_endpointname              = local.env_vars.locals.eks_vpc_endpointname     
   public_subnet_id                  = local.env_vars.locals.public_subnet_id         
   region                            = local.env_vars.locals.region                   
