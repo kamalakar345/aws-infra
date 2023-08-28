@@ -2,7 +2,7 @@
 locals {
  # Default value, can be overridden in root terragrunt.hcl
   aws_region = "us-west-2"
-  env = regex("/", get_env("BRANCH_NAME"))
+  env = split("/", get_env("BRANCH_NAME"))[0]
   aws_profile = get_env("BRANCH_NAME")
 }
 
