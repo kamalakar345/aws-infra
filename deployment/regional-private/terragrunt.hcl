@@ -143,7 +143,6 @@ module "eks" {
     max_size                      = "${local.max_size}"
     min_size                      = "${local.min_size}"
     admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
 }
 
 module "redis" {
