@@ -3,7 +3,7 @@ locals {
  # Default value, can be overridden in root terragrunt.hcl
   aws_region = "us-west-2"
   env = split("/", get_env("BRANCH_NAME"))[1]
-  aws_profile = get_env("BRANCH_NAME")
+  aws_profile = split("/", get_env("BRANCH_NAME"))[1]
 }
 
 # Generate the provider.tf file
