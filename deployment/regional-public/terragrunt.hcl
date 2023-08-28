@@ -44,7 +44,7 @@ locals {
   acm_certificate                   = local.env_vars.locals.acm_certificate          
   public_subnet_id_1                = local.env_vars.locals.public_subnet_id_1       
   public_subnet_id_2                = local.env_vars.locals.public_subnet_id_2       
-
+  public_vpc_id                     = local.env_vars.locals.public_vpc_id
 }
    
 # Include the common.hcl
