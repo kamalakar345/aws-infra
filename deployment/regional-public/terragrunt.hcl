@@ -114,7 +114,6 @@ module "EKS-privatelink" {
     region                        = "${local.region}"
     vpc_keyspacesep               = "${local.vpc_keyspacesep}"
     nlbname                       = "${local.nlbname}"
-    ports                         = "${local.ports}"
     acm_certificate               = "${local.acm_certificate}"
     public_subnet_id_1            = "${jsonencode(local.public_subnet_id_1)}"
     public_subnet_id_2            = "${jsonencode(local.public_subnet_id_2)}"
