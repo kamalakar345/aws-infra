@@ -13,7 +13,7 @@ stage('Terragrunt-Init'){
                     env.AWS_DEFAULT_PROFILE = "sandbox"
                     sh "printenv"
                     sh "terragrunt --version"
-                    sh "aws sts get-caller-identity --profile sandbox"
+                    sh "aws sts get-caller-identity"
                 def folders = ["regional-private", "regional-public"]
                     for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
