@@ -60,15 +60,16 @@ include "common"{
 generate "main" {
   path      = "main.tf"
   if_exists = "overwrite"
+
   contents = <<EOF
-module "EKS" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
+module "eks" {
+    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
+    environment                   = "${local.environment}"
     version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
     private_subnet_ids            = ${jsonencode(local.private_subnet_ids)}
-    environment                   = "${local.environment}"
     eks_name                      = "${local.eks_name}" 
-    cidr_block                    = ${jsonencode(local.cidr_block)}
+    private_cidr_block            = ${jsonencode(local.private_cidr_block)}
     nodename                      = "${local.nodename}"
     instance_types                = ${jsonencode(local.instance_types)}
     ami_type                      = "${local.ami_type}"
@@ -79,20 +80,22 @@ module "EKS" {
     service_id                    = "${local.service_id}"
     service_data                  = "${local.service_data}"
 }
+
+
 module "ingress-private-nlb" {
     source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
     eks_name                      = "${local.eks_name}"
     environment                   = "${local.environment}"
     region                        = "${local.region}"
-    private_vpc_cidr              = "${jsonencode(local.private_vpc_cidr)}"
+    private_vpc_cidr              = ${jsonencode(local.private_vpc_cidr)}
     private_acm_certificate       = "${local.private_acm_certificate}"
-    privatesubnetids              = "${jsonencode(local.privatesubnetids)}"
+    privatesubnetids              = ${jsonencode(local.privatesubnetids)}
     private_DNS                   = "${local.private_DNS}"
-    depends_on                    = [module.eks, module.ingress-public-nlb]
+    depends_on                    = [module.eks]
 }
 
 resource "time_sleep" "wait_for_lb" {
-    create_duration               = "400s"
+    create_duration               = "600s"
     depends_on                    = [module.ingress-private-nlb]
 }
 
@@ -108,15 +111,15 @@ module "EKS-privatelink" {
     network_load_balancer_arns    = data.aws_lb.load_balancer.arn
     eks_endpoint_service_name     = "${local.eks_endpoint_service_name}"
     public_vpc_id                 = "${local.public_vpc_id}"
-    public_cidr_block             = "${jsonencode(local.public_cidr_block)}"
+    public_cidr_block             = ${jsonencode(local.public_cidr_block)}
     eks_vpc_endpointname          = "${local.eks_vpc_endpointname}"
-    public_subnet_id              = "${jsonencode(local.public_subnet_id)}"
+    public_subnet_id              = ${jsonencode(local.public_subnet_id)}
     region                        = "${local.region}"
     vpc_keyspacesep               = "${local.vpc_keyspacesep}"
     nlbname                       = "${local.nlbname}"
     acm_certificate               = "${local.acm_certificate}"
-    public_subnet_id_1            = "${jsonencode(local.public_subnet_id_1)}"
-    public_subnet_id_2            = "${jsonencode(local.public_subnet_id_2)}"
+    public_subnet_id_1            = ${jsonencode(local.public_subnet_id_1)}
+    public_subnet_id_2            = ${jsonencode(local.public_subnet_id_2)}
     depends_on                    = [module.ingress-private-nlb]
 }
 
