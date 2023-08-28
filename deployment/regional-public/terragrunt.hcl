@@ -39,7 +39,6 @@ locals {
   eks_endpoint_service_name         = local.env_vars.locals.eks_endpoint_service_name
   eks_vpc_endpointname              = local.env_vars.locals.eks_vpc_endpointname     
   public_subnet_id                  = local.env_vars.locals.public_subnet_id         
-  region                            = local.env_vars.locals.region                   
   vpc_keyspacesep                   = local.env_vars.locals.vpc_keyspacesep          
   nlbname                           = local.env_vars.locals.nlbname                  
   ports                             = local.env_vars.locals.ports                    
