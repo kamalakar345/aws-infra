@@ -1,6 +1,8 @@
 def get_branch(branch_name) {
     return branch_name.split("/")[1]
 }
+
+
 pipeline {
   agent { label 'aware-jenkins' }
   environment {
@@ -8,30 +10,51 @@ pipeline {
   }
 stages{
 
+// Initialize all the terraform Scripts    
 stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
-            script{
+            script  {
                     env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
-                    sh "printenv"
-                    sh "terragrunt --version"
+                    // sh "printenv"
+                    // sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
-                def folders = ["regional-private", "regional-public"]
-                    for (int i = 0; i < folders.size(); ++i) { 
+                    env.folders = ["regional-private", "regional-public"]
+                        for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
                         sh  "terragrunt init --terragrunt-log-level debug --terragrunt-debug --reconfigure"
                         
                         // sh  "ls -lrta deployment/${folders[i]}"
-                        }
+                                            }
+                                                                }
                     }
+            // script{
+            //     sh "tree"
+            // }
+                                }
                 }
-            script{
-                sh "tree"
-            }
-        }
-            }
-        }
+                        }
 
 
+// Plan all the terraform requested resources
+stage('Terragrunt-Plan'){
+        steps{
+            dir('deployment') {
+            script  {
+                    env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
+                    // sh "printenv"
+                    // sh "terragrunt --version"
+                    sh "aws sts get-caller-identity"
+                    def folders = ["regional-private", "regional-public"]
+                        for (int i = 0; i < folders.size(); ++i) { 
+                        dir("${folders[i]}"){
+                        sh  "terragrunt plan --terragrunt-log-level debug --terragrunt-debug"
+                                            }
+                                                                }
+                    }
+
+                                }
+                }
+                        }
 }
 }
