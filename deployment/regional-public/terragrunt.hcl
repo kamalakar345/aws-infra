@@ -16,18 +16,17 @@ locals {
   aws_profile                       = local.common_vars.locals.aws_profile
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                        = local.env_vars.locals.version_no
-  server_purpose                    = local.env_vars.locals.server_purpose
-  eks_name                          = local.env_vars.locals.eks_name
-  nodename                          = local.env_vars.locals.nodename
-  instance_types                    = local.env_vars.locals.instance_types
-  ami_type                          = local.env_vars.locals.ami_type
-  desired_size                      = local.env_vars.locals.desired_size
-  max_size                          = local.env_vars.locals.max_size
-  min_size                          = local.env_vars.locals.min_size
+  version_no                        = local.env_vars.locals.version_no          
   vpc_id                            = local.env_vars.locals.vpc_id
-  private_cidr_block                = local.env_vars.locals.private_cidr_block
-  private_subnet_ids                = local.env_vars.locals.private_subnet_ids
+  private_subnet_ids                = local.env_vars.locals.private_subnet_ids            
+  instance_types                    = local.env_vars.locals.instance_types        
+  ami_type                          = local.env_vars.locals.ami_type  
+  eks_cluster_name                  = local.env_vars.locals.eks_cluster_name 
+  nodename                          = local.env_vars.locals.nodename
+  desired_size                      = local.env_vars.locals.desired_size      
+  max_size                          = local.env_vars.locals.max_size      
+  min_size                          = local.env_vars.locals.min_size      
+  allowed_cidr_block                = local.env_vars.locals.allowed_cidr_block
 
 #ingress-private-nlb Specific Configurations           
   private_vpc_cidr                  = local.env_vars.locals.private_vpc_cidr       
@@ -63,64 +62,19 @@ generate "main" {
 
   contents = <<EOF
 module "eks" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
-    environment                   = "${local.environment}"
+    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
     version_no                    = "${local.version_no}"
     vpc_id                        = "${local.vpc_id}"
     private_subnet_ids            = ${jsonencode(local.private_subnet_ids)}
-    eks_name                      = "${local.eks_name}" 
-    private_cidr_block            = ${jsonencode(local.private_cidr_block)}
-    nodename                      = "${local.nodename}"
     instance_types                = ${jsonencode(local.instance_types)}
     ami_type                      = "${local.ami_type}"
+    eks_cluster_name              = "${local.eks_cluster_name}"
+    nodename                      = "${local.nodename}"
     desired_size                  = "${local.desired_size}"
     max_size                      = "${local.max_size}"
     min_size                      = "${local.min_size}"
-    admin_contact                 = "${local.admin_contact}"
+    allowed_cidr_block            = ${jsonencode(local.allowed_cidr_block)}
 }
-
-
-module "ingress-private-nlb" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
-    eks_name                      = "${local.eks_name}"
-    environment                   = "${local.environment}"
-    region                        = "${local.region}"
-    private_vpc_cidr              = ${jsonencode(local.private_vpc_cidr)}
-    private_acm_certificate       = "${local.private_acm_certificate}"
-    privatesubnetids              = ${jsonencode(local.privatesubnetids)}
-    private_DNS                   = "${local.private_DNS}"
-    depends_on                    = [module.eks]
-}
-
-resource "time_sleep" "wait_for_lb" {
-    create_duration               = "600s"
-    depends_on                    = [module.ingress-private-nlb]
-}
-
-data "aws_lb" "load_balancer" {
-  tags = {
-      environment                 = "${local.environment}"
-  }
-  depends_on                      = [module.ingress-private-nlb, time_sleep.wait_for_lb]
-}
-
-module "EKS-privatelink" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS-privatelink"
-    network_load_balancer_arns    = data.aws_lb.load_balancer.arn
-    eks_endpoint_service_name     = "${local.eks_endpoint_service_name}"
-    public_vpc_id                 = "${local.public_vpc_id}"
-    public_cidr_block             = ${jsonencode(local.public_cidr_block)}
-    eks_vpc_endpointname          = "${local.eks_vpc_endpointname}"
-    public_subnet_id              = ${jsonencode(local.public_subnet_id)}
-    region                        = "${local.region}"
-    vpc_keyspacesep               = "${local.vpc_keyspacesep}"
-    nlbname                       = "${local.nlbname}"
-    acm_certificate               = "${local.acm_certificate}"
-    public_subnet_id_1            = ${jsonencode(local.public_subnet_id_1)}
-    public_subnet_id_2            = ${jsonencode(local.public_subnet_id_2)}
-    depends_on                    = [module.ingress-private-nlb]
-}
-
 
 EOF
 }
@@ -133,18 +87,5 @@ generate "output"{
   output "EKS" {
     value = module.eks
   }
-  
-  output "RDS" {
-      value = module.rds
-  }
-  
-  output "REDIS" {
-      value = module.redis
-  }
-  
-  output "public_EKS"{
-      value = module.eks
-  }
-
 EOF
 }
