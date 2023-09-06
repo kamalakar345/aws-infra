@@ -30,7 +30,6 @@ locals {
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
-  rds_private_subnet_ids                  = local.env_vars.locals.rds_private_subnet_ids
   db_instance_class                       = local.env_vars.locals.db_instance_class     
   db_engine                               = local.env_vars.locals.db_engine             
   db_engine_version                       = local.env_vars.locals.db_engine_version     
@@ -39,7 +38,6 @@ locals {
   db_identifier                           = "${local.env}-${local.component}-rds"         
 
 #Redis Specific Configurations                        
-  redis_private_subnet_ids                = local.env_vars.locals.private_subnet_ids
   # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
   redis_cluster_name                      = "${local.env}-${local.component}-redis"     
   redis_engine                            = local.env_vars.locals.redis_engine              
@@ -53,8 +51,7 @@ locals {
   # keyspace_name                           = local.env_vars.locals.keyspace_name 
   keyspace_name                           = "${local.env}-${local.component}-keyspace"
 #MSK Specific Configurations                                
-  # cluster_name                            = local.env_vars.locals.cluster_name                      
-  broker_node_subnets                     = local.env_vars.locals.private_subnet_ids                 
+  # cluster_name                            = local.env_vars.locals.cluster_name                                     
   msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
   msk_kafka_version                       = local.env_vars.locals.msk_kafka_version                   
   msk_num_of_broker_nodes                 = local.env_vars.locals.msk_num_of_broker_nodes             
@@ -62,7 +59,6 @@ locals {
   broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
   msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
 ##FOR MSK_PRIVATE_LINK
-  msk_subnet_id                           = local.env_vars.locals.private_subnet_ids
   msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
   msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
   msk_port                                = local.env_vars.locals.msk_port         
@@ -124,7 +120,7 @@ module "eks" {
 module "rds" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
     vpc_id                                = "${local.vpc_id}"
-    rds_private_subnet_ids                = ${jsonencode(local.rds_private_subnet_ids)}
+    rds_private_subnet_ids                = ${jsonencode(local.private_subnet_ids)}
     db_instance_class                     = "${local.db_instance_class}"     
     db_engine                             = "${local.db_engine}"  
     db_engine_version                     = "${local.db_engine_version}"    
@@ -136,7 +132,7 @@ module "rds" {
 module "redis" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//REDIS"
     vpc_id                                = "${local.vpc_id}"
-    redis_private_subnet_ids              = ${jsonencode(local.redis_private_subnet_ids)}
+    redis_private_subnet_ids              = ${jsonencode(local.private_subnet_ids)}
     redis_cluster_name                    = "${local.redis_cluster_name}"            
     redis_engine                          = "${local.redis_engine}"       
     redis_engine_version                  = "${local.redis_engine_version}"            
@@ -163,7 +159,7 @@ module "msk" {
     msk_security_group_ingress_cidr_ipv4  = ${jsonencode(local.msk_security_group_ingress_cidr_ipv4)}
 
 ##FOR MSK_PRIVATE_LINK
-    endpoint_subnet_id                    = ${jsonencode(local.endpoint_subnet_id)}
+    subnet_id                             = ${jsonencode(local.private_subnet_ids)}
     endpoint_service_tag                  = "${local.endpoint_service_tag}"
     nlb_name                              = "${local.nlb_name}"
     port                                  = "${local.port}" 
