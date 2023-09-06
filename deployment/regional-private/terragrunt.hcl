@@ -66,7 +66,6 @@ locals {
   msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
   msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
   msk_port                                = local.env_vars.locals.msk_port         
-  msk_target_ips                          = local.env_vars.locals.msk_target_ips
 
 ##FOR MSK_ENDPOINT In Public VPC
   endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
