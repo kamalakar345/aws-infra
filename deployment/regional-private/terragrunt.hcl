@@ -163,7 +163,7 @@ module "msk" {
     msk_security_group_ingress_cidr_ipv4  = ${jsonencode(local.msk_security_group_ingress_cidr_ipv4)}
 
 ##FOR MSK_PRIVATE_LINK
-    subnet_id                             = ${jsonencode(local.subnet_id)}
+    endpoint_subnet_id                    = ${jsonencode(local.endpoint_subnet_id)}
     endpoint_service_tag                  = "${local.endpoint_service_tag}"
     nlb_name                              = "${local.nlb_name}"
     port                                  = "${local.port}" 
