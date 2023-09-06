@@ -150,7 +150,7 @@ module "keyspace" {
 module "msk" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK"
     vpc_id                                = "${local.vpc_id}"
-    broker_node_subnets                   = ${jsonencode(local.broker_node_subnets)}
+    broker_node_subnets                   = ${jsonencode(local.private_subnet_ids)}
     msk_cluster_name                      = "${local.msk_cluster_name}"
     msk_kafka_version                     = "${local.msk_kafka_version}"
     msk_num_of_broker_nodes               = "${local.msk_num_of_broker_nodes}"
