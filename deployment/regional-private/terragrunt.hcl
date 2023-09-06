@@ -1,5 +1,6 @@
 locals {
-  # importing the configs <tfvars> both common and cluster specific
+
+# importing the configs <tfvars> both common and cluster specific
   env_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/${basename(get_original_terragrunt_dir())}.hcl")
   common_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/common_config.hcl")
 
@@ -8,12 +9,9 @@ locals {
 
 # Common variable reference comming from common_config.hcl 
   region                                  = local.common_vars.locals.region
-  region_abbr                             = local.common_vars.locals.region_abbr
-  environment                             = local.common_vars.locals.environment
   admin_contact                           = local.common_vars.locals.admin_contact
   service_id                              = local.common_vars.locals.service_id
-  service_data                            = local.common_vars.locals.service_data
-  aws_profile                             = local.common_vars.locals.aws_profile
+  service_data                            = "${local.env}-${local.component}"
 
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
@@ -38,10 +36,10 @@ locals {
   db_engine_version                       = local.env_vars.locals.db_engine_version     
   db_username                             = local.env_vars.locals.db_username           
   db_password                             = local.env_vars.locals.db_password           
-  db_identifier                           = local.env_vars.locals.db_identifier         
+  db_identifier                           = "${local.env}-${local.component}-rds"         
 
 #Redis Specific Configurations                        
-  redis_private_subnet_ids                = local.env_vars.locals.redis_private_subnet_ids
+  redis_private_subnet_ids                = local.env_vars.locals.private_subnet_ids
   # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
   redis_cluster_name                      = "${local.env}-${local.component}-redis"     
   redis_engine                            = local.env_vars.locals.redis_engine              
@@ -55,46 +53,44 @@ locals {
   # keyspace_name                           = local.env_vars.locals.keyspace_name 
   keyspace_name                           = "${local.env}-${local.component}-keyspace"
 #MSK Specific Configurations                                
-  # cluster_name                            = local.env_vars.locals.cluster_name 
-  cluster_name                            = "${local.env}-${local.component}-msk"
-  kafka_version                           = local.env_vars.locals.kafka_version
-  broker_nodes                            = local.env_vars.locals.broker_nodes 
-  instance_type                           = local.env_vars.locals.instance_type
-  storage_info                            = local.env_vars.locals.storage_info 
-  sg_name                                 = local.env_vars.locals.sg_name          
-  subnet_ids                              = local.env_vars.locals.subnet_ids
-
+  # cluster_name                            = local.env_vars.locals.cluster_name                      
+  broker_node_subnets                     = local.env_vars.locals.private_subnet_ids                 
+  msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
+  msk_kafka_version                       = local.env_vars.locals.msk_kafka_version                   
+  msk_num_of_broker_nodes                 = local.env_vars.locals.msk_num_of_broker_nodes             
+  broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
+  broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
+  msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
 ##FOR MSK_PRIVATE_LINK
-  subnet_id                             = local.env_vars.locals.private_link_subnet_ids
-  endpoint_service_tag                  = "${local.env}-${local.component}-msk-eps"
-  nlb_name                              = "${local.env}-${local.component}-msk-nlb"
-  num_brokers                           = local.env_vars.msk_num_of_broker_nodes 
-  port                                  = local.env_vars.locals.port         
-  target_ips                            = local.env_vars.locals.target_ips
+  msk_subnet_id                           = local.env_vars.locals.private_subnet_ids
+  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
+  msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
+  msk_port                                = local.env_vars.locals.msk_port         
+  msk_target_ips                          = local.env_vars.locals.msk_target_ips
 
 ##FOR MSK_ENDPOINT In Public VPC
-  endpoint_vpc_id                       = local.env_vars.locals.endpoint_vpc_id
-  endpoint_cidr_block                   = local.env_vars.locals.endpoint_cidr_block
-  endpoint_subnet_id                    = local.env_vars.locals.endpoint_subnet_id          
-  vpc_endpoint_tag                      = "${local.env}-${local.component}-msk-ep"
+  endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
+  endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
+  endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
+  vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
 
-#ingress-private-nlb Specific Configurations           
-  private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
-  private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
-  privatesubnetids                        = local.env_vars.locals.privatesubnetids       
-  private_DNS                             = local.env_vars.locals.private_DNS            
+# #ingress-private-nlb Specific Configurations           
+#   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
+#   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
+#   privatesubnetids                        = local.env_vars.locals.privatesubnetids       
+#   private_DNS                             = local.env_vars.locals.private_DNS            
 
-# "EKS-privatelink" Specific Configurations
-  eks_endpoint_service_name               = local.env_vars.locals.eks_endpoint_service_name
-  public_vpc_id                           = local.env_vars.locals.public_vpc_id            
-  public_cidr_block                       = local.env_vars.locals.public_cidr_block        
-  eks_vpc_endpointname                    = local.env_vars.locals.eks_vpc_endpointname     
-  public_subnet_id                        = local.env_vars.locals.public_subnet_id         
-  vpc_keyspacesep                         = local.env_vars.locals.vpc_keyspacesep          
-  nlbname                                 = local.env_vars.locals.nlbname                  
-  acm_certificate                         = local.env_vars.locals.acm_certificate          
-  public_subnet_id_1                      = local.env_vars.locals.public_subnet_id_1       
-  public_subnet_id_2                      = local.env_vars.locals.public_subnet_id_2       
+# # "EKS-privatelink" Specific Configurations
+#   eks_endpoint_service_name               = local.env_vars.locals.eks_endpoint_service_name
+#   public_vpc_id                           = local.env_vars.locals.public_vpc_id            
+#   public_cidr_block                       = local.env_vars.locals.public_cidr_block        
+#   eks_vpc_endpointname                    = local.env_vars.locals.eks_vpc_endpointname     
+#   public_subnet_id                        = local.env_vars.locals.public_subnet_id         
+#   vpc_keyspacesep                         = local.env_vars.locals.vpc_keyspacesep          
+#   nlbname                                 = local.env_vars.locals.nlbname                  
+#   acm_certificate                         = local.env_vars.locals.acm_certificate          
+#   public_subnet_id_1                      = local.env_vars.locals.public_subnet_id_1       
+#   public_subnet_id_2                      = local.env_vars.locals.public_subnet_id_2       
 
 }
    
@@ -171,7 +167,6 @@ module "msk" {
     subnet_id                             = ${jsonencode(local.subnet_id)}
     endpoint_service_tag                  = "${local.endpoint_service_tag}"
     nlb_name                              = "${local.nlb_name}"
-    num_brokers                           = "${local.msk_num_of_broker_nodes}" 
     port                                  = "${local.port}" 
     target_ips                            = ${jsonencode(local.target_ips)}
 
@@ -182,48 +177,6 @@ module "msk" {
     vpc_endpoint_tag                      = "${local.vpc_endpoint_tag}"
 
  }
-
-module "ingress-private-nlb" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
-    eks_name                      = "${local.eks_name}"
-    environment                   = "${local.environment}"
-    region                        = "${local.region}"
-    private_vpc_cidr              = ${jsonencode(local.private_vpc_cidr)}
-    private_acm_certificate       = "${local.private_acm_certificate}"
-    privatesubnetids              = ${jsonencode(local.privatesubnetids)}
-    private_DNS                   = "${local.private_DNS}"
-    depends_on                    = [module.eks]
-}
-
-resource "time_sleep" "wait_for_lb" {
-    create_duration               = "600s"
-    depends_on                    = [module.ingress-private-nlb]
-}
-
-data "aws_lb" "load_balancer" {
-  tags = {
-      environment                 = "${local.environment}"
-  }
-  depends_on                      = [module.ingress-private-nlb, time_sleep.wait_for_lb]
-}
-
-module "EKS-privatelink" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS-privatelink"
-    network_load_balancer_arns    = data.aws_lb.load_balancer.arn
-    eks_endpoint_service_name     = "${local.eks_endpoint_service_name}"
-    public_vpc_id                 = "${local.public_vpc_id}"
-    public_cidr_block             = ${jsonencode(local.public_cidr_block)}
-    eks_vpc_endpointname          = "${local.eks_vpc_endpointname}"
-    public_subnet_id              = ${jsonencode(local.public_subnet_id)}
-    region                        = "${local.region}"
-    vpc_keyspacesep               = "${local.vpc_keyspacesep}"
-    nlbname                       = "${local.nlbname}"
-    acm_certificate               = "${local.acm_certificate}"
-    public_subnet_id_1            = ${jsonencode(local.public_subnet_id_1)}
-    public_subnet_id_2            = ${jsonencode(local.public_subnet_id_2)}
-    depends_on                    = [module.ingress-private-nlb]
-}
-
 
 EOF
 }
@@ -243,6 +196,10 @@ generate "output"{
   
   output "REDIS" {
       value = module.redis
+  }
+
+  output "MSK" {
+      value = module.msk
   }
 
 EOF
