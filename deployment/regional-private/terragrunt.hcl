@@ -143,7 +143,7 @@ module "redis" {
 }
 
 module "keyspace" {
-  source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//AWSKeyspace"
+  source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Keyspace"
   keyspace_name                           = "${local.keyspace_name}"
 }
 
