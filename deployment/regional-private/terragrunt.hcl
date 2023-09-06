@@ -23,8 +23,9 @@ locals {
   private_subnet_ids                      = local.env_vars.locals.private_subnet_ids            
   instance_types                          = local.env_vars.locals.instance_types        
   ami_type                                = local.env_vars.locals.ami_type  
-  eks_cluster_name                        = local.env_vars.locals.eks_cluster_name 
-  nodename                                = local.env_vars.locals.nodename
+  # eks_cluster_name                        = local.env_vars.locals.eks_cluster_name
+  eks_cluster_name                        = "${local.env}-${local.component}-eks"
+  nodename                                = "${local.env}-${local.component}-nodes"
   desired_size                            = local.env_vars.locals.desired_size      
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
@@ -41,7 +42,8 @@ locals {
 
 #Redis Specific Configurations                        
   redis_private_subnet_ids                = local.env_vars.locals.redis_private_subnet_ids
-  redis_cluster_name                      = local.env_vars.locals.redis_cluster_name        
+  # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
+  redis_cluster_name                      = "${local.env}-${local.component}-redis"     
   redis_engine                            = local.env_vars.locals.redis_engine              
   redis_engine_version                    = local.env_vars.locals.redis_engine_version      
   redis_parameter_group_name              = local.env_vars.locals.redis_parameter_group_name
@@ -50,10 +52,11 @@ locals {
   redis_node_count                        = local.env_vars.locals.redis_node_count
 
 #Keyspace Spacific Configutration
-  keyspace_name                           = local.env_vars.locals.keyspace_name 
-
+  # keyspace_name                           = local.env_vars.locals.keyspace_name 
+  keyspace_name                           = "${local.env}-${local.component}-keyspace"
 #MSK Specific Configurations                                
-  cluster_name                            = local.env_vars.locals.cluster_name 
+  # cluster_name                            = local.env_vars.locals.cluster_name 
+  cluster_name                            = "${local.env}-${local.component}-msk"
   kafka_version                           = local.env_vars.locals.kafka_version
   broker_nodes                            = local.env_vars.locals.broker_nodes 
   instance_type                           = local.env_vars.locals.instance_type
@@ -61,23 +64,19 @@ locals {
   sg_name                                 = local.env_vars.locals.sg_name          
   subnet_ids                              = local.env_vars.locals.subnet_ids
 
-#Variables for NLB module (For MSK)
-  broker_node_subnets                     = local.env_vars.locals.broker_node_subnets                 
-  msk_cluster_name                        = local.env_vars.locals.msk_cluster_name                    
-  msk_kafka_version                       = local.env_vars.locals.msk_kafka_version                   
-  msk_num_of_broker_nodes                 = local.env_vars.locals.msk_num_of_broker_nodes              
-  broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
-  broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
-  msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4 
+##FOR MSK_PRIVATE_LINK
+  subnet_id                             = local.env_vars.locals.private_link_subnet_ids
+  endpoint_service_tag                  = "${local.env}-${local.component}-msk-eps"
+  nlb_name                              = "${local.env}-${local.component}-msk-nlb"
+  num_brokers                           = local.env_vars.msk_num_of_broker_nodes 
+  port                                  = local.env_vars.locals.port         
+  target_ips                            = local.env_vars.locals.target_ips
 
-#MSKPrivatelink_endpoint_service Specific Configutations
-  endpoint_service_name                   = local.env_vars.locals.endpoint_service_name
-
-#MSKPrivatelink_VPC_endpoint Specific Configuration
-  vpc_endpointname                        = local.env_vars.locals.vpc_endpointname
-  subnet_id                               = local.env_vars.locals.subnet_id       
-  subnet_id1                              = local.env_vars.locals.subnet_id1      
-  cidr_block1                             = local.env_vars.locals.cidr_block1  
+##FOR MSK_ENDPOINT In Public VPC
+  endpoint_vpc_id                       = local.env_vars.locals.endpoint_vpc_id
+  endpoint_cidr_block                   = local.env_vars.locals.endpoint_cidr_block
+  endpoint_subnet_id                    = local.env_vars.locals.endpoint_subnet_id          
+  vpc_endpoint_tag                      = "${local.env}-${local.component}-msk-ep"
 
 #ingress-private-nlb Specific Configurations           
   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
@@ -167,48 +166,22 @@ module "msk" {
     broker_node_instance_type             = "${local.broker_node_instance_type}"
     broker_node_storage_info_volume_size  = "${local.broker_node_storage_info_volume_size}"
     msk_security_group_ingress_cidr_ipv4  = ${jsonencode(local.msk_security_group_ingress_cidr_ipv4)}
- }
 
-module "MSKPrivatelink_nlb" {
-    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/nlb"
+##FOR MSK_PRIVATE_LINK
+    subnet_id                             = ${jsonencode(local.subnet_id)}
+    endpoint_service_tag                  = "${local.endpoint_service_tag}"
     nlb_name                              = "${local.nlb_name}"
-    vpc_id                                = "${local.vpc_id}"
-    port                                  = "${local.port}"
-    target_group_name                     = "${local.target_group_name}"
-    listener_port                         = "${local.listener_port}"
-    num_brokers                           = "${local.num_brokers}"
-    privatelb_subnet_id                   = "${local.privatelb_subnet_id}"
-    privatelb_subnet_id1                  = "${local.privatelb_subnet_id1}"
-    cluster_arn                           = module.msk.arn
-    depends_on                            = [
-            module.msk
-    ]
-}
+    num_brokers                           = "${local.msk_num_of_broker_nodes}" 
+    port                                  = "${local.port}" 
+    target_ips                            = ${jsonencode(local.target_ips)}
 
+##FOR MSK_ENDPOINT
+    endpoint_vpc_id                       = "${local.endpoint_vpc_id}"
+    endpoint_cidr_block                   = ${jsonencode(local.endpoint_cidr_block)}
+    endpoint_subnet_id                    = ${jsonencode(local.endpoint_subnet_id)}
+    vpc_endpoint_tag                      = "${local.vpc_endpoint_tag}"
 
-module "MSKPrivatelink_endpoint_service" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/endpoint_service"
-    vpc_id                        = "${local.vpc_id}"
-    network_load_balancer_arns    = [module.MSKPrivatelink_nlb.arn]
-    endpoint_service_name         = "${local.endpoint_service_name}"
-    depends_on                    = [
-            module.MSKPrivatelink_nlb
-    ]
-}
-
-module "MSKPrivatelink_VPC_endpoint" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/VPC_endpoint"
-    service_name                  = module.MSKPrivatelink_endpoint_service.service_name
-    vpc_endpointname              = "${local.vpc_endpointname}"
-    vpc_id                        = "${local.vpc_id}"
-    subnet_id                     = ${jsonencode(local.subnet_id)}
-    subnet_id1                    = ${jsonencode(local.subnet_id1)}
-    cidr_block                    = ${jsonencode(local.private_cidr_block)}
-    cidr_block1                   = ${jsonencode(local.cidr_block1)}
-    depends_on                    = [
-        module.MSKPrivatelink_endpoint_service
-    ]
-}
+ }
 
 module "ingress-private-nlb" {
     source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
