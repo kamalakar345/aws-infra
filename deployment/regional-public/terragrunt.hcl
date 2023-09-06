@@ -29,46 +29,6 @@ locals {
   min_size                                = local.env_vars.locals.min_size      
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
 
-# Cluster specific variables coming from <env-component>.hcl for RDS Module
-  db_instance_class                       = local.env_vars.locals.db_instance_class     
-  db_engine                               = local.env_vars.locals.db_engine             
-  db_engine_version                       = local.env_vars.locals.db_engine_version     
-  db_username                             = local.env_vars.locals.db_username           
-  db_password                             = local.env_vars.locals.db_password           
-  db_identifier                           = "${local.env}-${local.component}-rds"         
-
-#Redis Specific Configurations                        
-  # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
-  redis_cluster_name                      = "${local.env}-${local.component}-redis"     
-  redis_engine                            = local.env_vars.locals.redis_engine              
-  redis_engine_version                    = local.env_vars.locals.redis_engine_version      
-  redis_parameter_group_name              = local.env_vars.locals.redis_parameter_group_name
-  redis_instance_type                     = local.env_vars.locals.redis_instance_type       
-  redis_port                              = local.env_vars.locals.redis_port                
-  redis_node_count                        = local.env_vars.locals.redis_node_count
-
-#Keyspace Spacific Configutration
-  # keyspace_name                           = local.env_vars.locals.keyspace_name 
-  keyspace_name                           = "${local.env}-${local.component}-keyspace"
-#MSK Specific Configurations                                
-  # cluster_name                            = local.env_vars.locals.cluster_name                                     
-  msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
-  msk_kafka_version                       = local.env_vars.locals.msk_kafka_version                   
-  msk_num_of_broker_nodes                 = local.env_vars.locals.msk_num_of_broker_nodes             
-  broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
-  broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
-  msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
-##FOR MSK_PRIVATE_LINK
-  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
-  msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
-  msk_port                                = local.env_vars.locals.msk_port         
-
-##FOR MSK_ENDPOINT In Public VPC
-  endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
-  endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
-  endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
-  vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
-
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
