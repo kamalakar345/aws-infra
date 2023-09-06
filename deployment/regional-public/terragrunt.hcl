@@ -1,5 +1,6 @@
 locals {
-  # importing the configs <tfvars> both common and cluster specific
+
+# importing the configs <tfvars> both common and cluster specific
   env_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/${basename(get_original_terragrunt_dir())}.hcl")
   common_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/common_config.hcl")
 
@@ -7,44 +8,84 @@ locals {
   component = basename(get_terragrunt_dir())
 
 # Common variable reference comming from common_config.hcl 
-  region                            = local.common_vars.locals.region
-  region_abbr                       = local.common_vars.locals.region_abbr
-  environment                       = local.common_vars.locals.environment
-  admin_contact                     = local.common_vars.locals.admin_contact
-  service_id                        = local.common_vars.locals.service_id
-  service_data                      = local.common_vars.locals.service_data
-  aws_profile                       = local.common_vars.locals.aws_profile
+  region                                  = local.common_vars.locals.region
+  admin_contact                           = local.common_vars.locals.admin_contact
+  service_id                              = local.common_vars.locals.service_id
+  service_data                            = "${local.env}-${local.component}"
+
+# Common Network Configuration Details
+  vpc_id                                  = local.env_vars.locals.vpc_id
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                        = local.env_vars.locals.version_no          
-  vpc_id                            = local.env_vars.locals.vpc_id
-  private_subnet_ids                = local.env_vars.locals.private_subnet_ids            
-  instance_types                    = local.env_vars.locals.instance_types        
-  ami_type                          = local.env_vars.locals.ami_type  
-  eks_cluster_name                  = "${local.env}-${local.component}-eks" 
-  nodename                          = "${local.env}-${local.component}-nodes"
-  desired_size                      = local.env_vars.locals.desired_size      
-  max_size                          = local.env_vars.locals.max_size      
-  min_size                          = local.env_vars.locals.min_size      
-  allowed_cidr_block                = local.env_vars.locals.allowed_cidr_block
+  version_no                              = local.env_vars.locals.version_no          
+  private_subnet_ids                      = local.env_vars.locals.private_subnet_ids            
+  instance_types                          = local.env_vars.locals.instance_types        
+  ami_type                                = local.env_vars.locals.ami_type  
+  # eks_cluster_name                        = local.env_vars.locals.eks_cluster_name
+  eks_cluster_name                        = "${local.env}-${local.component}-eks"
+  nodename                                = "${local.env}-${local.component}-nodes"
+  desired_size                            = local.env_vars.locals.desired_size      
+  max_size                                = local.env_vars.locals.max_size      
+  min_size                                = local.env_vars.locals.min_size      
+  allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
 
-#ingress-private-nlb Specific Configurations           
-  private_vpc_cidr                  = local.env_vars.locals.private_vpc_cidr       
-  private_acm_certificate           = local.env_vars.locals.private_acm_certificate
-  privatesubnetids                  = local.env_vars.locals.privatesubnetids       
-  private_DNS                       = local.env_vars.locals.private_DNS            
+# Cluster specific variables coming from <env-component>.hcl for RDS Module
+  db_instance_class                       = local.env_vars.locals.db_instance_class     
+  db_engine                               = local.env_vars.locals.db_engine             
+  db_engine_version                       = local.env_vars.locals.db_engine_version     
+  db_username                             = local.env_vars.locals.db_username           
+  db_password                             = local.env_vars.locals.db_password           
+  db_identifier                           = "${local.env}-${local.component}-rds"         
 
-# "EKS-privatelink" Specific Configurations
-  eks_endpoint_service_name         = local.env_vars.locals.eks_endpoint_service_name
-  public_vpc_id                     = local.env_vars.locals.public_vpc_id            
-  public_cidr_block                 = local.env_vars.locals.public_cidr_block 
-  eks_vpc_endpointname              = local.env_vars.locals.eks_vpc_endpointname     
-  public_subnet_id                  = local.env_vars.locals.public_subnet_id         
-  vpc_keyspacesep                   = local.env_vars.locals.vpc_keyspacesep          
-  nlbname                           = local.env_vars.locals.nlbname                  
-  acm_certificate                   = local.env_vars.locals.acm_certificate          
-  public_subnet_id_1                = local.env_vars.locals.public_subnet_id_1       
-  public_subnet_id_2                = local.env_vars.locals.public_subnet_id_2       
+#Redis Specific Configurations                        
+  # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
+  redis_cluster_name                      = "${local.env}-${local.component}-redis"     
+  redis_engine                            = local.env_vars.locals.redis_engine              
+  redis_engine_version                    = local.env_vars.locals.redis_engine_version      
+  redis_parameter_group_name              = local.env_vars.locals.redis_parameter_group_name
+  redis_instance_type                     = local.env_vars.locals.redis_instance_type       
+  redis_port                              = local.env_vars.locals.redis_port                
+  redis_node_count                        = local.env_vars.locals.redis_node_count
+
+#Keyspace Spacific Configutration
+  # keyspace_name                           = local.env_vars.locals.keyspace_name 
+  keyspace_name                           = "${local.env}-${local.component}-keyspace"
+#MSK Specific Configurations                                
+  # cluster_name                            = local.env_vars.locals.cluster_name                                     
+  msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
+  msk_kafka_version                       = local.env_vars.locals.msk_kafka_version                   
+  msk_num_of_broker_nodes                 = local.env_vars.locals.msk_num_of_broker_nodes             
+  broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
+  broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
+  msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
+##FOR MSK_PRIVATE_LINK
+  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
+  msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
+  msk_port                                = local.env_vars.locals.msk_port         
+
+##FOR MSK_ENDPOINT In Public VPC
+  endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
+  endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
+  endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
+  vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
+
+# #ingress-private-nlb Specific Configurations           
+#   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
+#   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
+#   privatesubnetids                        = local.env_vars.locals.privatesubnetids       
+#   private_DNS                             = local.env_vars.locals.private_DNS            
+
+# # "EKS-privatelink" Specific Configurations
+#   eks_endpoint_service_name               = local.env_vars.locals.eks_endpoint_service_name
+#   public_vpc_id                           = local.env_vars.locals.public_vpc_id            
+#   public_cidr_block                       = local.env_vars.locals.public_cidr_block        
+#   eks_vpc_endpointname                    = local.env_vars.locals.eks_vpc_endpointname     
+#   public_subnet_id                        = local.env_vars.locals.public_subnet_id         
+#   vpc_keyspacesep                         = local.env_vars.locals.vpc_keyspacesep          
+#   nlbname                                 = local.env_vars.locals.nlbname                  
+#   acm_certificate                         = local.env_vars.locals.acm_certificate          
+#   public_subnet_id_1                      = local.env_vars.locals.public_subnet_id_1       
+#   public_subnet_id_2                      = local.env_vars.locals.public_subnet_id_2       
 
 }
    
@@ -62,18 +103,18 @@ generate "main" {
 
   contents = <<EOF
 module "eks" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
-    version_no                    = "${local.version_no}"
-    vpc_id                        = "${local.vpc_id}"
-    private_subnet_ids            = ${jsonencode(local.private_subnet_ids)}
-    instance_types                = ${jsonencode(local.instance_types)}
-    ami_type                      = "${local.ami_type}"
-    eks_cluster_name              = "${local.eks_cluster_name}"
-    nodename                      = "${local.nodename}"
-    desired_size                  = "${local.desired_size}"
-    max_size                      = "${local.max_size}"
-    min_size                      = "${local.min_size}"
-    allowed_cidr_block            = ${jsonencode(local.allowed_cidr_block)}
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
+    version_no                            = "${local.version_no}"
+    vpc_id                                = "${local.vpc_id}"
+    private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
+    instance_types                        = ${jsonencode(local.instance_types)}
+    ami_type                              = "${local.ami_type}"
+    eks_cluster_name                      = "${local.eks_cluster_name}"
+    nodename                              = "${local.nodename}"
+    desired_size                          = "${local.desired_size}"
+    max_size                              = "${local.max_size}"
+    min_size                              = "${local.min_size}"
+    allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
 }
 
 EOF
