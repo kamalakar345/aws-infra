@@ -23,7 +23,6 @@ stage('Terragrunt-Init'){
                     def folders = ["regional-private", "regional-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
-                        cleanWs()
                         sh  "terragrunt init --terragrunt-log-level debug --terragrunt-debug --reconfigure"
                         
                         // sh  "ls -lrta deployment/${folders[i]}"
