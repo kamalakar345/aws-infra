@@ -4,7 +4,8 @@ locals {
   env_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/${basename(get_original_terragrunt_dir())}.hcl")
   common_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/common_config.hcl")
 
-  env = basename(dirname(get_original_terragrunt_dir()))
+  # env = basename(dirname(get_original_terragrunt_dir()))
+  env = split("/", get_env("BRANCH_NAME"))[1]
   component = basename(get_terragrunt_dir())
 
 # Common variable reference comming from common_config.hcl 
@@ -159,7 +160,7 @@ module "msk" {
     msk_security_group_ingress_cidr_ipv4  = ${jsonencode(local.msk_security_group_ingress_cidr_ipv4)}
 
 ##FOR MSK_PRIVATE_LINK
-    subnet_id                             = ${jsonencode(local.private_subnet_ids)}
+    privatelink_subnet_id                 = ${jsonencode(local.private_subnet_ids)}
     endpoint_service_tag                  = "${local.msk_endpoint_service_tag}"
     nlb_name                              = "${local.msk_nlb_name}"
     port                                  = "${local.msk_port}"
