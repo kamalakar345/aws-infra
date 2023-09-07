@@ -49,7 +49,7 @@ stage('Terragrunt-Plan'){
                     def folders = ["regional-private", "regional-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
-                        sh  "terragrunt plan "
+                        sh  "terragrunt plan -compact-warnings"
                                             }
                                                                 }
                     }
@@ -57,5 +57,25 @@ stage('Terragrunt-Plan'){
                                 }
                 }
                         }
+stage('Terragrunt-Apply'){
+        steps{
+            dir('deployment') {
+            script  {
+                    env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
+                    // sh "printenv"
+                    // sh "terragrunt --version"
+                    sh "aws sts get-caller-identity"
+                    def folders = ["regional-private", "regional-public"]
+                        for (int i = 0; i < folders.size(); ++i) { 
+                        dir("${folders[i]}"){
+                        sh  "terragrunt apply -auto-approve -compact-warnings"
+                                            }
+                                                                }
+                    }
+
+                                }
+                }
+                        }
+
 }
 }
