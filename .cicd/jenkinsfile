@@ -23,7 +23,7 @@ stage('Terragrunt-Init'){
                     def folders = ["regional-private", "regional-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
-                        sh  "terragrunt init --terragrunt-log-level debug --terragrunt-debug --reconfigure"
+                        sh  "terragrunt init --reconfigure"
                         
                         // sh  "ls -lrta deployment/${folders[i]}"
                                             }
@@ -49,7 +49,7 @@ stage('Terragrunt-Plan'){
                     def folders = ["regional-private", "regional-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
-                        sh  "terragrunt plan --terragrunt-log-level debug --terragrunt-debug"
+                        sh  "terragrunt plan "
                                             }
                                                                 }
                     }

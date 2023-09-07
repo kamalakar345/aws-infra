@@ -22,31 +22,12 @@ locals {
   private_subnet_ids                      = local.env_vars.locals.private_subnet_ids            
   instance_types                          = local.env_vars.locals.instance_types        
   ami_type                                = local.env_vars.locals.ami_type  
-  # eks_cluster_name                        = local.env_vars.locals.eks_cluster_name
   eks_cluster_name                        = "${local.env}-${local.component}-eks"
   nodename                                = "${local.env}-${local.component}-nodes"
   desired_size                            = local.env_vars.locals.desired_size      
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
-
-# #ingress-private-nlb Specific Configurations           
-#   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
-#   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
-#   privatesubnetids                        = local.env_vars.locals.privatesubnetids       
-#   private_DNS                             = local.env_vars.locals.private_DNS            
-
-# # "EKS-privatelink" Specific Configurations
-#   eks_endpoint_service_name               = local.env_vars.locals.eks_endpoint_service_name
-#   public_vpc_id                           = local.env_vars.locals.public_vpc_id            
-#   public_cidr_block                       = local.env_vars.locals.public_cidr_block        
-#   eks_vpc_endpointname                    = local.env_vars.locals.eks_vpc_endpointname     
-#   public_subnet_id                        = local.env_vars.locals.public_subnet_id         
-#   vpc_keyspacesep                         = local.env_vars.locals.vpc_keyspacesep          
-#   nlbname                                 = local.env_vars.locals.nlbname                  
-#   acm_certificate                         = local.env_vars.locals.acm_certificate          
-#   public_subnet_id_1                      = local.env_vars.locals.public_subnet_id_1       
-#   public_subnet_id_2                      = local.env_vars.locals.public_subnet_id_2       
 
 }
    
