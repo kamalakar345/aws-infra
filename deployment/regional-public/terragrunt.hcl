@@ -4,7 +4,8 @@ locals {
   env_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/${basename(get_original_terragrunt_dir())}.hcl")
   common_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/common_config.hcl")
 
-  env = basename(dirname(get_original_terragrunt_dir()))
+  # env = basename(dirname(get_original_terragrunt_dir()))
+  env = split("/", get_env("BRANCH_NAME"))[1]
   component = basename(get_terragrunt_dir())
 
 # Common variable reference comming from common_config.hcl 
