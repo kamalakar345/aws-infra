@@ -15,6 +15,7 @@ stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
             script  {
+                    cleanWs()
                     env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
                     // sh "printenv"
                     // sh "terragrunt --version"
@@ -22,6 +23,7 @@ stage('Terragrunt-Init'){
                     def folders = ["regional-private", "regional-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
+                        cleanWs()
                         sh  "terragrunt init --terragrunt-log-level debug --terragrunt-debug --reconfigure"
                         
                         // sh  "ls -lrta deployment/${folders[i]}"
