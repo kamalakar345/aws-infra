@@ -50,7 +50,8 @@ locals {
 
 #Keyspace Spacific Configutration
   # keyspace_name                           = local.env_vars.locals.keyspace_name 
-  keyspace_name                           = "${local.env}_${local.component}_keyspace"
+  keyspace_component                      = split("-", basename(get_terragrunt_dir()))[1]
+  keyspace_name                           = "${local.env}_${local.keyspace_component}_keyspace"
 #MSK Specific Configurations                                
   # cluster_name                            = local.env_vars.locals.cluster_name                                     
   msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
