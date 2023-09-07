@@ -8,14 +8,14 @@ pipeline {
   environment {
     region = "us-west-2"
   }
-
+  
 stages{
 // Initialize all the terraform Scripts    
 stage('Terragrunt-Init'){
         steps{
             dir('deployment') {
             script  {
-                    
+                //     cleanWs()
                     env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
                     // sh "printenv"
                     // sh "terragrunt --version"
