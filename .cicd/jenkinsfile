@@ -68,8 +68,8 @@ stage('Terragrunt-Apply'){
                     def folders = ["regional-private", "regional-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
-                        sh  "terragrunt apply -auto-approve -compact-warnings"
-                                            }
+                        sh  "terragrunt apply -auto-approve -compact-warnings --terragrunt-log-level debug --terragrunt-debug"
+                        cleanWs()                    }
                                                                 }
                     }
 
