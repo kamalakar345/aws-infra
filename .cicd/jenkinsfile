@@ -9,6 +9,13 @@ pipeline {
     region = "us-west-2"
   }
 stages{
+stage ('Clean') {
+    deleteDir()
+}
+
+stage ('Checkout') {
+    checkout scm 
+}
 
 // Initialize all the terraform Scripts    
 stage('Terragrunt-Init'){
