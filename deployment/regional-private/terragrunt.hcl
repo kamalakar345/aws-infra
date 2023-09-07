@@ -12,7 +12,7 @@ locals {
   region                                  = local.common_vars.locals.region
   admin_contact                           = local.common_vars.locals.admin_contact
   service_id                              = local.common_vars.locals.service_id
-  service_data                            = "${local.env}_${local.component}"
+  service_data                            = "${local.env}-${local.component}"
 
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
@@ -23,8 +23,8 @@ locals {
   instance_types                          = local.env_vars.locals.instance_types        
   ami_type                                = local.env_vars.locals.ami_type  
   # eks_cluster_name                        = local.env_vars.locals.eks_cluster_name
-  eks_cluster_name                        = "${local.env}_${local.component}_eks"
-  nodename                                = "${local.env}_${local.component}_nodes"
+  eks_cluster_name                        = "${local.env}-${local.component}-eks"
+  nodename                                = "${local.env}-${local.component}-nodes"
   desired_size                            = local.env_vars.locals.desired_size      
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
@@ -36,11 +36,11 @@ locals {
   db_engine_version                       = local.env_vars.locals.db_engine_version     
   db_username                             = local.env_vars.locals.db_username           
   db_password                             = local.env_vars.locals.db_password           
-  db_identifier                           = "${local.env}_${local.component}_rds"         
+  db_identifier                           = "${local.env}-${local.component}-rds"         
 
 #Redis Specific Configurations                        
   # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
-  redis_cluster_name                      = "${local.env}_${local.component}_redis"     
+  redis_cluster_name                      = "${local.env}-${local.component}-redis"     
   redis_engine                            = local.env_vars.locals.redis_engine              
   redis_engine_version                    = local.env_vars.locals.redis_engine_version      
   redis_parameter_group_name              = local.env_vars.locals.redis_parameter_group_name
@@ -53,22 +53,22 @@ locals {
   keyspace_name                           = "${local.env}_${local.component}_keyspace"
 #MSK Specific Configurations                                
   # cluster_name                            = local.env_vars.locals.cluster_name                                     
-  msk_cluster_name                        = "${local.env}_${local.component}_msk"                    
+  msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
   msk_kafka_version                       = local.env_vars.locals.msk_kafka_version                   
   msk_num_of_broker_nodes                 = local.env_vars.locals.msk_num_of_broker_nodes             
   broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
   broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
   msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
 ##FOR MSK_PRIVATE_LINK
-  msk_endpoint_service_tag                = "${local.env}_${local.component}_msk_eps"
-  msk_nlb_name                            = "${local.env}_${local.component}_msk_nlb"
+  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk_eps"
+  msk_nlb_name                            = "${local.env}-${local.component}-msk_nlb"
   msk_port                                = local.env_vars.locals.msk_port         
 
 ##FOR MSK_ENDPOINT In Public VPC
   endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
   endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
   endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
-  vpc_endpoint_tag                        = "${local.env}_${local.component}_msk_ep"
+  vpc_endpoint_tag                        = "${local.env}-${local.component}-msk_ep"
 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
