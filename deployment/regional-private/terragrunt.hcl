@@ -60,15 +60,15 @@ locals {
   broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
   msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
 ##FOR MSK_PRIVATE_LINK
-  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk_eps"
-  msk_nlb_name                            = "${local.env}-${local.component}-msk_nlb"
+  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
+  msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
   msk_port                                = local.env_vars.locals.msk_port         
 
 ##FOR MSK_ENDPOINT In Public VPC
   endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
   endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
   endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
-  vpc_endpoint_tag                        = "${local.env}-${local.component}-msk_ep"
+  vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
