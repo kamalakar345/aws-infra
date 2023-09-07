@@ -23,7 +23,6 @@ locals {
   instance_types                          = local.env_vars.locals.instance_types        
   ami_type                                = local.env_vars.locals.ami_type  
   eks_cluster_name                        = "${local.env}-${local.component}-eks"
-  nodename                                = "${local.env}-${local.component}-nodes"
   desired_size                            = local.env_vars.locals.desired_size      
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
@@ -52,7 +51,6 @@ module "eks" {
     instance_types                        = ${jsonencode(local.instance_types)}
     ami_type                              = "${local.ami_type}"
     eks_cluster_name                      = "${local.eks_cluster_name}"
-    nodename                              = "${local.nodename}"
     desired_size                          = "${local.desired_size}"
     max_size                              = "${local.max_size}"
     min_size                              = "${local.min_size}"
