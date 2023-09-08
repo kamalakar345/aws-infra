@@ -48,7 +48,7 @@ locals {
   redis_port                              = local.env_vars.locals.redis_port                
   redis_node_count                        = local.env_vars.locals.redis_node_count
 
-#Keyspace Spacific Configutration
+#Keyspace Specific Configutration
   keyspace_environment                    = split("-", basename(get_terragrunt_dir()))[0]
   keyspace_component                      = split("-", basename(get_terragrunt_dir()))[1]
   keyspace_name                           = "${local.env}_${local.keyspace_environment}_${local.keyspace_component}_keyspace"
@@ -70,6 +70,9 @@ locals {
   endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
   endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
   vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
+
+##ACM Specific Configuration
+  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
@@ -173,6 +176,11 @@ module "msk" {
 
  }
 
+ module "ACM" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
+    domain                                = "${local.domain}"
+  }
+
 EOF
 }
 
@@ -199,6 +207,9 @@ generate "output"{
 
   output "keyspace" {
       value = module.keyspace
+  }
+  output "ACM" {
+      value = module.ACM
   }
 
 EOF
