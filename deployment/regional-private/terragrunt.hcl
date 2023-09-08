@@ -197,6 +197,10 @@ generate "output"{
       value = module.msk
   }
 
+  output "keyspace" {
+      value = module.msk
+  }
+
 EOF
 }
 
