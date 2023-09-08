@@ -198,7 +198,7 @@ generate "output"{
   }
 
   output "keyspace" {
-      value = module.msk
+      value = module.keyspace
   }
 
 EOF
