@@ -69,7 +69,7 @@ stage('Terragrunt-Apply'){
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
                         sh  "terragrunt apply -auto-approve -compact-warnings"
-                        cleanWs()                    }
+                        // cleanWs()                    }
                                                                 }
                     }
 
