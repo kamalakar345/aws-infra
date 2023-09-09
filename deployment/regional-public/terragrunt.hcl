@@ -29,6 +29,9 @@ locals {
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
 
 }
+
+##ACM Specific Configuration
+  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
    
 # Include the common.hcl
 include "common"{
@@ -57,6 +60,11 @@ module "eks" {
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
 }
 
+ module "ACM" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
+    domain                                = "${local.domain}"
+  }
+
 EOF
 }
 
@@ -67,6 +75,10 @@ generate "output"{
   contents = <<EOF
   output "EKS" {
     value = module.eks
+  }
+
+  output "ACM" {
+      value = module.ACM
   }
 EOF
 }
