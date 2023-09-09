@@ -27,12 +27,13 @@ locals {
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
+  
+##ACM Specific Configuration
+  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 
 }
 
-##ACM Specific Configuration
-  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
-   
+
 # Include the common.hcl
 include "common"{
   path = "${get_path_to_repo_root()}/deployment/common.hcl"
