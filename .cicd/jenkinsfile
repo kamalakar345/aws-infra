@@ -69,6 +69,8 @@ stage('Terragrunt-Apply'){
                         for (int i = 0; i < folders.size(); ++i) { 
                         dir("${folders[i]}"){
                         sh  "terragrunt apply -auto-approve -compact-warnings"
+                        echo "=========Details of the Generated Resources for ${folders[i]}======="
+                        sh "terragrunt output"
                         cleanWs()
                                             }
                                                                 }
@@ -78,27 +80,6 @@ stage('Terragrunt-Apply'){
                 }
                         }
 
-stage('Terragrunt-Output'){
-        steps{
-            dir('deployment') {
-            script  {
-                    env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
-                    // sh "printenv"
-                    // sh "terragrunt --version"
-                    sh "aws sts get-caller-identity"
-                    def folders = ["regional-private", "regional-public"]
-                        for (int i = 0; i < folders.size(); ++i) { 
-                        dir("${folders[i]}"){
-                        // sh  "terragrunt init --reconfigure"
-                        echo "=========Details of the Generated Resources for ${folders[i]}======="
-                        sh "terragrunt output"
-                        cleanWs()                    }
-                                                                }
-                    }
-
-                                }
-                }
-                        }
 
 }
 }
