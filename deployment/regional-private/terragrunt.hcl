@@ -119,6 +119,8 @@ module "eks" {
     max_size                              = "${local.max_size}"
     min_size                              = "${local.min_size}"
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
+    domain                                = "${local.domain}"
+    depends_on                            = [ module.ACM ]
 }
 
 module "rds" {
