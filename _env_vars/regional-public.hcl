@@ -2,7 +2,7 @@ locals{
 # VPC Details
   vpc_id                                  = "vpc-0d1e952fc353044a4"
   private_subnet_ids                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] //privateA and privateB
-
+  vpc_cidr                                = ["10.155.188.0/23"]
   # endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" 
   # endpoint_cidr_block                     = ["10.155.188.0/23"]
   # endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] 
