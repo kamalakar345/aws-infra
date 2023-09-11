@@ -12,4 +12,5 @@ locals{
   region                                  = "us-west-2"
   admin_contact                           = "aware.cloud.eng.devops@quicinc.com"
   service_id                              = "AWARE"
+  aws_account = 608026881676
 }
