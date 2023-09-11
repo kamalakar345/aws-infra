@@ -60,6 +60,7 @@ module "eks" {
     min_size                              = "${local.min_size}"
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
     domain                                = "${local.domain}"
+    vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     depends_on                            = [ module.ACM ]
 }
 
