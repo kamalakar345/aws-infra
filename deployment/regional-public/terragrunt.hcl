@@ -82,14 +82,14 @@ data "aws_vpc_endpoint_service" "eks_eps" {
 }
 
 module "eks_endpoint"{
-    source                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//endpoint"
-    vpc_id                = "${local.vpc_id}"
-    cidr_block            = ${jsonencode(local.vpc_cidr)}
-    subnet_id             = ${jsonencode(local.private_subnet_ids)}
-    endpoint_service_name = data.aws_vpc_endpoint_service.eks_eps.service_name
-    vpc_endpoint_tag      = "${local.eks_vpc_endpoint_tag}"     
-    port                  = "${local.eks_port}"
-    depends_on            = [ module.eks ]               
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//endpoint"
+    endpoint_vpc_id                       = "${local.vpc_id}"
+    endpoint_cidr_block                   = ${jsonencode(local.vpc_cidr)}
+    endpoint_subnet_id                    = ${jsonencode(local.private_subnet_ids)}
+    endpoint_service_name                 = data.aws_vpc_endpoint_service.eks_eps.service_name
+    vpc_endpoint_tag                      = "${local.eks_vpc_endpoint_tag}"     
+    port                                  = "${local.eks_port}"
+    depends_on                            = [ module.eks ]               
 }
 
 
