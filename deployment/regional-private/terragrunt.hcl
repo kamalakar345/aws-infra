@@ -23,13 +23,12 @@ locals {
   private_subnet_ids                      = local.env_vars.locals.private_subnet_ids            
   instance_types                          = local.env_vars.locals.instance_types        
   ami_type                                = local.env_vars.locals.ami_type  
-  # eks_cluster_name                        = local.env_vars.locals.eks_cluster_name
   eks_cluster_name                        = "${local.env}-${local.component}-eks"
-  # nodename                                = "${local.env}-${local.component}-nodes"
   desired_size                            = local.env_vars.locals.desired_size      
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
+  eks_endpoint_service_tag                = "${local.env}-${local.component}-eks-eps"
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
   db_instance_class                       = local.env_vars.locals.db_instance_class     
@@ -62,7 +61,7 @@ locals {
   broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
   msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
 ##FOR MSK_PRIVATE_LINK
-  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
+  /* msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps" */
   msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
   msk_port                                = local.env_vars.locals.msk_port         
 
@@ -122,6 +121,7 @@ module "eks" {
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
+    endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
     depends_on                            = [ module.ACM ]
 }
 
@@ -168,7 +168,7 @@ module "msk" {
 
 ##FOR MSK_PRIVATE_LINK
     privatelink_subnet_id                 = ${jsonencode(local.private_subnet_ids)}
-    endpoint_service_tag                  = "${local.msk_endpoint_service_tag}"
+    /* endpoint_service_tag                  = "${local.msk_endpoint_service_tag}" */
     nlb_name                              = "${local.msk_nlb_name}"
     port                                  = "${local.msk_port}"
 

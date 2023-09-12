@@ -27,10 +27,14 @@ locals {
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
-  
-##ACM Specific Configuration
+  eks_endpoint_service_tag                = "${local.env}-${local.component}-eks-eps"
+
+# ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 
+# EKS Endpoint Specific Configuration           
+  eks_vpc_endpoint_tag                    = "${local.env}-${local.component}-eks-ep"
+  eks_port                                = local.env_vars.locals.eks_port   
 }
 
 
@@ -61,6 +65,7 @@ module "eks" {
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
+    endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
     depends_on                            = [ module.ACM ]
 }
 
@@ -69,8 +74,28 @@ module "eks" {
     domain                                = "${local.domain}"
   }
 
+# Declare the data source
+data "aws_vpc_endpoint_service" "eks_eps" {
+  tags = {
+    Name   = "${local.eks_endpoint_service_tag}"
+  }
+}
+
+module "eks_endpoint"{
+    source                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//endpoint"
+    vpc_id                = "${local.vpc_id}"
+    cidr_block            = ${jsonencode(local.cidr_block)}
+    subnet_id             = ${jsonencode(local.private_subnet_ids)}
+    endpoint_service_name = data.aws_vpc_endpoint_service.eks_eps.service_name
+    vpc_endpoint_tag      = "${local.eks_vpc_endpoint_tag}"     
+    port                  = "${local.eks_port}"
+    depends_on            = [ module.eks ]               
+}
+
+
 EOF
 }
+
 
 # Generating Output.tf 
 generate "output"{
@@ -83,6 +108,10 @@ generate "output"{
 
   output "ACM" {
       value = module.ACM
+  }
+
+  output "eks_ep" {
+    value = module.eks_endpoint
   }
 EOF
 }
