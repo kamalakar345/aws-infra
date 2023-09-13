@@ -186,7 +186,7 @@ module "MSKPrivatelink_nlb" {
     port                          = "${local.port}"
     target_group_name             = "${local.target_group_name}"
     listener_port                 = "${local.listener_port}"
-    num_brokers                   = "${local.num_brokers}"
+    num_brokers                   = ${local.num_brokers}
     privatelb_subnet_id           = "${local.privatelb_subnet_id}"
     privatelb_subnet_id1          = "${local.privatelb_subnet_id1}"
     cluster_arn                   = module.msk.arn

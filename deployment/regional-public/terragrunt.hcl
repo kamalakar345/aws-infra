@@ -27,7 +27,7 @@ locals {
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
-  /* eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[0]}-private-eks-eps" */
+  eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[1]}-private-eks-eps"
 # ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 
@@ -64,7 +64,6 @@ module "eks" {
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
-    /* endpoint_service_tag                  = "${local.eks_endpoint_service_tag}" */
     depends_on                            = [ module.ACM ]
 }
 
@@ -76,7 +75,8 @@ module "eks" {
 # Declare the data source
 data "aws_vpc_endpoint_service" "eks_eps" {
   tags = {
-    Name   = "sandbox-regional-private-eks-eps"
+    /* Name   = "sandbox-regional-private-eks-eps" */
+    Name = "${eks_endpoint_service_tag}"
   }
 }
 
