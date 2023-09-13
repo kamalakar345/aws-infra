@@ -76,7 +76,7 @@ module "eks" {
 data "aws_vpc_endpoint_service" "eks_eps" {
   tags = {
     /* Name   = "sandbox-regional-private-eks-eps" */
-    Name = "${eks_endpoint_service_tag}"
+    Name = "${local.eks_endpoint_service_tag}"
   }
 }
 
