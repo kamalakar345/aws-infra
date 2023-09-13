@@ -28,7 +28,6 @@ locals {
   min_size                                = local.env_vars.locals.min_size      
   allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
   /* eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[0]}-private-eks-eps" */
-  eks_endpoint_service_tag
 # ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 
