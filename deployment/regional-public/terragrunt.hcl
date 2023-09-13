@@ -51,7 +51,7 @@ module "eks" {
     version_no                            = "${local.version_no}"
     vpc_id                                = "${local.vpc_id}"
     private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
-    public_subnet_id                      = ${jsonencode(local.public_subnet_id)}
+    /* public_subnet_id                      = {jsonencode(local.public_subnet_id)} */
     instance_types                        = ${jsonencode(local.instance_types)}
     ami_type                              = "${local.ami_type}"
     eks_cluster_name                      = "${local.eks_cluster_name}"
@@ -61,6 +61,7 @@ module "eks" {
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
+    private_link                          = false
     depends_on                            = [ module.ACM ]
 }
 
