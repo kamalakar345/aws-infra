@@ -73,6 +73,9 @@ locals {
 ##ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 
+# EKS Endpoint Specific Configuration           
+  eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
+  eks_port                                = local.env_vars.locals.eks_port   
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
