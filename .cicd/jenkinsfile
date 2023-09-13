@@ -25,6 +25,9 @@ stage('Terragrunt-Init'){
                             try{
                                 sh "kubectl config use-context arn:aws:eks:us-west-2:608026881676:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
                             }
+                            catch (Exception e) {
+                                echo "cluster not there yet !! " 
+                            }
                         dir("${folders[i]}"){
                         sh  "terragrunt init --reconfigure"
                         
