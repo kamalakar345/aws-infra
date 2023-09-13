@@ -12,6 +12,7 @@ locals {
   region                                  = local.common_vars.locals.region
   admin_contact                           = local.common_vars.locals.admin_contact
   service_id                              = local.common_vars.locals.service_id
+  aws_account                             = local.common_vars.locals.aws_account
   service_data                            = "${local.env}-${local.component}"
 
 # Common Network Configuration Details
@@ -125,6 +126,7 @@ module "eks" {
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
     exsiting_lb                           = true
+    aws_account                           = ${local.aws_account}
     depends_on                            = [ module.ACM ]
 }
 
