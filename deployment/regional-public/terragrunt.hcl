@@ -55,6 +55,7 @@ module "eks" {
     version_no                            = "${local.version_no}"
     vpc_id                                = "${local.vpc_id}"
     private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
+    public_subnet_id                      = ${jsonencode(local.public_subnet_id)}
     instance_types                        = ${jsonencode(local.instance_types)}
     ami_type                              = "${local.ami_type}"
     eks_cluster_name                      = "${local.eks_cluster_name}"
@@ -72,26 +73,6 @@ module "eks" {
     domain                                = "${local.domain}"
   }
 
-# Declare the data source
-data "aws_vpc_endpoint_service" "eks_eps" {
-  tags = {
-    /* Name   = "sandbox-regional-private-eks-eps" */
-    Name = "${local.eks_endpoint_service_tag}"
-  }
-}
-
-module "eks_endpoint"{
-    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//endpoint"
-    endpoint_vpc_id                       = "${local.vpc_id}"
-    endpoint_cidr_block                   = ${jsonencode(local.vpc_cidr)}
-    endpoint_subnet_id                    = ${jsonencode(local.private_subnet_ids)}
-    endpoint_service_name                 = data.aws_vpc_endpoint_service.eks_eps.service_name
-    vpc_endpoint_tag                      = "${local.eks_vpc_endpoint_tag}"     
-    port                                  = "${local.eks_port}"
-    depends_on                            = [ module.eks ]               
-}
-
-
 EOF
 }
 
@@ -107,10 +88,6 @@ generate "output"{
 
   output "ACM" {
       value = module.ACM
-  }
-
-  output "eks_ep" {
-    value = module.eks_endpoint
   }
 EOF
 }

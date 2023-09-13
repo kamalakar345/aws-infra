@@ -40,9 +40,11 @@ locals{
   msk_port                                = "9092"         
 
 ##FOR MSK_ENDPOINT In Public VPC
-  endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" 
-  endpoint_cidr_block                     = ["10.155.188.0/23"]
-  endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"]           
+  endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" // Public VPC-ID
+  endpoint_cidr_block                     = ["10.155.188.0/23"]     // Public VPC CIDR 
+  endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] // [Public-privateA, Public-privateB]
+/* ##FOR EKS_ENDPOINT In Public VPC
+  endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr             
