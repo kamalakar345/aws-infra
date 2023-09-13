@@ -121,6 +121,8 @@ module "eks" {
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
+    private_link                          = true
+    exsiting_lb                           = true
     depends_on                            = [ module.ACM ]
 }
 
