@@ -31,6 +31,9 @@ locals {
   /* eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[0]}-private-eks-eps" */
 # ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
+
+# alb-contoller specific Configurations
+  public_subnet_id                        = local.env_vars.locals.public_subnet_id
 }
 
 
@@ -52,7 +55,6 @@ module "eks" {
     version_no                            = "${local.version_no}"
     vpc_id                                = "${local.vpc_id}"
     private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
-    /* public_subnet_id                      = {jsonencode(local.public_subnet_id)} */
     instance_types                        = ${jsonencode(local.instance_types)}
     ami_type                              = "${local.ami_type}"
     eks_cluster_name                      = "${local.eks_cluster_name}"
@@ -62,8 +64,10 @@ module "eks" {
     allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
-    private_link                          = false
     aws_account                           = ${local.aws_account}
+    private_link                          = false
+    alb_controller                        = true
+    public_subnet_id                      = ${jsonencode(local.public_subnet_id)}
     depends_on                            = [ module.ACM ]
 }
 
