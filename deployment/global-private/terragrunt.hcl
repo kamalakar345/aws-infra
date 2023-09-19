@@ -30,6 +30,7 @@ locals {
   min_size                                = local.env_vars.locals.min_size      
   /* allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block */
   eks_endpoint_service_tag                = "${local.env}-${local.component}-eks-eps"
+  
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
   db_instance_class                       = local.env_vars.locals.db_instance_class     
@@ -127,6 +128,8 @@ module "eks" {
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
     exsiting_lb                           = true
     aws_account                           = ${local.aws_account}
+    alb_controller                        = true
+    alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
     depends_on                            = [ module.ACM ]
 }
 
