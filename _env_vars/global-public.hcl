@@ -1,9 +1,9 @@
 locals{
 # VPC Details
-  vpc_id                                  = "vpc-0d1e952fc353044a4"
-  private_subnet_ids                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] //privateA and privateB
-  public_subnet_id                        = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [publicA, publicB]
-  vpc_cidr                                = ["10.155.188.0/23"]
+  vpc_id                                  = "vpc-0f92311d3fe6dadd0"
+  private_subnet_ids                      = ["subnet-05e8d9167e0a807e8", "subnet-0d33f975ef183cd3f"] //privateA and privateB
+  public_subnet_id                        = ["subnet-0828c39f559d52cff", "subnet-0ff6b748431b8dad4"] // [publicA, publicB]
+  vpc_cidr                                = ["10.198.62.0/23"]
   # endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" 
   # endpoint_cidr_block                     = ["10.155.188.0/23"]
   # endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] 
@@ -15,5 +15,5 @@ locals{
   desired_size                            = "2"      
   max_size                                = "8"
   min_size                                = "2"     
-  allowed_cidr_block                      = ["10.155.186.0/23"] // First CIDR in the VPC
+  /* allowed_cidr_block                      = ["10.198.62.0/23"] // First CIDR in the VPC */
 }

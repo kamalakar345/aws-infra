@@ -28,7 +28,7 @@ locals {
   desired_size                            = local.env_vars.locals.desired_size      
   max_size                                = local.env_vars.locals.max_size      
   min_size                                = local.env_vars.locals.min_size      
-  allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
+  /* allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block */
   eks_endpoint_service_tag                = "${local.env}-${local.component}-eks-eps"
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
@@ -121,7 +121,7 @@ module "eks" {
     desired_size                          = "${local.desired_size}"
     max_size                              = "${local.max_size}"
     min_size                              = "${local.min_size}"
-    allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
+    allowed_cidr_block                    = ${jsonencode(local.vpc_cidr)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"

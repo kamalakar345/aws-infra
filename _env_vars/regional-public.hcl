@@ -15,5 +15,5 @@ locals{
   desired_size                            = "2"      
   max_size                                = "8"
   min_size                                = "2"     
-  allowed_cidr_block                      = ["10.155.186.0/23"] // First CIDR in the VPC
+  /* allowed_cidr_block                      = ["10.155.188.0/23"] // First CIDR in the VPC */
 }
