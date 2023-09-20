@@ -251,6 +251,9 @@ generate "output"{
   output "eks_ep" {
     value = module.eks_endpoint
   }
+  /* output "opensearch" {
+    value = module.opensearch
+  } */
 
 EOF
 }
