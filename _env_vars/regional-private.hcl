@@ -47,6 +47,6 @@ locals{
   endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 # EKS Endpoint Specific Configuration           
   eks_port                                    = "80"
-# #ingress-private-nlb Specific Configurations           
-#   private_vpc_cidr             
+## Open Search for DM specific configurations 
+  os_instance_type                        = "t3.medium.elasticsearch"
 }

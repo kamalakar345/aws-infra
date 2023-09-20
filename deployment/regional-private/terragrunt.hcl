@@ -77,6 +77,10 @@ locals {
 # EKS Endpoint Specific Configuration           
   eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
   eks_port                                = local.env_vars.locals.eks_port   
+
+## Open Search for DM specific configurations 
+  os_domain                               = "${local.env}-${local.component}-dm"
+  os_instance_type                        = local.env_vars.locals.os_instance_type
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
@@ -201,6 +205,18 @@ module "eks_endpoint"{
     port                                  = "${local.eks_port}"
     depends_on                            = [ module.eks ]               
 }
+
+/* module "opensearch" {
+    source              = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Elastic-Search"
+    domain              = "${local.os_domain}"
+    account_id          = "${local.aws_account}"
+    environment         = "${local.env}"
+    vpc_id              = "${local.vpc_id}"
+    instance_type       = "${local.os_instance_type}"
+    private_subnet_ids  = ${jsonencode(local.private_subnet_ids)}
+    private_cidr_block  = ${jsonencode(local.vpc_cidr)}
+} */
+
 
 EOF
 }
