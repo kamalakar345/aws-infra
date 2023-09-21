@@ -23,7 +23,7 @@ stage('Terragrunt-Init'){
                     sh "aws sts get-caller-identity"
                     def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
-                            if (${folders[i]} != "common"){
+                            if ("${folders[i]}" != "common"){
                             try{
                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
                             }
