@@ -23,12 +23,13 @@ stage('Terragrunt-Init'){
                     sh "aws sts get-caller-identity"
                     def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
+                            if (${folders[i]} != "common"){
                             try{
                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
                             }
                             catch (Exception e) {
-                                echo "cluster not there yet !! "
-                                currentBuild.result = 'SUCCESS' 
+                                echo "cluster not there yet !! " 
+                            }
                             }
                         dir("${folders[i]}"){
                         sh  "terragrunt init --reconfigure"
@@ -61,7 +62,6 @@ stage('Terragrunt-Plan'){
                             }
                             catch (Exception e) {
                                 echo "cluster not there yet !! " 
-                                currentBuild.result = 'SUCCESS'
                             }
                         dir("${folders[i]}"){
                         sh  "terragrunt plan -compact-warnings"
@@ -87,7 +87,6 @@ stage('Terragrunt-Apply'){
                             }
                             catch (Exception e) {
                                 echo "cluster not there yet !! " 
-                                currentBuild.result = 'SUCCESS'
                             }
                         dir("${folders[i]}"){
                         sh  "terragrunt apply -auto-approve -compact-warnings"
