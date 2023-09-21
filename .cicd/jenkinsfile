@@ -21,7 +21,6 @@ stage('Terragrunt-Init'){
                     // sh "printenv"
                     // sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
-                    // def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                             if ("${folders[i]}" != "common"){
                             try{
@@ -55,7 +54,6 @@ stage('Terragrunt-Plan'){
                     // sh "printenv"
                     // sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
-                    // def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
                         for (int i = 0; i < folders.size(); ++i) {
                             if ("${folders[i]}" != "common"){
                             try{
@@ -82,7 +80,6 @@ stage('Terragrunt-Apply'){
                     // sh "printenv"
                     // sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
-                    // def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
                         for (int i = 0; i < folders.size(); ++i) {
                             if ("${folders[i]}" != "common"){ 
                             try{
