@@ -43,10 +43,8 @@ locals{
   endpoint_vpc_id                         = "vpc-0f92311d3fe6dadd0" // Public VPC-ID
   endpoint_cidr_block                     = ["10.198.62.0/23"]     // Public VPC CIDR 
   endpoint_subnet_id                      = ["subnet-05e8d9167e0a807e8", "subnet-0d33f975ef183cd3f"] // [Public-privateA, Public-privateB]
-/* ##FOR EKS_ENDPOINT In Public VPC
-  endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 # EKS Endpoint Specific Configuration           
   eks_port                                    = "80"
-# #ingress-private-nlb Specific Configurations         
-#   private_vpc_cidr             
+/* ##FOR EKS_ENDPOINT In Public VPC
+  endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 }

@@ -2,7 +2,7 @@ locals{
 
 # VPC Details
   vpc_id                                  = "vpc-0d1e952fc353044a4"
-  vpc_cidr                                = ["10.155.186.0/23"]
+  vpc_cidr                                = ["10.155.186.0/23"]// First CIDR in the VPC */
   private_subnet_ids                      = ["subnet-0424a3be9f4a2dcd1", "subnet-009826ec6d2eacddd"] //privateA and privateB
   rds_private_subnet_ids                  = ["subnet-0df0c1265aed87672", "subnet-01a89421daca3d7e2"] //privateDB-A and privateDB-B
 
@@ -13,7 +13,7 @@ locals{
   desired_size                            = "2"      
   max_size                                = "8"
   min_size                                = "2"     
-  /* allowed_cidr_block                      = ["10.155.186.0/23"] // First CIDR in the VPC */
+
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
   db_instance_class                       = "db.m5.large"
   db_engine                               = "postgres"
@@ -43,10 +43,12 @@ locals{
   endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" // Public VPC-ID
   endpoint_cidr_block                     = ["10.155.188.0/23"]     // Public VPC CIDR 
   endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] // [Public-privateA, Public-privateB]
-/* ##FOR EKS_ENDPOINT In Public VPC
-  endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
+
 # EKS Endpoint Specific Configuration           
   eks_port                                    = "80"
+
 ## Open Search for DM specific configurations 
   os_instance_type                        = "t3.medium.elasticsearch"
+/* ##FOR EKS_ENDPOINT In Public VPC
+  endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 }
