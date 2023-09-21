@@ -9,7 +9,7 @@ Env will have 4 components i.e. **regional-private, regional-public, global-priv
 
 ### Info
 We have followed the concept of group_vars and host_vars similar to Ansible
-In our Repo structure _env_vars will have all the configurations inside that common_config.hcl will have the common configs for the environment then each component specific **<component>.hcl** will server for the configuration respecitively
+In our Repo structure **_env_vars** will have all the configurations inside that **common_config.hcl** will have the common configs for the environment then each component specific **<component>.hcl** will server for the configuration respecitively
 
 # Instructions
 In the **deployment** folder we have component specific folders which has the **terragrunt.hcl** for reading common and environment specific configuration and specifying what resources needs to be deployed 
