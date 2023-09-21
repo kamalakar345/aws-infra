@@ -206,17 +206,16 @@ module "eks_endpoint"{
     depends_on                            = [ module.eks ]               
 }
 
-/* module "opensearch" {
-    source              = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Elastic-Search"
-    domain              = "${local.os_domain}"
-    account_id          = "${local.aws_account}"
-    environment         = "${local.env}"
-    vpc_id              = "${local.vpc_id}"
-    instance_type       = "${local.os_instance_type}"
-    private_subnet_ids  = ${jsonencode(local.private_subnet_ids)}
-    private_cidr_block  = ${jsonencode(local.vpc_cidr)}
-} */
-
+module "opensearch" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Elastic-Search"
+    domain                                = "${local.os_domain}"
+    account_id                            = "${local.aws_account}"
+    environment                           = "${local.env}"
+    vpc_id                                = "${local.vpc_id}"
+    instance_type                         = "${local.os_instance_type}"
+    private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
+    private_cidr_block                    = ${jsonencode(local.vpc_cidr)}
+}
 
 EOF
 }
@@ -251,9 +250,9 @@ generate "output"{
   output "eks_ep" {
     value = module.eks_endpoint
   }
-  /* output "opensearch" {
+  output "opensearch" {
     value = module.opensearch
-  } */
+  }
 
 EOF
 }
