@@ -75,6 +75,10 @@ module "eks" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
     domain                                = "${local.domain}"
   }
+module "hosted-zone" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//hosted-zone"
+    subdomain_name                        = "${local.domain}"
+}
 
 EOF
 }
@@ -91,6 +95,9 @@ generate "output"{
 
   output "ACM" {
       value = module.ACM
+  }
+  output "hosted-zone"{
+    value = module.hosted-zone
   }
 EOF
 }

@@ -204,6 +204,10 @@ module "eks_endpoint"{
     port                                  = "${local.eks_port}"
     depends_on                            = [ module.eks ]               
 }
+module "hosted-zone" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//hosted-zone"
+    subdomain_name                        = "${local.domain}"
+}
 
 EOF
 }
@@ -238,6 +242,8 @@ generate "output"{
   output "eks_ep" {
     value = module.eks_endpoint
   }
-
+  output "hosted-zone"{
+    value = module.hosted-zone
+  }
 EOF
 }

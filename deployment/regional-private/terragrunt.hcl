@@ -217,6 +217,11 @@ module "opensearch" {
     private_cidr_block                    = ${jsonencode(local.vpc_cidr)}
 }
 
+module "hosted-zone" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//hosted-zone"
+    subdomain_name                        = "${local.domain}"
+}
+
 EOF
 }
 
@@ -253,7 +258,9 @@ generate "output"{
   output "opensearch" {
     value = module.opensearch
   }
-
+  output "hosted-zone"{
+    value = module.hosted-zone
+  }
 EOF
 }
 
