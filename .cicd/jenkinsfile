@@ -21,7 +21,7 @@ stage('Terragrunt-Init'){
                     // sh "printenv"
                     // sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
-                    def folders = ["regional-private", "regional-public", "global-private", "global-public"]
+                    def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
                         for (int i = 0; i < folders.size(); ++i) { 
                             try{
                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
@@ -53,7 +53,7 @@ stage('Terragrunt-Plan'){
                     // sh "printenv"
                     // sh "terragrunt --version"
                     sh "aws sts get-caller-identity"
-                    def folders = ["regional-private", "regional-public", "global-private", "global-public"]
+                    def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
                         for (int i = 0; i < folders.size(); ++i) {
                             try{
                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
