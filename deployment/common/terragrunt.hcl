@@ -14,6 +14,9 @@ locals {
   aws_account                             = local.common_vars.locals.aws_account
   service_data                            = "${local.env}-${local.component}"
 
+# ECR Specific Configuration
+  aware_services                          = local.common_vars.locals.aware_services
+
 # S3 Specific Configuration
   bucket_name                             = "aware-${local.env}-${local.component}-bucket"
 }
@@ -31,29 +34,11 @@ generate "main" {
   if_exists = "overwrite"
 
   contents = <<EOF
-module "s3" {
-    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
-    version_no                            = "${local.version_no}"
-    vpc_id                                = "${local.vpc_id}"
-    private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
-    /* public_subnet_id                      = {jsonencode(local.public_subnet_id)} */
-    instance_types                        = ${jsonencode(local.instance_types)}
-    ami_type                              = "${local.ami_type}"
-    eks_cluster_name                      = "${local.eks_cluster_name}"
-    desired_size                          = "${local.desired_size}"
-    max_size                              = "${local.max_size}"
-    min_size                              = "${local.min_size}"
-    allowed_cidr_block                    = ${jsonencode(local.vpc_cidr)}
-    domain                                = "${local.domain}"
-    vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
-    private_link                          = false
-    aws_account                           = ${local.aws_account}
-    depends_on                            = [ module.ACM ]
-}
+module "ECR" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ECR"
+    repository_name                       = ${jsonencode(local.aware_services)}
 
- /* module "ecr" {
-    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
-  } */
+}
 
 EOF
 }
@@ -64,12 +49,12 @@ generate "output"{
   path = "output.tf"
   if_exists = "overwrite"
   contents = <<EOF
-  output "s3" {
+  /* output "s3" {
     value = module.s3
-  }
+  } */
 
-  output "ecr" {
-      value = module.ecr
+  output "ECR" {
+      value = module.ECR
   }
 EOF
 }
