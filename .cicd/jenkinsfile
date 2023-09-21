@@ -27,7 +27,8 @@ stage('Terragrunt-Init'){
                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
                             }
                             catch (Exception e) {
-                                echo "cluster not there yet !! " 
+                                echo "cluster not there yet !! "
+                                currentBuild.result = 'SUCCESS' 
                             }
                         dir("${folders[i]}"){
                         sh  "terragrunt init --reconfigure"
@@ -60,6 +61,7 @@ stage('Terragrunt-Plan'){
                             }
                             catch (Exception e) {
                                 echo "cluster not there yet !! " 
+                                currentBuild.result = 'SUCCESS'
                             }
                         dir("${folders[i]}"){
                         sh  "terragrunt plan -compact-warnings"
@@ -85,6 +87,7 @@ stage('Terragrunt-Apply'){
                             }
                             catch (Exception e) {
                                 echo "cluster not there yet !! " 
+                                currentBuild.result = 'SUCCESS'
                             }
                         dir("${folders[i]}"){
                         sh  "terragrunt apply -auto-approve -compact-warnings"
