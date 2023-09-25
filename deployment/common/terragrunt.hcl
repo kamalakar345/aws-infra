@@ -40,6 +40,11 @@ module "ECR" {
 
 }
 
+module "S3"{
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//S3"
+    bucketname                            = "${local.bucket_name}"
+}
+
 EOF
 }
 
@@ -49,9 +54,9 @@ generate "output"{
   path = "output.tf"
   if_exists = "overwrite"
   contents = <<EOF
-  /* output "s3" {
-    value = module.s3
-  } */
+  output "S3" {
+    value = module.S3
+  }
 
   output "ECR" {
       value = module.ECR
