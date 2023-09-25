@@ -97,5 +97,9 @@ generate "output"{
   output "ECR" {
       value = module.ECR
   }
+
+  output "glb-priv-to-reg-priv-pl"{
+      value = module.glb-priv-to-reg-priv-pl
+  }
 EOF
 }
