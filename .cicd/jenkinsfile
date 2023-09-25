@@ -1,4 +1,4 @@
-def folders = ["common", "regional-private", "regional-public", "global-private", "global-public"]
+def folders = ["regional-private", "regional-public", "global-private", "global-public", "common"]
 def get_branch(branch_name) {
     return branch_name.split("/")[1]
 }
