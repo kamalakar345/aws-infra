@@ -56,6 +56,7 @@ locals {
 
 ##For Keyspace EP in Private VPC kubernetes Subnet
   kubernetes_subnet_ids                   = local.env_vars.locals.kubernetes_subnet_ids
+  keyspace_vpc_endpoint_tag               = "${local.env}-${local.component}-keyspace-ep"
 
 #MSK Specific Configurations                                
   # cluster_name                            = local.env_vars.locals.cluster_name                                     
