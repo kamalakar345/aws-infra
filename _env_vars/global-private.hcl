@@ -6,6 +6,11 @@ locals{
   private_subnet_ids                      = ["subnet-01361711531df36ea", "subnet-0d93f1226d98c1515"] //privateA and privateB
   rds_private_subnet_ids                  = ["subnet-025367b940c5f2ba4", "subnet-01fb1ad6965ba8a2d"] //privateDB-A and privateDB-B
 
+# Keyspace related Configuration
+
+  ## Keyspace Endpoint Related Configs 
+  kubernetes_subnet_ids                   = ["subnet-0f5b90ce09860dcde", "subnet-0de391b453928567a"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
+
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = "1.24"       
   instance_types                          = ["m5.large"]        
@@ -13,7 +18,6 @@ locals{
   desired_size                            = "2"      
   max_size                                = "8"
   min_size                                = "2"     
-  /* allowed_cidr_block                      = ["10.155.224.0/23"] // First CIDR in the VPC */
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
   db_instance_class                       = "db.m5.large"
   db_engine                               = "postgres"

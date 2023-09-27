@@ -53,6 +53,10 @@ locals {
   keyspace_environment                    = split("-", basename(get_terragrunt_dir()))[0]
   keyspace_component                      = split("-", basename(get_terragrunt_dir()))[1]
   keyspace_name                           = "${local.env}_${local.keyspace_environment}_${local.keyspace_component}_keyspace"
+
+##For Keyspace EP in Private VPC kubernetes Subnet
+  kubernetes_subnet_ids                   = local.env_vars.locals.kubernetes_subnet_ids
+
 #MSK Specific Configurations                                
   # cluster_name                            = local.env_vars.locals.cluster_name                                     
   msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
@@ -162,6 +166,9 @@ module "redis" {
 module "keyspace" {
   source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Keyspace"
   keyspace_name                           = "${local.keyspace_name}"
+  endpoint_vpc_id                         = "${local.vpc_id}"
+  endpoint_subnet_id                      = ${jsonencode(local.kubernetes_subnet_ids)}
+  vpc_endpoint_tag                        = "${local.keyspace_vpc_endpoint_tag}"
 }
 
 module "msk" {

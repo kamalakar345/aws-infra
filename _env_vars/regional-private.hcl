@@ -6,6 +6,11 @@ locals{
   private_subnet_ids                      = ["subnet-0424a3be9f4a2dcd1", "subnet-009826ec6d2eacddd"] //privateA and privateB
   rds_private_subnet_ids                  = ["subnet-0df0c1265aed87672", "subnet-01a89421daca3d7e2"] //privateDB-A and privateDB-B
 
+# Keyspace related Configuration
+
+  ## Keyspace Endpoint Related Configs 
+  kubernetes_subnet_ids                   = ["subnet-0e0d747d0b5854908", "subnet-08f95bbeec6f309c8"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
+
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = "1.24"       
   instance_types                          = ["m5.large"]        
@@ -42,7 +47,7 @@ locals{
 ##FOR MSK_ENDPOINT In Public VPC
   endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" // Public VPC-ID
   endpoint_cidr_block                     = ["10.155.188.0/23"]     // Public VPC CIDR 
-  endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] // [Public-privateA, Public-privateB]
+  endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
 
 # EKS Endpoint Specific Configuration           
   eks_port                                    = "80"
