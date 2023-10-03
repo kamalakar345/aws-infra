@@ -136,6 +136,8 @@ module "eks" {
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
     exsiting_lb                           = true
     aws_account                           = ${local.aws_account}
+    alb_controller                        = true
+    alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
     depends_on                            = [ module.ACM ]
 }
 

@@ -64,6 +64,8 @@ module "eks" {
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     private_link                          = false
     aws_account                           = ${local.aws_account}
+    alb_controller                        = true
+    alb_subnet_id                         = ${jsonencode(local.public_subnet_id)}
     depends_on                            = [ module.ACM ]
 }
 

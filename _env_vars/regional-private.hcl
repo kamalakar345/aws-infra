@@ -5,7 +5,7 @@ locals{
   vpc_cidr                                = ["10.155.186.0/23"]// First CIDR in the VPC */
   private_subnet_ids                      = ["subnet-0424a3be9f4a2dcd1", "subnet-009826ec6d2eacddd"] //privateA and privateB
   rds_private_subnet_ids                  = ["subnet-0df0c1265aed87672", "subnet-01a89421daca3d7e2"] //privateDB-A and privateDB-B
-
+  //public_subnet_id                        = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [publicA, publicB]
 # Keyspace related Configuration
 
   ## Keyspace Endpoint Related Configs 
