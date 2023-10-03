@@ -65,7 +65,7 @@ module "eks" {
     private_link                          = false
     aws_account                           = ${local.aws_account}
     alb_controller                        = true
-    alb_subnet_id                         = ${jsonencode(local.public_subnet_id)}
+    alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
     depends_on                            = [ module.ACM ]
 }
 
