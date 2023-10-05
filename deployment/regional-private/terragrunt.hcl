@@ -57,7 +57,7 @@ locals {
 ##For Keyspace EP in Private VPC kubernetes Subnet
   /* kubernetes_subnet_ids                   = local.env_vars.locals.kubernetes_subnet_ids */
   keyspace_vpc_endpoint_tag               = "${local.env}-${local.component}-keyspace-ep"
-  keyspace_allowed_cidr_block             = setunion(local.env_vars.locals.endpoint_cidr_block, "10.0.0.0/8", "100.0.0.0/8")
+  keyspace_allowed_cidr_block             = setunion(local.env_vars.locals.endpoint_cidr_block, ["10.0.0.0/8", "100.0.0.0/8")
 
 #MSK Specific Configurations                                
   # cluster_name                            = local.env_vars.locals.cluster_name                                     
