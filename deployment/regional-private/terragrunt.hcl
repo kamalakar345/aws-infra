@@ -57,7 +57,7 @@ locals {
 ##For Keyspace EP in Private VPC kubernetes Subnet
   /* kubernetes_subnet_ids                   = local.env_vars.locals.kubernetes_subnet_ids */
   keyspace_vpc_endpoint_tag               = "${local.env}-${local.component}-keyspace-ep"
-  keyspace_allowed_cidr_block             = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
+  /* keyspace_allowed_cidr_block             = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"]) */
 
 #MSK Specific Configurations                                
   # cluster_name                            = local.env_vars.locals.cluster_name                                     
@@ -171,7 +171,7 @@ module "keyspace" {
   source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Keyspace"
   keyspace_name                           = "${local.keyspace_name}"
   endpoint_vpc_id                         = "${local.vpc_id}"
-  endpoint_cidr_block                     = ${jsonencode(local.keyspace_allowed_cidr_block)}
+  /* endpoint_cidr_block                     = {jsonencode(local.keyspace_allowed_cidr_block)} */
   endpoint_subnet_id                      = ${jsonencode(local.private_subnet_ids)}
   vpc_endpoint_tag                        = "${local.keyspace_vpc_endpoint_tag}"
 }
