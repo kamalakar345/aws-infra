@@ -83,6 +83,10 @@ locals {
 # EKS Endpoint Specific Configuration           
   eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
   eks_port                                = local.env_vars.locals.eks_port   
+
+## NLB Specific Configurations 
+  public_cert_domain                      = "aware-${local.env}-global-public.qualcomm.com"
+  nlbname                                 = "nlb-global-pub-priv"
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
@@ -212,6 +216,18 @@ module "eks_endpoint"{
     port                                  = "${local.eks_port}"
     depends_on                            = [ module.eks ]               
 }
+
+module "nlb" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//NLB"
+    public_vpc_id                         = "${local.endpoint_vpc_id}"
+    subnet_id                             = ${jsonencode(local.endpoint_subnet_id)}
+    nlbname                               = "${local.nlbname}"
+    acm_certificate                       = data.aws_acm_certificate.public_cert.arn
+    eks_endpointid                        = module.eks_endpoint.endpointid
+    depends_on                            = [ module.eks_endpoint ]
+
+}
+
 module "hosted-zone" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//hosted-zone"
     subdomain_name                        = "${local.domain}"
@@ -252,6 +268,9 @@ generate "output"{
   }
   output "hosted-zone"{
     value = module.hosted-zone
+  }
+  output "nlb"{
+    value = module.nlb
   }
 EOF
 }
