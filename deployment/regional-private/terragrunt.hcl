@@ -87,6 +87,7 @@ locals {
 ## Open Search for DM specific configurations 
   os_domain                               = "${local.env}-${local.component}-dm"
   os_instance_type                        = local.env_vars.locals.os_instance_type
+  os_allowed_cidr_block                   = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
@@ -226,7 +227,7 @@ module "opensearch" {
     vpc_id                                = "${local.vpc_id}"
     instance_type                         = "${local.os_instance_type}"
     private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
-    private_cidr_block                    = ${jsonencode(local.vpc_cidr)}
+    private_cidr_block                    = ${jsonencode(local.os_allowed_cidr_block)}
 }
 
 module "hosted-zone" {
