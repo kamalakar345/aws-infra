@@ -88,6 +88,9 @@ locals {
   os_domain                               = "${local.env}-${local.component}-dm"
   os_instance_type                        = local.env_vars.locals.os_instance_type
   os_allowed_cidr_block                   = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
+
+## NLB Specific Configurations 
+  public_cert_domain                      = "${local.env}-regional-public.qualcomm.com" 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
@@ -219,6 +222,23 @@ module "eks_endpoint"{
     depends_on                            = [ module.eks ]               
 }
 
+data "aws_acm_certificate" "public_cert" {
+  domain                                  = "${local.public_cert_domain}"
+  statuses                                = ["ISSUED"]
+  depends_on                              = [ module.eks_endpoint ]
+}
+
+module "nlb" {
+    source                                = ".git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//NLB"
+    public_vpc_id                         = "${local.endpoint_vpc_id}"
+    subnet_id                             = ${jsonencode(local.endpoint_subnet_id)}
+    nlbname                               = "generic-nlb"
+    acm_certificate                       = data.aws_acm_certificate.public_cert.arn
+    eks_endpointid                        = module.eks_endpoint.endpointid
+    depends_on                            = [ module.eks_endpoint ]
+
+}
+
 module "opensearch" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Elastic-Search"
     domain                                = "${local.os_domain}"
@@ -273,6 +293,9 @@ generate "output"{
   }
   output "hosted-zone"{
     value = module.hosted-zone
+  }
+  output "nlb"{
+    value = module.nlb
   }
 EOF
 }
