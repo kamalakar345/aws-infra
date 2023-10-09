@@ -217,6 +217,12 @@ module "eks_endpoint"{
     depends_on                            = [ module.eks ]               
 }
 
+data "aws_acm_certificate" "public_cert" {
+  domain                                  = "${local.public_cert_domain}"
+  statuses                                = ["ISSUED"]
+  depends_on                              = [ module.eks_endpoint ]
+}
+
 module "nlb" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//NLB"
     public_vpc_id                         = "${local.endpoint_vpc_id}"
