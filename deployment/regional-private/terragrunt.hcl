@@ -229,7 +229,7 @@ data "aws_acm_certificate" "public_cert" {
 }
 
 module "nlb" {
-    source                                = ".git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//NLB"
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//NLB"
     public_vpc_id                         = "${local.endpoint_vpc_id}"
     subnet_id                             = ${jsonencode(local.endpoint_subnet_id)}
     nlbname                               = "generic-nlb"
