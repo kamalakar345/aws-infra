@@ -90,7 +90,8 @@ locals {
   os_allowed_cidr_block                   = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
 
 ## NLB Specific Configurations 
-  public_cert_domain                      = "${local.env}-regional-public.qualcomm.com" 
+  public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
+  nlbname                                 = "nlb-regional-pub-priv"
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
@@ -232,7 +233,7 @@ module "nlb" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//NLB"
     public_vpc_id                         = "${local.endpoint_vpc_id}"
     subnet_id                             = ${jsonencode(local.endpoint_subnet_id)}
-    nlbname                               = "generic-nlb"
+    nlbname                               = "${local.nlbname}"
     acm_certificate                       = data.aws_acm_certificate.public_cert.arn
     eks_endpointid                        = module.eks_endpoint.endpointid
     depends_on                            = [ module.eks_endpoint ]
