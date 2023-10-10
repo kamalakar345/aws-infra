@@ -88,7 +88,7 @@ locals {
   public_cert_domain                      = "aware-${local.env}-global-public.qualcomm.com"
   nlbname                                 = "nlb-global-pub-priv"
 # target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
-  ops_api_tg                              = "ops_portal_api_tg"
+  ops_api_tg                              = "ops-portal-api-tg"
 
 ## Lambda Speicific Configurations
   ops_function_name                       = "ops_portal_logout_reload"
