@@ -92,6 +92,9 @@ locals {
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
   nlbname                                 = "nlb-regional-pub-priv"
+# target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
+  service_api_tg                          = "service_portal_api_tg"
+
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
@@ -236,6 +239,9 @@ module "nlb" {
     nlbname                               = "${local.nlbname}"
     acm_certificate                       = data.aws_acm_certificate.public_cert.arn
     eks_endpointid                        = module.eks_endpoint.endpointid
+    alb_tg_coap_pl_subnets                = ${jsonencode(local.endpoint_subnet_id)}
+    alb_tg_coap_pl_vpc_id                 = "${local.endpoint_vpc_id}"
+    alb_eks_endpoint_tg                   = "${local.service_api_tg}"
     depends_on                            = [ module.eks_endpoint ]
 
 }

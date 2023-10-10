@@ -36,7 +36,10 @@ locals {
   public_subnet_id                        = local.env_vars.locals.public_subnet_id
 }
 
-
+## Lambda Speicific Configurations
+  service_function_name                   = "service_portal_logout_reload"
+  service_logout_tg                       = "service_portal_logout_reload_tg"
+  service_portal_name                     = "portal.aware-${local.env}-regional-public.qualcomm.com"
 # Include the common.hcl
 include "common"{
   path = "${get_path_to_repo_root()}/deployment/common.hcl"
@@ -71,6 +74,13 @@ module "eks" {
     depends_on                            = [ module.ACM ]
 }
 
+module "service-lambda" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//lambda"
+    function_name                         = "${local.service_function_name}"
+    logout_tg                             = "${local.service_logout_tg}"
+    portal_name                           = "${local.service_portal_name }" 
+}
+
  module "ACM" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
     domain                                = "${local.domain}"
@@ -82,7 +92,6 @@ module "hosted-zone" {
 
 EOF
 }
-
 
 # Generating Output.tf 
 generate "output"{
@@ -98,6 +107,9 @@ generate "output"{
   }
   output "hosted-zone"{
     value = module.hosted-zone
+  }
+  output "service-lambda"{
+    value = module.service-lambda
   }
 EOF
 }

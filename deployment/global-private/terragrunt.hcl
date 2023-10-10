@@ -87,6 +87,13 @@ locals {
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-global-public.qualcomm.com"
   nlbname                                 = "nlb-global-pub-priv"
+# target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
+  ops_api_tg                              = "ops_portal_api_tg"
+
+## Lambda Speicific Configurations
+  ops_function_name                       = "ops_portal_logout_reload"
+  ops_logout_tg                           = "ops_portal_logout_reload_tg"
+  ops_portal_name                         = "portal.aware-${local.env}-global-private.qualcomm.com"
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
@@ -230,8 +237,17 @@ module "nlb" {
     nlbname                               = "${local.nlbname}"
     acm_certificate                       = data.aws_acm_certificate.public_cert.arn
     eks_endpointid                        = module.eks_endpoint.endpointid
+    alb_tg_coap_pl_subnets                = ${jsonencode(local.private_subnet_ids)}
+    alb_tg_coap_pl_vpc_id                 = "${local.vpc_id}"
+    alb_eks_endpoint_tg                   = "${local.ops_api_tg}"
     depends_on                            = [ module.eks_endpoint ]
+}
 
+module "ops-lambda" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//lambda"
+    function_name                         = "${local.ops_function_name}"
+    logout_tg                             = "${local.ops_logout_tg}"
+    portal_name                           = "${local.ops_portal_name }" 
 }
 
 module "hosted-zone" {
@@ -277,6 +293,9 @@ generate "output"{
   }
   output "nlb"{
     value = module.nlb
+  }
+  output "ops-lambda"{
+    value = module.ops-lambda
   }
 EOF
 }
