@@ -37,7 +37,7 @@ locals {
 
 ## Lambda Speicific Configurations
   service_function_name                   = "service_portal_logout_reload"
-  service_logout_tg                       = "service_portal_logout_reload_tg"
+  service_logout_tg                       = "service-portal-logout-reload-tg"
   service_portal_name                     = "portal.aware-${local.env}-regional-public.qualcomm.com"
 }
 # Include the common.hcl
