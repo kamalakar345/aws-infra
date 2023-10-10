@@ -240,6 +240,7 @@ module "nlb" {
     alb_tg_coap_pl_subnets                = ${jsonencode(local.private_subnet_ids)}
     alb_tg_coap_pl_vpc_id                 = "${local.vpc_id}"
     alb_eks_endpoint_tg                   = "${local.ops_api_tg}"
+    tg_az                                 = "all"
     depends_on                            = [ module.eks_endpoint ]
 }
 
