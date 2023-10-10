@@ -34,12 +34,12 @@ locals {
 
 # alb-contoller specific Configurations
   public_subnet_id                        = local.env_vars.locals.public_subnet_id
-}
 
 ## Lambda Speicific Configurations
   service_function_name                   = "service_portal_logout_reload"
   service_logout_tg                       = "service_portal_logout_reload_tg"
   service_portal_name                     = "portal.aware-${local.env}-regional-public.qualcomm.com"
+}
 # Include the common.hcl
 include "common"{
   path = "${get_path_to_repo_root()}/deployment/common.hcl"
