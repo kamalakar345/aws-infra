@@ -26,9 +26,17 @@ locals {
   reg_priv_vpc_id                         = local.common_vars.locals.reg_priv_vpc_id              
   reg_priv_private_subnet_ids             = local.common_vars.locals.reg_priv_private_subnet_ids
 
+## Reg Public VPC Details
+  reg_pub_vpc_id                          = local.common_vars.locals.reg_pub_vpc_id   
+  reg_pub_private_subnet_ids              = local.common_vars.locals.reg_pub_private_subnet_ids
+
 ## Global Private VPC Details
   glb_priv_vpc_id                         = local.common_vars.locals.glb_priv_vpc_id                
   glb_priv_private_subnet_ids             = local.common_vars.locals.glb_priv_private_subnet_ids
+
+## Global Public VPC Details
+  glb_pub_vpc_id                          = local.common_vars.locals.glb_pub_vpc_id   
+  glb_pub_private_subnet_ids              = local.common_vars.locals.glb_pub_private_subnet_ids
 
 ## Custom Configs for the Module
   endpoint_service_name                   = "${local.env}-regional-private-eps"              
@@ -81,6 +89,44 @@ module "glb-priv-to-reg-priv-pl"{
     globalTargetgroupName                 = "${local.globalTargetgroupName}"
 }
 
+data "aws_msk_cluster" "msk-regional-private" {
+  cluster_name                            = "${local.env}-regional-private-msk"
+}
+
+data "aws_msk_cluster" "msk-global-private" {
+  cluster_name                            = "${local.env}-global-private-msk"
+}
+
+data "aws_vpc_endpoint" "global_public_ep" {
+    filter {
+        name                              = "tag:Name"    
+        values                            = ["${local.env}-regional-private-msk-ep"]
+    }
+}
+
+data "aws_vpc_endpoint" "regional_public_ep" {
+  filter {
+        name                              = "tag:Name"    
+        values                            = ["${local.env}-global-private-msk-ep"]
+    }
+}
+
+module "msk-regional-private-prv-hz" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-hosted-zone"
+    endpoint_id                           = data.aws_vpc_endpoint.regional_public_ep.id
+    cluster_arn                           = data.aws_msk_cluster.msk-regional-private.arn
+    endpoint_vpc_id                       = ${jsonencode(local.reg_pub_vpc_id)}     #regional-public public vpc
+    endpoint_subnet_id                    = ${jsonencode(local.reg_pub_private_subnet_ids)}  #regional-public private subnet
+}
+
+module "msk-global-private-prv-hz" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-hosted-zone"
+    endpoint_id                           = data.aws_vpc_endpoint.global_public_ep.id
+    cluster_arn                           = data.aws_msk_cluster.msk-global-private.arn
+    endpoint_vpc_id                       = ${jsonencode(local.glb_pub_vpc_id)}
+    endpoint_subnet_id                    = ${jsonencode(local.glb_pub_private_subnet_ids)}
+}
+
 EOF
 }
 
@@ -100,6 +146,12 @@ generate "output"{
 
   output "glb-priv-to-reg-priv-pl"{
       value = module.glb-priv-to-reg-priv-pl
+  }
+  output "msk-regional-private-prv-hz"{
+    value = module.msk-regional-private-prv-hz
+  }
+  output "msk-global-private-prv-hz"{
+    value = module.msk-global-private-prv-hz
   }
 EOF
 }
