@@ -100,14 +100,14 @@ data "aws_msk_cluster" "msk-global-private" {
 data "aws_vpc_endpoint" "global_public_ep" {
     filter {
         name                              = "tag:Name"    
-        values                            = ["${local.env}-regional-private-msk-ep"]
+        values                            = ["${local.env}-global-private-msk-ep"]
     }
 }
 
 data "aws_vpc_endpoint" "regional_public_ep" {
   filter {
         name                              = "tag:Name"    
-        values                            = ["${local.env}-global-private-msk-ep"]
+        values                            = ["${local.env}-regional-private-msk-ep"]
     }
 }
 
