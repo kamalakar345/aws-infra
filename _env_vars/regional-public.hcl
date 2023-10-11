@@ -1,9 +1,9 @@
 locals{
 # VPC Details
-  vpc_id                                  = "vpc-006fddfb83fd3d82f"
-  private_subnet_ids                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] //privateA and privateB
-  public_subnet_id                        = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [publicA, publicB]
-  vpc_cidr                                = ["10.155.188.0/23"]// First CIDR in the VPC */
+  vpc_id                                  = "vpc-0c76b4dc1e25ed3cd"
+  private_subnet_ids                      = ["subnet-0c2648cca42671712", "subnet-012b87380d7c32d63"] //privateA and privateB
+  public_subnet_id                        = ["subnet-0e7aa6653c089e78d", "subnet-066c3e8b6b449d60e"] // [publicA, publicB]
+  vpc_cidr                                = ["10.155.238.0/23"]// First CIDR in the VPC */
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = "1.24"       
