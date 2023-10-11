@@ -69,6 +69,7 @@ locals {
   msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
 ##FOR MSK_PRIVATE_LINK
   msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
+  msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
   msk_port                                = local.env_vars.locals.msk_port         
 
 ##FOR MSK_ENDPOINT In Public VPC
@@ -199,6 +200,7 @@ module "msk" {
     privatelink_subnet_id                 = ${jsonencode(local.private_subnet_ids)}
     nlb_name                              = "${local.msk_nlb_name}"
     port                                  = "${local.msk_port}"
+    endpoint_service_tag                  = "${local.msk_endpoint_service_tag}"
 
 ##FOR MSK_ENDPOINT
     endpoint_vpc_id                       = "${local.endpoint_vpc_id}"
