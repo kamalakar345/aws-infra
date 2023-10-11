@@ -1,46 +1,38 @@
 locals {
-  # importing the configs <tfvars> both common and cluster specific
+
+# importing the configs <tfvars> both common and cluster specific
   env_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/${basename(get_original_terragrunt_dir())}.hcl")
   common_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/common_config.hcl")
 
-  env = basename(dirname(get_original_terragrunt_dir()))
+  # env = basename(dirname(get_original_terragrunt_dir()))
+  env = split("/", get_env("BRANCH_NAME"))[1]
   component = basename(get_terragrunt_dir())
 
 # Common variable reference comming from common_config.hcl 
-  region                        = local.common_vars.locals.region
-  region_abbr                   = local.common_vars.locals.region_abbr
-  environment                   = local.common_vars.locals.environment
-  admin_contact                 = local.common_vars.locals.admin_contact
-  service_id                    = local.common_vars.locals.service_id
-  service_data                  = local.common_vars.locals.service_data
-  aws_profile                   = local.common_vars.locals.aws_profile
+  region                                  = local.common_vars.locals.region
+  admin_contact                           = local.common_vars.locals.admin_contact
+  service_id                              = local.common_vars.locals.service_id
+  aws_account                             = local.common_vars.locals.aws_account
+  service_data                            = "${local.env}-${local.component}"
 
-# Cluster specific variables coming from <env-component>.hcl
-  public_version_no             = local.env_vars.locals.public_version_no
-  public_server_purpose         = local.env_vars.locals.public_server_purpose
-  public_eks_name               = local.env_vars.locals.public_eks_name
-  public_nodename               = local.env_vars.locals.public_nodename
-  public_instance_types         = local.env_vars.locals.public_instance_types
-  public_ami_type               = local.env_vars.locals.public_ami_type
-  public_desired_size           = local.env_vars.locals.public_desired_size
-  public_max_size               = local.env_vars.locals.public_max_size
-  public_min_size               = local.env_vars.locals.public_min_size
-  public_vpc_id                 = local.env_vars.locals.public_vpc_id
-  public_cidr_block             = local.env_vars.locals.public_cidr_block
-  public_vpc_private_subnet_ids     = local.env_vars.locals.public_vpc_private_subnet_ids
-
-# Cluster specific variables coming from <env-component>.hcl for RDS Module
-  db_instance_class             = local.env_vars.locals.db_instance_class
-  db_username                   = local.env_vars.locals.db_username
-  db_engine                     = local.env_vars.locals.db_engine
-  db_engine_version             = local.env_vars.locals.db_engine_version
-  db_password                   = local.env_vars.locals.db_password     # pass it while applying/planning
-  db_identifier                 = local.env_vars.locals.db_identifier
-  db_subnet_group_name          = local.env_vars.locals.db_subnet_group_name
-  publicly_accessible           = local.env_vars.locals.publicly_accessible //this should be passed as false in case of private .
-  rds_private_subnet_ids        = local.env_vars.locals.rds_private_subnet_ids//privateDB-A and privateDB-B
-  vpc_id                        = local.env_vars.locals.vpc_id
+# Common Network Configuration Details
+  vpc_id                                  = local.env_vars.locals.vpc_id
+  vpc_cidr                                = local.env_vars.locals.vpc_cidr
+# EKS Speicific Configs coming from <env-component>.hcl
+  version_no                              = local.env_vars.locals.version_no          
+  private_subnet_ids                      = local.env_vars.locals.private_subnet_ids            
+  instance_types                          = local.env_vars.locals.instance_types        
+  ami_type                                = local.env_vars.locals.ami_type  
+  eks_cluster_name                        = "${local.env}-${local.component}-eks"
+  desired_size                            = local.env_vars.locals.desired_size      
+  max_size                                = local.env_vars.locals.max_size      
+  min_size                                = local.env_vars.locals.min_size      
+  /* allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block */
+  /* eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[0]}-private-eks-eps" */
+# ACM Specific Configuration
+  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 }
+
 
 # Include the common.hcl
 include "common"{
@@ -49,48 +41,62 @@ include "common"{
 
 }
 
-# Generate block for main.tf
+# Generate main.tf which calls all the custom modules
 generate "main" {
   path      = "main.tf"
   if_exists = "overwrite"
+
   contents = <<EOF
-  module "RDS" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
-    environment                   = "${local.env}"
-    region                        = "${local.region}"
-    vpc_id                        = "${local.vpc_id}"
-    rds_private_subnet_ids        =  ${jsonencode(local.rds_private_subnet_ids)}
-    db_subnet_group_name          = "${local.db_subnet_group_name}"
-    db_instance_class             = "${local.db_instance_class}"
-    db_password                   = "${local.db_password}"
-    db_engine                     = "${local.db_engine}"
-    db_engine_version             = "${local.db_engine_version}"
-    db_username                   = "${local.db_username}"
-    db_identifier                 = "${local.db_identifier}"
-    publicly_accessible           = "${local.publicly_accessible}"
-    admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
+module "eks" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
+    version_no                            = "${local.version_no}"
+    vpc_id                                = "${local.vpc_id}"
+    private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
+    /* public_subnet_id                      = {jsonencode(local.public_subnet_id)} */
+    instance_types                        = ${jsonencode(local.instance_types)}
+    ami_type                              = "${local.ami_type}"
+    eks_cluster_name                      = "${local.eks_cluster_name}"
+    desired_size                          = "${local.desired_size}"
+    max_size                              = "${local.max_size}"
+    min_size                              = "${local.min_size}"
+    allowed_cidr_block                    = ${jsonencode(local.vpc_cidr)}
+    domain                                = "${local.domain}"
+    vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
+    private_link                          = false
+    aws_account                           = ${local.aws_account}
+    alb_controller                        = true
+    alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
+    depends_on                            = [ module.ACM ]
 }
 
-module "Public-EKS" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//public-EKS"
-    public_version_no             = "${local.public_version_no}"
-    public_vpc_id                 = "${local.public_vpc_id}"
-    public_vpc_private_subnet_ids = ${jsonencode(local.public_vpc_private_subnet_ids)}
-    environment                   = "${local.environment}"
-    public_eks_name               = "${local.public_eks_name}" 
-    public_cidr_block             = ${jsonencode(local.public_cidr_block)}
-    public_nodename               = "${local.public_nodename}"
-    public_instance_types         = ${jsonencode(local.public_instance_types)}
-    public_ami_type               = "${local.public_ami_type}"
-    public_desired_size           = "${local.public_desired_size}"
-    public_max_size               = "${local.public_max_size}"
-    public_min_size               = "${local.public_min_size}"
-    admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
+ module "ACM" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
+    domain                                = "${local.domain}"
+  }
+
+module "hosted-zone" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//hosted-zone"
+    subdomain_name                        = "${local.domain}"
 }
 
+EOF
+}
+
+
+# Generating Output.tf 
+generate "output"{
+  path = "output.tf"
+  if_exists = "overwrite"
+  contents = <<EOF
+  output "EKS" {
+    value = module.eks
+  }
+
+  output "ACM" {
+      value = module.ACM
+  }
+  output "hosted-zone"{
+    value = module.hosted-zone
+  }
 EOF
 }

@@ -1,101 +1,116 @@
 locals {
-  # importing the configs <tfvars> both common and cluster specific
+
+# importing the configs <tfvars> both common and cluster specific
   env_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/${basename(get_original_terragrunt_dir())}.hcl")
   common_vars = read_terragrunt_config("${get_path_to_repo_root()}/_env_vars/common_config.hcl")
 
-  env = basename(dirname(get_original_terragrunt_dir()))
+  # env = basename(dirname(get_original_terragrunt_dir()))
+  env = split("/", get_env("BRANCH_NAME"))[1]
   component = basename(get_terragrunt_dir())
 
 # Common variable reference comming from common_config.hcl 
-  region                            = local.common_vars.locals.region
-  region_abbr                       = local.common_vars.locals.region_abbr
-  environment                       = local.common_vars.locals.environment
-  admin_contact                     = local.common_vars.locals.admin_contact
-  service_id                        = local.common_vars.locals.service_id
-  service_data                      = local.common_vars.locals.service_data
-  aws_profile                       = local.common_vars.locals.aws_profile
+  region                                  = local.common_vars.locals.region
+  admin_contact                           = local.common_vars.locals.admin_contact
+  service_id                              = local.common_vars.locals.service_id
+  aws_account                             = local.common_vars.locals.aws_account
+  service_data                            = "${local.env}-${local.component}"
+
+# Common Network Configuration Details
+  vpc_id                                  = local.env_vars.locals.vpc_id
+  vpc_cidr                                = local.env_vars.locals.vpc_cidr
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                        = local.env_vars.locals.version_no
-  server_purpose                    = local.env_vars.locals.server_purpose
-  eks_name                          = local.env_vars.locals.eks_name
-  nodename                          = local.env_vars.locals.nodename
-  instance_types                    = local.env_vars.locals.instance_types
-  ami_type                          = local.env_vars.locals.ami_type
-  desired_size                      = local.env_vars.locals.desired_size
-  max_size                          = local.env_vars.locals.max_size
-  min_size                          = local.env_vars.locals.min_size
-  vpc_id                            = local.env_vars.locals.vpc_id
-  cidr_block                        = local.env_vars.locals.cidr_block
-  private_subnet_ids                = local.env_vars.locals.private_subnet_ids
+  version_no                              = local.env_vars.locals.version_no          
+  private_subnet_ids                      = local.env_vars.locals.private_subnet_ids            
+  instance_types                          = local.env_vars.locals.instance_types        
+  ami_type                                = local.env_vars.locals.ami_type  
+  eks_cluster_name                        = "${local.env}-${local.component}-eks"
+  desired_size                            = local.env_vars.locals.desired_size      
+  max_size                                = local.env_vars.locals.max_size      
+  min_size                                = local.env_vars.locals.min_size      
+  /* allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block */
+  eks_endpoint_service_tag                = "${local.env}-${local.component}-eks-eps"
+  
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
-  db_instance_class                 = local.env_vars.locals.db_instance_class
-  db_username                       = local.env_vars.locals.db_username
-  db_engine                         = local.env_vars.locals.db_engine
-  db_engine_version                 = local.env_vars.locals.db_engine_version
-  db_password                       = local.env_vars.locals.db_password     # pass it while applying/planning
-  db_identifier                     = local.env_vars.locals.db_identifier
-  db_subnet_group_name              = local.env_vars.locals.db_subnet_group_name
-  publicly_accessible               = local.env_vars.locals.publicly_accessible //this should be passed as false in case of private .
-  rds_private_subnet_ids            = local.env_vars.locals.rds_private_subnet_ids//privateDB-A and privateDB-B
+  db_instance_class                       = local.env_vars.locals.db_instance_class     
+  db_engine                               = local.env_vars.locals.db_engine             
+  db_engine_version                       = local.env_vars.locals.db_engine_version     
+  db_username                             = local.env_vars.locals.db_username           
+  db_password                             = local.env_vars.locals.db_password           
+  db_identifier                           = "${local.env}-${local.component}-rds"         
 
 #Redis Specific Configurations                        
-  redis_cluster_name                = local.env_vars.locals.redis_cluster_name        
-  redis_engine                      = local.env_vars.locals.redis_engine              
-  redis_engine_version              = local.env_vars.locals.redis_engine_version      
-  redis_parameter_group_name        = local.env_vars.locals.redis_parameter_group_name
-  redis_instance_type               = local.env_vars.locals.redis_instance_type       
-  redis_port                        = local.env_vars.locals.redis_port                
-  redis_node_count                  = local.env_vars.locals.redis_node_count 
+  # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
+  redis_cluster_name                      = "${local.env}-${local.component}-redis"     
+  redis_engine                            = local.env_vars.locals.redis_engine              
+  redis_engine_version                    = local.env_vars.locals.redis_engine_version      
+  redis_parameter_group_name              = local.env_vars.locals.redis_parameter_group_name
+  redis_instance_type                     = local.env_vars.locals.redis_instance_type       
+  redis_port                              = local.env_vars.locals.redis_port                
+  redis_node_count                        = local.env_vars.locals.redis_node_count
+
+#Keyspace Specific Configutration
+  keyspace_environment                    = split("-", basename(get_terragrunt_dir()))[0]
+  keyspace_component                      = split("-", basename(get_terragrunt_dir()))[1]
+  keyspace_name                           = "${local.env}_${local.keyspace_environment}_${local.keyspace_component}_keyspace"
+
+##For Keyspace EP in Private VPC kubernetes Subnet
+  /* kubernetes_subnet_ids                   = local.env_vars.locals.kubernetes_subnet_ids */
+  keyspace_vpc_endpoint_tag               = "${local.env}-${local.component}-keyspace-ep"
 
 #MSK Specific Configurations                                
-  cluster_name                      = local.env_vars.locals.cluster_name 
-  kafka_version                     = local.env_vars.locals.kafka_version
-  broker_nodes                      = local.env_vars.locals.broker_nodes 
-  instance_type                     = local.env_vars.locals.instance_type
-  storage_info                      = local.env_vars.locals.storage_info 
-  sg_name                           = local.env_vars.locals.sg_name          
-  subnet_ids                        = local.env_vars.locals.subnet_ids
+  # cluster_name                            = local.env_vars.locals.cluster_name                                     
+  msk_cluster_name                        = "${local.env}-${local.component}-msk"                    
+  msk_kafka_version                       = local.env_vars.locals.msk_kafka_version                   
+  msk_num_of_broker_nodes                 = local.env_vars.locals.msk_num_of_broker_nodes             
+  broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
+  broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
+  msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
+##FOR MSK_PRIVATE_LINK
+  msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
+  msk_port                                = local.env_vars.locals.msk_port         
 
-#Keyspace Spacific Configutration
-  keyspace_name                     = local.env_vars.locals.keyspace_name  
-  
-#Variables for NLB module (For MSK)
-  nlb_name                          = local.env_vars.locals.nlb_name            
-  port                              = local.env_vars.locals.port                
-  target_group_name                 = local.env_vars.locals.target_group_name   
-  listener_port                     = local.env_vars.locals.listener_port       
-  num_brokers                       = local.env_vars.locals.num_brokers         
-  privatelb_subnet_id               = local.env_vars.locals.privatelb_subnet_id 
-  privatelb_subnet_id1              = local.env_vars.locals.privatelb_subnet_id1
+##FOR MSK_ENDPOINT In Public VPC
+  endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
+  endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
+  endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
+  vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
 
-#MSKPrivatelink_endpoint_service Specific Configutations
-  endpoint_service_name             = local.env_vars.locals.endpoint_service_name
+##ACM Specific Configuration
+  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
 
-#MSKPrivatelink_VPC_endpoint Specific Configuration
-  vpc_endpointname                  = local.env_vars.locals.vpc_endpointname
-  subnet_id                         = local.env_vars.locals.subnet_id       
-  subnet_id1                        = local.env_vars.locals.subnet_id1      
-  cidr_block1                       = local.env_vars.locals.cidr_block1  
+# EKS Endpoint Specific Configuration           
+  eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
+  eks_port                                = local.env_vars.locals.eks_port   
 
-#ingress-private-nlb Specific Configurations           
-  private_vpc_cidr                  = local.env_vars.locals.private_vpc_cidr       
-  private_acm_certificate           = local.env_vars.locals.private_acm_certificate
-  privatesubnetids                  = local.env_vars.locals.privatesubnetids       
-  private_DNS                       = local.env_vars.locals.private_DNS            
+## NLB Specific Configurations 
+  public_cert_domain                      = "aware-${local.env}-global-public.qualcomm.com"
+  nlbname                                 = "nlb-global-pub-priv"
+# target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
+  ops_api_tg                              = "ops-portal-api-tg"
 
-# "EKS-privatelink" Specific Configurations
-  eks_endpoint_service_name         = local.env_vars.locals.eks_endpoint_service_name
-  public_vpc_id                     = local.env_vars.locals.public_vpc_id            
-  public_cidr_block                 = local.env_vars.locals.public_cidr_block        
-  eks_vpc_endpointname              = local.env_vars.locals.eks_vpc_endpointname     
-  public_subnet_id                  = local.env_vars.locals.public_subnet_id         
-  vpc_keyspacesep                   = local.env_vars.locals.vpc_keyspacesep          
-  nlbname                           = local.env_vars.locals.nlbname                  
-  acm_certificate                   = local.env_vars.locals.acm_certificate          
-  public_subnet_id_1                = local.env_vars.locals.public_subnet_id_1       
-  public_subnet_id_2                = local.env_vars.locals.public_subnet_id_2       
+## Lambda Speicific Configurations
+  ops_function_name                       = "ops_portal_logout_reload"
+  ops_logout_tg                           = "ops-portal-logout-reload-tg"
+  ops_portal_name                         = "portal.aware-${local.env}-global-private.qualcomm.com"
+# #ingress-private-nlb Specific Configurations           
+#   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
+#   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
+#   privatesubnetids                        = local.env_vars.locals.privatesubnetids       
+#   private_DNS                             = local.env_vars.locals.private_DNS            
+
+# # "EKS-privatelink" Specific Configurations
+#   eks_endpoint_service_name               = local.env_vars.locals.eks_endpoint_service_name
+#   public_vpc_id                           = local.env_vars.locals.public_vpc_id            
+#   public_cidr_block                       = local.env_vars.locals.public_cidr_block        
+#   eks_vpc_endpointname                    = local.env_vars.locals.eks_vpc_endpointname     
+#   public_subnet_id                        = local.env_vars.locals.public_subnet_id         
+#   vpc_keyspacesep                         = local.env_vars.locals.vpc_keyspacesep          
+#   nlbname                                 = local.env_vars.locals.nlbname                  
+#   acm_certificate                         = local.env_vars.locals.acm_certificate          
+#   public_subnet_id_1                      = local.env_vars.locals.public_subnet_id_1       
+#   public_subnet_id_2                      = local.env_vars.locals.public_subnet_id_2       
 
 }
    
@@ -112,159 +127,134 @@ generate "main" {
   if_exists = "overwrite"
 
   contents = <<EOF
-  module "RDS" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
-    environment                   = "${local.env}"
-    region                        = "${local.region}"
-    vpc_id                        = "${local.vpc_id}"
-    rds_private_subnet_ids        =  ${jsonencode(local.rds_private_subnet_ids)}
-    db_subnet_group_name          = "${local.db_subnet_group_name}"
-    db_instance_class             = "${local.db_instance_class}"
-    db_password                   = "${local.db_password}"
-    db_engine                     = "${local.db_engine}"
-    db_engine_version             = "${local.db_engine_version}"
-    db_username                   = "${local.db_username}"
-    db_identifier                 = "${local.db_identifier}"
-    publicly_accessible           = "${local.publicly_accessible}"
-    admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
+module "eks" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS"
+    version_no                            = "${local.version_no}"
+    vpc_id                                = "${local.vpc_id}"
+    private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
+    instance_types                        = ${jsonencode(local.instance_types)}
+    ami_type                              = "${local.ami_type}"
+    eks_cluster_name                      = "${local.eks_cluster_name}"
+    desired_size                          = "${local.desired_size}"
+    max_size                              = "${local.max_size}"
+    min_size                              = "${local.min_size}"
+    allowed_cidr_block                    = ${jsonencode(local.vpc_cidr)}
+    domain                                = "${local.domain}"
+    vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
+    endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
+    exsiting_lb                           = true
+    aws_account                           = ${local.aws_account}
+    alb_controller                        = true
+    alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
+    depends_on                            = [ module.ACM ]
 }
 
-module "EKS" {
-    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//private-EKS"
-    version_no                    = "${local.version_no}"
-    vpc_id                        = "${local.vpc_id}"
-    private_subnet_ids            = ${jsonencode(local.private_subnet_ids)}
-    ment                          = "${local.environment}"
-    eks_name                      = "${local.eks_name}" 
-    cidr_block                    = ${jsonencode(local.cidr_block)}
-    nodename                      = "${local.nodename}"
-    instance_types                = ${jsonencode(local.instance_types)}
-    ami_type                      = "${local.ami_type}"
-    desired_size                  = "${local.desired_size}"
-    max_size                      = "${local.max_size}"
-    min_size                      = "${local.min_size}"
-    admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
+module "rds" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
+    vpc_id                                = "${local.vpc_id}"
+    rds_private_subnet_ids                = ${jsonencode(local.private_subnet_ids)}
+    db_instance_class                     = "${local.db_instance_class}"     
+    db_engine                             = "${local.db_engine}"  
+    db_engine_version                     = "${local.db_engine_version}"    
+    db_username                           = "${local.db_username}"  
+    db_password                           = "${local.db_password}"  
+    db_identifier                         = "${local.db_identifier}"
 }
 
 module "redis" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//REDIS/"
-    environment                   = "${local.environment}"
-    region                        = "${local.region}"
-    vpc_id                        = "${local.vpc_id}"
-    redis_cluster_name            = "${local.redis_cluster_name}"
-    redis_engine                  = "redis"
-    redis_engine_version          = "${local.redis_engine_version}"
-    redis_parameter_group_name    = "${local.redis_parameter_group_name}"
-    redis_instance_type           = "${local.redis_instance_type}"
-    redis_port                    = "${local.redis_port}"
-    redis_node_count              = "${local.redis_node_count}"
-    admin_contact                 = "${local.admin_contact}"
-    service_id                    = "${local.service_id}"
-    service_data                  = "${local.service_data}"
-}
-
-module "msk" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK/"
-    cluster_name                  = "${local.cluster_name }"
-    kafka_version                 = "${local.kafka_version}"
-    broker_nodes                  = "${local.broker_nodes }"
-    instance_type                 = "${local.instance_type}"
-    storage_info                  = "${local.storage_info }"
-    sg_name                       = "${local.sg_name}"
-    vpc_id                        = "${local.vpc_id}"
-    subnet_ids                    = ${jsonencode(local.subnet_ids)}
- }
-
-module "MSKPrivatelink_nlb" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//nlb"
-    nlb_name                      = "${local.nlb_name}"
-    vpc_id                        = "${local.vpc_id}"
-    port                          = "${local.port}"
-    target_group_name             = "${local.target_group_name}"
-    listener_port                 = "${local.listener_port}"
-    num_brokers                   = "${local.num_brokers}"
-    privatelb_subnet_id           = "${local.privatelb_subnet_id}"
-    privatelb_subnet_id1          = "${local.privatelb_subnet_id1}"
-    cluster_arn                   = module.msk.arn
-    depends_on = [
-            module.msk
-    ]
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//REDIS"
+    vpc_id                                = "${local.vpc_id}"
+    redis_private_subnet_ids              = ${jsonencode(local.private_subnet_ids)}
+    redis_cluster_name                    = "${local.redis_cluster_name}"            
+    redis_engine                          = "${local.redis_engine}"       
+    redis_engine_version                  = "${local.redis_engine_version}"            
+    redis_parameter_group_name            = "${local.redis_parameter_group_name}"   
+    redis_instance_type                   = "${local.redis_instance_type}"   
+    redis_port                            = "${local.redis_port}"   
+    redis_node_count                      = "${local.redis_node_count}"
 }
 
 module "keyspace" {
-  source                          = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//AWSKeyspaceGlobal/"
-  keyspace_name                   = "${local.keyspace_name}"
+  source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Keyspace"
+  keyspace_name                           = "${local.keyspace_name}"
+  endpoint_vpc_id                         = "${local.vpc_id}"
+  endpoint_subnet_id                      = ${jsonencode(local.private_subnet_ids)}
+  vpc_endpoint_tag                        = "${local.keyspace_vpc_endpoint_tag}"
 }
 
-module "MSKPrivatelink_endpoint_service" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/endpoint_service"
-    vpc_id                        = "${local.vpc_id}"
-    network_load_balancer_arns    = [module.MSKPrivatelink_nlb.arn]
-    endpoint_service_name         = "${local.endpoint_service_name}"
-    depends_on                    = [
-            module.MSKPrivatelink_nlb
-    ]
-}
+module "msk" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK"
+    vpc_id                                = "${local.vpc_id}"
+    broker_node_subnets                   = ${jsonencode(local.private_subnet_ids)}
+    msk_cluster_name                      = "${local.msk_cluster_name}"
+    msk_kafka_version                     = "${local.msk_kafka_version}"
+    msk_num_of_broker_nodes               = "${local.msk_num_of_broker_nodes}"
+    broker_node_instance_type             = "${local.broker_node_instance_type}"
+    broker_node_storage_info_volume_size  = "${local.broker_node_storage_info_volume_size}"
+    msk_security_group_ingress_cidr_ipv4  = ${jsonencode(local.msk_security_group_ingress_cidr_ipv4)}
 
-module "MSKPrivatelink_VPC_endpoint" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//MSK-private-link/VPC_endpoint"
-    service_name                  = module.MSKPrivatelink_endpoint_service.service_name
-    vpc_endpointname              = "${local.vpc_endpointname}"
-    vpc_id                        = "${local.vpc_id}"
-    subnet_id                     = ${jsonencode(local.subnet_id)}
-    subnet_id1                    = ${jsonencode(local.subnet_id1)}
-    cidr_block                    = ${jsonencode(local.cidr_block)}
-    cidr_block1                   = ${jsonencode(local.cidr_block1)}
-    depends_on                    = [
-        module.MSKPrivatelink_endpoint_service
-    ]
-}
+##FOR MSK_PRIVATE_LINK
+    privatelink_subnet_id                 = ${jsonencode(local.private_subnet_ids)}
+    nlb_name                              = "${local.msk_nlb_name}"
+    port                                  = "${local.msk_port}"
 
-module "ingress-private-nlb" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Ingress-private-nlb"
-    eks_name                      = "${local.eks_name}"
-    environment                   = "${local.environment}"
-    region                        = "${local.region}"
-    private_vpc_cidr              = ${jsonencode(local.private_vpc_cidr)}
-    private_acm_certificate       = "${local.private_acm_certificate}"
-    privatesubnetids              = ${jsonencode(local.privatesubnetids)}
-    private_DNS                   = "${local.private_DNS}"
-    depends_on                    = [module.eks, module.ingress-public-nlb]
-}
+##FOR MSK_ENDPOINT
+    endpoint_vpc_id                       = "${local.endpoint_vpc_id}"
+    endpoint_cidr_block                   = ${jsonencode(local.endpoint_cidr_block)}
+    endpoint_subnet_id                    = ${jsonencode(local.endpoint_subnet_id)}
+    vpc_endpoint_tag                      = "${local.vpc_endpoint_tag}"
 
-resource "time_sleep" "wait_for_lb" {
-    create_duration               = "600s"
-    depends_on                    = [module.ingress-private-nlb]
-}
+ }
 
-data "aws_lb" "load_balancer" {
-  tags = {
-      environment                 = "${local.environment}"
+ module "ACM" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
+    domain                                = "${local.domain}"
   }
-  depends_on                      = [module.ingress-private-nlb, time_sleep.wait_for_lb]
+
+module "eks_endpoint"{
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//endpoint"
+    endpoint_vpc_id                       = "${local.endpoint_vpc_id}"
+    endpoint_cidr_block                   = ${jsonencode(local.endpoint_cidr_block)}
+    endpoint_subnet_id                    = ${jsonencode(local.endpoint_subnet_id)}
+    /* endpoint_subnet_id                    = {jsonencode(local.endpoint_public_subnet_id)} */
+    /* endpoint_service_name                 = data.aws_vpc_endpoint_service.eks_eps.service_name */
+    endpoint_service_name                 = module.eks.eps_service_name
+    vpc_endpoint_tag                      = "${local.eks_vpc_endpoint_tag}"     
+    port                                  = "${local.eks_port}"
+    depends_on                            = [ module.eks ]               
 }
 
-module "EKS-privatelink" {
-    source                        = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//EKS-privatelink"
-    network_load_balancer_arns    = data.aws_lb.load_balancer.arn
-    eks_endpoint_service_name     = "${local.eks_endpoint_service_name}"
-    public_vpc_id                 = "${local.public_vpc_id}"
-    public_cidr_block             = ${jsonencode(local.public_cidr_block)}
-    eks_vpc_endpointname          = "${local.eks_vpc_endpointname}"
-    public_subnet_id              = ${jsonencode(local.public_subnet_id)}
-    region                        = "${local.region}"
-    vpc_keyspacesep               = "${local.vpc_keyspacesep}"
-    nlbname                       = "${local.nlbname}"
-    acm_certificate               = "${local.acm_certificate}"
-    public_subnet_id_1            = ${jsonencode(local.public_subnet_id_1)}
-    public_subnet_id_2            = ${jsonencode(local.public_subnet_id_2)}
-    depends_on                    = [module.ingress-private-nlb]
+data "aws_acm_certificate" "public_cert" {
+  domain                                  = "${local.public_cert_domain}"
+  statuses                                = ["ISSUED"]
+  depends_on                              = [ module.eks_endpoint ]
 }
 
+module "nlb" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//NLB"
+    public_vpc_id                         = "${local.endpoint_vpc_id}"
+    subnet_id                             = ${jsonencode(local.endpoint_subnet_id)}
+    nlbname                               = "${local.nlbname}"
+    acm_certificate                       = data.aws_acm_certificate.public_cert.arn
+    eks_endpointid                        = module.eks_endpoint.endpointid
+    alb_tg_coap_pl_subnets                = ${jsonencode(local.private_subnet_ids)}
+    alb_tg_coap_pl_vpc_id                 = "${local.vpc_id}"
+    alb_eks_endpoint_tg                   = "${local.ops_api_tg}"
+    tg_az                                 = "all"
+    depends_on                            = [ module.eks_endpoint ]
+}
+
+module "ops-lambda" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//lambda"
+    function_name                         = "${local.ops_function_name}"
+    logout_tg                             = "${local.ops_logout_tg}"
+    portal_name                           = "${local.ops_portal_name }" 
+}
+
+module "hosted-zone" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//hosted-zone"
+    subdomain_name                        = "${local.domain}"
+}
 
 EOF
 }
@@ -285,10 +275,28 @@ generate "output"{
   output "REDIS" {
       value = module.redis
   }
-  
-  output "public_EKS"{
-      value = module.public_eks
+
+  output "MSK" {
+      value = module.msk
   }
 
+  output "keyspace" {
+      value = module.keyspace
+  }
+  output "ACM" {
+      value = module.ACM
+  }
+  output "eks_ep" {
+    value = module.eks_endpoint
+  }
+  output "hosted-zone"{
+    value = module.hosted-zone
+  }
+  output "nlb"{
+    value = module.nlb
+  }
+  output "ops-lambda"{
+    value = module.ops-lambda
+  }
 EOF
 }
