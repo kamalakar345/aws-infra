@@ -39,7 +39,7 @@ remote_state {
   backend = "s3"
   config = {
     encrypt        = false
-    bucket         = "${local.env}-tfstate-bucket"
+    bucket         = "aware-${local.env}-tfstate-bucket"
     # key            = "${path_relative_to_include()}/terraform.tfstate"
     key            = "${basename(path_relative_to_include())}.tfstate"
     region         = local.aws_region
