@@ -87,7 +87,7 @@ module "glb-priv-to-reg-priv-pl"{
     globalnlbname                         = "${local.globalnlbname}"
     subnet_id_global                      = ${jsonencode(local.glb_priv_private_subnet_ids)}
     globalTargetgroupName                 = "${local.globalTargetgroupName}"
-    depends_on                              = [ module.S3 ]
+    depends_on                            = [ module.S3 ]
 }
 
 data "aws_msk_cluster" "msk-regional-private" {
@@ -122,7 +122,8 @@ module "msk-regional-private-prv-hz" {
     cluster_arn                           = data.aws_msk_cluster.msk-regional-private.arn
     endpoint_vpc_id                       = ${jsonencode(local.reg_pub_vpc_id)}     #regional-public public vpc
     endpoint_subnet_id                    = ${jsonencode(local.reg_pub_private_subnet_ids)}  #regional-public private subnet
-    depends_on                            = [ data.aws_msk_cluster.msk-regional-private, data.aws_vpc_endpoint.regional_public_ep ]
+    # depends_on                            = [ data.aws_msk_cluster.msk-regional-private, data.aws_vpc_endpoint.regional_public_ep ]
+    depends_on                            = [ module.S3 ]
 }
 
 module "msk-global-private-prv-hz" {
@@ -131,7 +132,8 @@ module "msk-global-private-prv-hz" {
     cluster_arn                           = data.aws_msk_cluster.msk-global-private.arn
     endpoint_vpc_id                       = ${jsonencode(local.glb_pub_vpc_id)}
     endpoint_subnet_id                    = ${jsonencode(local.glb_pub_private_subnet_ids)}
-    depends_on                            = [ data.aws_msk_cluster.msk-global-private, data.aws_vpc_endpoint.global_public_ep ]
+    # depends_on                            = [ data.aws_msk_cluster.msk-global-private, data.aws_vpc_endpoint.global_public_ep ]
+    depends_on                            = [ module.S3 ]
 
 }
 
