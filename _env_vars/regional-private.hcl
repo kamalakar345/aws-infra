@@ -46,7 +46,7 @@ locals{
 
 ##FOR MSK_ENDPOINT In Public VPC
   endpoint_vpc_id                         = "vpc-0c76b4dc1e25ed3cd" // Public VPC-ID
-  endpoint_cidr_block                     = ["10.155.238.0/23"]     // Public VPC CIDR
+  endpoint_cidr_block                     = ["10.155.238.0/23","10.0.0.0/8", "100.0.0.0/8"]     // Public VPC CIDR
   endpoint_subnet_id                      = ["subnet-0c2648cca42671712", "subnet-012b87380d7c32d63"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
 
 # EKS Endpoint Specific Configuration           

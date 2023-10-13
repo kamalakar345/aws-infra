@@ -45,7 +45,7 @@ locals{
 
 ##FOR MSK_ENDPOINT In Public VPC
   endpoint_vpc_id                         = "vpc-0bab03f8a8a362ae3" // Public VPC-ID
-  endpoint_cidr_block                     = ["10.155.252.0/23"]     // Public VPC CIDR 
+  endpoint_cidr_block                     = ["10.155.252.0/23","10.0.0.0/8", "100.0.0.0/8"]     // Public VPC CIDR 
   endpoint_subnet_id                      = ["subnet-00d27d96702c74654", "subnet-03d93546de97befc3"] // [Public-privateA, Public-privateB]
 # EKS Endpoint Specific Configuration           
   eks_port                                    = "80"
