@@ -61,7 +61,7 @@ module "eks" {
     desired_size                          = "${local.desired_size}"
     max_size                              = "${local.max_size}"
     min_size                              = "${local.min_size}"
-    allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
+    allowed_cidr_block                    = ${jsonencode(local.vpc_cidr)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     private_link                          = false
