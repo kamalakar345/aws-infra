@@ -18,6 +18,7 @@ locals {
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
   vpc_cidr                                = local.env_vars.locals.vpc_cidr
+  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = local.env_vars.locals.version_no          
@@ -139,7 +140,7 @@ module "eks" {
     desired_size                          = "${local.desired_size}"
     max_size                              = "${local.max_size}"
     min_size                              = "${local.min_size}"
-    allowed_cidr_block                    = ${jsonencode(local.vpc_cidr)}
+    allowed_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
