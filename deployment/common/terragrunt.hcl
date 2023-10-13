@@ -92,12 +92,12 @@ module "glb-priv-to-reg-priv-pl"{
 
 data "aws_msk_cluster" "msk-regional-private" {
   cluster_name                            = "${local.env}-regional-private-msk"
-  depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
 }
 
 data "aws_msk_cluster" "msk-global-private" {
   cluster_name                            = "${local.env}-global-private-msk"
-  depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
 }
 
 data "aws_vpc_endpoint" "global_public_ep" {
@@ -105,7 +105,7 @@ data "aws_vpc_endpoint" "global_public_ep" {
         name                              = "tag:Name"    
         values                            = ["${local.env}-global-private-msk-ep"]
     }
-  depends_on                              = [ module.glb-priv-to-reg-priv-pl ]  
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]  
 }
 
 data "aws_vpc_endpoint" "regional_public_ep" {
@@ -113,7 +113,7 @@ data "aws_vpc_endpoint" "regional_public_ep" {
         name                              = "tag:Name"    
         values                            = ["${local.env}-regional-private-msk-ep"]
     }
-  depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
 }
 
 module "msk-regional-private-prv-hz" {
