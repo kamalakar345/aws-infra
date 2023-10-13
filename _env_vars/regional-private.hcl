@@ -1,15 +1,15 @@
 locals{
 
 # VPC Details
-  vpc_id                                  = "vpc-0d1e952fc353044a4"
-  vpc_cidr                                = ["10.155.186.0/23"]// First CIDR in the VPC */
-  private_subnet_ids                      = ["subnet-0424a3be9f4a2dcd1", "subnet-009826ec6d2eacddd"] //privateA and privateB
-  rds_private_subnet_ids                  = ["subnet-0df0c1265aed87672", "subnet-01a89421daca3d7e2"] //privateDB-A and privateDB-B
+  vpc_id                                  = "vpc-06b5a0014044ee4aa"
+  vpc_cidr                                = ["10.166.0.0/23"]// First CIDR in the VPC */
+  private_subnet_ids                      = ["subnet-09aa3a9354da74d9c", "subnet-00ab87025981519d4"] //privateA and privateB
+  rds_private_subnet_ids                  = ["subnet-0952b8657af26ddf5", "subnet-0cc0414b560ff1ee4"] //privateDB-A and privateDB-B
   //public_subnet_id                        = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [publicA, publicB]
 # Keyspace related Configuration
 
   ## Keyspace Endpoint Related Configs 
-  kubernetes_subnet_ids                   = ["subnet-0e0d747d0b5854908", "subnet-08f95bbeec6f309c8"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
+  kubernetes_subnet_ids                   = ["subnet-02d697cd9cf55661e", "subnet-053b4480a8832e076"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = "1.24"       
@@ -45,9 +45,9 @@ locals{
   msk_port                                = "9092"         
 
 ##FOR MSK_ENDPOINT In Public VPC
-  endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" // Public VPC-ID
-  endpoint_cidr_block                     = ["10.155.188.0/23","10.0.0.0/8", "100.0.0.0/8"]     // Public VPC CIDR
-  endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
+  endpoint_vpc_id                         = "vpc-09ee7634b8fcfc251" // Public VPC-ID
+  endpoint_cidr_block                     = ["10.155.246.0/23","10.0.0.0/8", "100.0.0.0/8"]     // Public VPC CIDR
+  endpoint_subnet_id                      = ["subnet-0b1812b1bb3be4c75", "subnet-0d2d487515ababff7"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
 
 # EKS Endpoint Specific Configuration           
   eks_port                                    = "80"
@@ -55,5 +55,5 @@ locals{
 ## Open Search for DM specific configurations 
   os_instance_type                        = "t3.medium.elasticsearch"
 /* ##FOR EKS_ENDPOINT In Public VPC
-  endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
+  endpoint_public_subnet_id               = ["subnet-05e4faa1c52b2640c", "subnet-0d30d313f41b49917"] // [Public-publicA, Public-publicB] */
 }

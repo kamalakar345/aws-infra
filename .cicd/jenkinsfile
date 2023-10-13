@@ -7,7 +7,7 @@ pipeline {
   agent { label 'aware-jenkins' }
   environment {
     region = "us-west-2"
-    account = "608026881676"
+    account = "098222969212"
   }
   
 stages{
