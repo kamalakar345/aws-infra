@@ -90,6 +90,7 @@ module "glb-priv-to-reg-priv-pl"{
     depends_on                            = [ module.S3 ]
 }
 
+
 data "aws_msk_cluster" "msk-regional-private" {
   cluster_name                            = "${local.env}-regional-private-msk"
   # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
@@ -136,10 +137,8 @@ module "msk-global-private-prv-hz" {
     # depends_on                          = [data.aws_msk_cluster.msk-global-private]
 
 }
-
 EOF
 }
-
 
 # Generating Output.tf 
 generate "output"{
