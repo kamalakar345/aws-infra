@@ -3,3 +3,5 @@
 .terra*
 terragrunt-debug.tfvars.json
 *.tf
+eniconfig_creation.sh
+pod-netconfig.template
