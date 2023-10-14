@@ -90,7 +90,6 @@ locals {
 ## Open Search for DM specific configurations 
   os_domain                               = "${local.env}-${local.component}-dm"
   os_instance_type                        = local.env_vars.locals.os_instance_type
-
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
   nlbname                                 = "nlb-regional-pub-priv"
