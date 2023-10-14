@@ -123,7 +123,6 @@ module "msk-regional-private-prv-hz" {
     endpoint_vpc_id                       = ${jsonencode(local.reg_pub_vpc_id)}     #regional-public public vpc
     endpoint_subnet_id                    = ${jsonencode(local.reg_pub_private_subnet_ids)}  #regional-public private subnet
     depends_on                            = [ data.aws_msk_cluster.msk-regional-private, data.aws_vpc_endpoint.regional_public_ep ]
-    # depends_on                            = [data.aws_msk_cluster.msk-regional-private]
 }
 
 module "msk-global-private-prv-hz" {
@@ -133,7 +132,6 @@ module "msk-global-private-prv-hz" {
     endpoint_vpc_id                       = ${jsonencode(local.glb_pub_vpc_id)}
     endpoint_subnet_id                    = ${jsonencode(local.glb_pub_private_subnet_ids)}
     depends_on                            = [ data.aws_msk_cluster.msk-global-private, data.aws_vpc_endpoint.global_public_ep ]
-    # depends_on                          = [data.aws_msk_cluster.msk-global-private]
 
 }
 
