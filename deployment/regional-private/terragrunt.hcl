@@ -76,6 +76,7 @@ locals {
 ##FOR MSK_ENDPOINT In Public VPC
   endpoint_vpc_id                         = local.env_vars.locals.endpoint_vpc_id
   endpoint_cidr_block                     = local.env_vars.locals.endpoint_cidr_block
+  allowed_endpoint_cidr_block             = setunion(local.env_vars.locals.endpoint_cidr_block, ["10.0.0.0/8", "100.0.0.0/8"])
   endpoint_subnet_id                      = local.env_vars.locals.endpoint_subnet_id          
   vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
 
@@ -89,7 +90,6 @@ locals {
 ## Open Search for DM specific configurations 
   os_domain                               = "${local.env}-${local.component}-dm"
   os_instance_type                        = local.env_vars.locals.os_instance_type
-
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
   nlbname                                 = "nlb-regional-pub-priv"
@@ -204,7 +204,7 @@ module "msk" {
 
 ##FOR MSK_ENDPOINT
     endpoint_vpc_id                       = "${local.endpoint_vpc_id}"
-    endpoint_cidr_block                   = ${jsonencode(local.endpoint_cidr_block)}
+    endpoint_cidr_block                   = ${jsonencode(local.allowed_endpoint_cidr_block)}
     endpoint_subnet_id                    = ${jsonencode(local.endpoint_subnet_id)}
     vpc_endpoint_tag                      = "${local.vpc_endpoint_tag}"
 
@@ -218,7 +218,7 @@ module "msk" {
 module "eks_endpoint"{
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//endpoint"
     endpoint_vpc_id                       = "${local.endpoint_vpc_id}"
-    endpoint_cidr_block                   = ${jsonencode(local.endpoint_cidr_block)}
+    endpoint_cidr_block                   = ${jsonencode(local.allowed_endpoint_cidr_block)}
     endpoint_subnet_id                    = ${jsonencode(local.endpoint_subnet_id)}
     /* endpoint_subnet_id                    = {jsonencode(local.endpoint_public_subnet_id)} */
     /* endpoint_service_name                 = data.aws_vpc_endpoint_service.eks_eps.service_name */
