@@ -33,6 +33,8 @@ locals {
   /* eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[0]}-private-eks-eps" */
 # ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
+# Nginx NLB LB specific Configurations
+  public_subnet_id                        = local.env_vars.locals.public_subnet_id
 }
 
 
@@ -66,6 +68,7 @@ module "eks" {
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     private_link                          = false
     aws_account                           = ${local.aws_account}
+    nginx_subnet_ids                      = ${jsonencode(local.public_subnet_id)}
     alb_controller                        = true
     alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
     depends_on                            = [ module.ACM ]

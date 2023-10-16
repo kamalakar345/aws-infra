@@ -70,6 +70,7 @@ module "eks" {
     domain                                = "${local.domain}"
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     aws_account                           = ${local.aws_account}
+    nginx_subnet_ids                      = ${jsonencode(local.public_subnet_id)}
     private_link                          = false
     alb_controller                        = true
     alb_subnet_id                         = ${jsonencode(local.public_subnet_id)}
