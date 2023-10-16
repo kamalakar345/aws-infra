@@ -90,13 +90,22 @@ module "glb-priv-to-reg-priv-pl"{
     depends_on                            = [ module.S3 ]
 }
 
+data "aws_msk_cluster" "msk-regional-private" {
+  cluster_name                            = "${local.env}-regional-private-msk"
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
+}
+
+data "aws_msk_cluster" "msk-global-private" {
+  cluster_name                            = "${local.env}-global-private-msk"
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
+}
+
 data "aws_vpc_endpoint" "global_public_ep" {
     filter {
         name                              = "tag:Name"    
         values                            = ["${local.env}-global-private-msk-ep"]
     }
-    state                                 = "Available"
-    depends_on                              = [ module.glb-priv-to-reg-priv-pl ] 
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]  
 }
 
 data "aws_vpc_endpoint" "regional_public_ep" {
@@ -104,18 +113,7 @@ data "aws_vpc_endpoint" "regional_public_ep" {
         name                              = "tag:Name"    
         values                            = ["${local.env}-regional-private-msk-ep"]
     }
-  state                                   = "Available"
-  depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
-}
-
-data "aws_msk_cluster" "msk-regional-private" {
-  cluster_name                            = "${local.env}-regional-private-msk"
-  depends_on                              = [ module.glb-priv-to-reg-priv-pl ] 
-}
-
-data "aws_msk_cluster" "msk-global-private" {
-  cluster_name                            = "${local.env}-global-private-msk"
-  depends_on                              = [ module.glb-priv-to-reg-priv-pl ] 
+  # depends_on                              = [ module.glb-priv-to-reg-priv-pl ]
 }
 
 module "msk-regional-private-prv-hz" {
@@ -136,8 +134,10 @@ module "msk-global-private-prv-hz" {
     depends_on                            = [ data.aws_msk_cluster.msk-global-private, data.aws_vpc_endpoint.global_public_ep ]
 
 }
+
 EOF
 }
+
 
 # Generating Output.tf 
 generate "output"{
