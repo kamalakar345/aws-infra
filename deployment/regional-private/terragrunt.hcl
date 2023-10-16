@@ -229,7 +229,7 @@ module "eks_endpoint"{
 }
 
 data "aws_acm_certificate" "public_cert" {
-  domain                                  = "${local.public_cert_domain}"
+  domain                                  = "*.${local.public_cert_domain}"
   statuses                                = ["ISSUED"]
   depends_on                              = [ module.eks_endpoint ]
 }
