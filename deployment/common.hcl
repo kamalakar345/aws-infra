@@ -22,7 +22,7 @@ provider "aws" {
       managed         = "terraform_managed"
       admin_contact   = "aware.infra.admins@qti.qualcomm.com"
       service_id      = "QCSS Aware"
-      service_data    = "env=TST"
+      service_data    = "env=PRD"
     }
   }
 }
