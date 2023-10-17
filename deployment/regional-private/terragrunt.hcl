@@ -96,7 +96,7 @@ locals {
 # target group for NLB which will have COAP PL NLB-ENI IPS and attached as a rule to ALB controller from Helm
   service_api_tg                          = "service-portal-api-tg"
 # target group for ALB which will have Endpoint IPS and attached as a rule to ALB controller from Helm
-  alb_svc_portal_tg                       = "alb-svc-${local.component}-tg"
+  alb_svc_portal_tg                       = "alb-svc-portal-reg-public-tg"
 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
