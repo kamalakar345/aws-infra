@@ -18,7 +18,7 @@ locals {
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
   vpc_cidr                                = local.env_vars.locals.vpc_cidr
-  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
+  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8", "172.28.40.0/21"])
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = local.env_vars.locals.version_no          
@@ -147,6 +147,7 @@ module "eks" {
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
     exsiting_lb                           = true
     aws_account                           = ${local.aws_account}
+    nginx_subnet_ids                      = ${jsonencode(local.private_subnet_ids)}
     alb_controller                        = true
     alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
     depends_on                            = [ module.ACM ]
@@ -229,7 +230,7 @@ module "eks_endpoint"{
 }
 
 data "aws_acm_certificate" "public_cert" {
-  domain                                  = "${local.public_cert_domain}"
+  domain                                  = "*.${local.public_cert_domain}"
   statuses                                = ["ISSUED"]
   depends_on                              = [ module.eks_endpoint ]
 }

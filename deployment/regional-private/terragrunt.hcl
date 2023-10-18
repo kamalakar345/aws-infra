@@ -18,7 +18,7 @@ locals {
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
   vpc_cidr                                = local.env_vars.locals.vpc_cidr
-  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
+  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8", "172.28.40.0/21"])
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = local.env_vars.locals.version_no          
@@ -93,8 +93,10 @@ locals {
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
   nlbname                                 = "nlb-regional-pub-priv"
-# target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
+# target group for NLB which will have COAP PL NLB-ENI IPS and attached as a rule to ALB controller from Helm
   service_api_tg                          = "service-portal-api-tg"
+# target group for ALB which will have Endpoint IPS and attached as a rule to ALB controller from Helm
+  alb_svc_portal_tg                       = "alb-svc-portal-reg-public-tg"
 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
@@ -146,6 +148,7 @@ module "eks" {
     endpoint_service_tag                  = "${local.eks_endpoint_service_tag}"
     exsiting_lb                           = true
     aws_account                           = ${local.aws_account}
+    nginx_subnet_ids                      = ${jsonencode(local.private_subnet_ids)}
     alb_controller                        = true
     alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
     depends_on                            = [ module.ACM ]
@@ -229,7 +232,7 @@ module "eks_endpoint"{
 }
 
 data "aws_acm_certificate" "public_cert" {
-  domain                                  = "${local.public_cert_domain}"
+  domain                                  = "*.${local.public_cert_domain}"
   statuses                                = ["ISSUED"]
   depends_on                              = [ module.eks_endpoint ]
 }
@@ -244,6 +247,8 @@ module "nlb" {
     alb_tg_coap_pl_subnets                = ${jsonencode(local.endpoint_subnet_id)}
     alb_tg_coap_pl_vpc_id                 = "${local.endpoint_vpc_id}"
     alb_eks_endpoint_tg                   = "${local.service_api_tg}"
+    alb_svc_portal_tg_required            = true
+    alb_svc_portal_tg_name                = "${local.alb_svc_portal_tg}"
     depends_on                            = [ module.eks_endpoint ]
 
 }
