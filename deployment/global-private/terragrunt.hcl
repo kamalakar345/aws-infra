@@ -82,6 +82,7 @@ locals {
 
 ##ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
+  subject_alternative_names               = ["*.aware-${local.env}-regional-public.qualcomm.com", "*.aware-${local.env}-regional-private.qualcomm.com", "*.aware-${local.env}-global-public.qualcomm.com", "*.aware-${local.env}-global-private.qualcomm.com"]
 
 # EKS Endpoint Specific Configuration           
   eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
@@ -214,6 +215,7 @@ module "msk" {
  module "ACM" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
     domain                                = "${local.domain}"
+    subject_alternative_names             = "${local.subject_alternative_names}"
   }
 
 module "eks_endpoint"{
