@@ -215,7 +215,7 @@ module "msk" {
  module "ACM" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
     domain                                = "${local.domain}"
-    subject_alternative_names             = "${local.subject_alternative_names}"
+    subject_alternative_names             = ${jsonencode(local.subject_alternative_names)} 
   }
 
 module "eks_endpoint"{
