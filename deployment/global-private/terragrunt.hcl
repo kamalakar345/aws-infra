@@ -18,7 +18,7 @@ locals {
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
   vpc_cidr                                = local.env_vars.locals.vpc_cidr
-  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8"])
+  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8", "172.28.40.0/21"])
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = local.env_vars.locals.version_no          
@@ -82,6 +82,7 @@ locals {
 
 ##ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
+  subject_alternative_names               = ["*.aware-${local.env}-regional-public.qualcomm.com", "*.aware-${local.env}-regional-private.qualcomm.com", "*.aware-${local.env}-global-public.qualcomm.com"]
 
 # EKS Endpoint Specific Configuration           
   eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
@@ -214,6 +215,7 @@ module "msk" {
  module "ACM" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
     domain                                = "${local.domain}"
+    subject_alternative_names             = ${jsonencode(local.subject_alternative_names)} 
   }
 
 module "eks_endpoint"{
