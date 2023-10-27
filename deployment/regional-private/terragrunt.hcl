@@ -246,7 +246,6 @@ module "nlb" {
     eks_endpointid                        = module.eks_endpoint.endpointid
     alb_tg_coap_pl_subnets                = ${jsonencode(local.endpoint_subnet_id)}
     alb_tg_coap_pl_vpc_id                 = "${local.endpoint_vpc_id}"
-    alb_eks_endpoint_tg                   = "${local.service_api_tg}"
     alb_svc_portal_tg_required            = true
     alb_svc_portal_tg_name                = "${local.alb_svc_portal_tg}"
     depends_on                            = [ module.eks_endpoint ]
