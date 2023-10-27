@@ -94,8 +94,6 @@ locals {
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
   nlbname                                 = "nlb-regional-pub-priv"
-# target group for NLB which will have COAP PL NLB-ENI IPS and attached as a rule to ALB controller from Helm
-  service_api_tg                          = "service-portal-api-tg"
 # target group for ALB which will have Endpoint IPS and attached as a rule to ALB controller from Helm
   alb_svc_portal_tg                       = "alb-svc-portal-reg-public-tg"
 

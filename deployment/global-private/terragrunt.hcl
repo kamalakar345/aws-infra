@@ -92,7 +92,9 @@ locals {
   public_cert_domain                      = "aware-${local.env}-global-public.qualcomm.com"
   nlbname                                 = "nlb-global-pub-priv"
 # target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
+  ops_portal_tg_required                  = true
   ops_api_tg                              = "ops-portal-api-tg"
+  nginx_nlb_name                          = "${local.env}-${local.component}-eks-nlb"
 
 ## Lambda Speicific Configurations
   ops_function_name                       = "ops_portal_logout_reload"
@@ -246,9 +248,11 @@ module "nlb" {
     eks_endpointid                        = module.eks_endpoint.endpointid
     alb_tg_coap_pl_subnets                = ${jsonencode(local.private_subnet_ids)}
     alb_tg_coap_pl_vpc_id                 = "${local.vpc_id}"
-    alb_eks_endpoint_tg                   = "${local.ops_api_tg}"
+    ops_portal_tg_required                = true
+    nginx_nlb_name                        = "${local.nginx_nlb_name}"
+    ops_portal_tg_name                    = "${local.ops_api_tg}"
     tg_az                                 = "all"
-    depends_on                            = [ module.eks_endpoint ]
+    depends_on                            = [ module.eks_endpoint, module.eks ]
 }
 
 module "ops-lambda" {
