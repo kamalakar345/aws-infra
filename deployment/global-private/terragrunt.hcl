@@ -251,7 +251,7 @@ module "nlb" {
     ops_portal_tg_required                = true
     nginx_nlb_name                        = "${local.nginx_nlb_name}"
     ops_portal_tg_name                    = "${local.ops_api_tg}"
-    tg_az                                 = "all"
+    # tg_az                                 = "all"
     depends_on                            = [ module.eks_endpoint, module.eks ]
 }
 
