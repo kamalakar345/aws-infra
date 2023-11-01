@@ -48,7 +48,7 @@ locals{
   endpoint_cidr_block                     = ["10.155.252.0/23","10.0.0.0/8", "100.0.0.0/8"]     // Public VPC CIDR 
   endpoint_subnet_id                      = ["subnet-00d27d96702c74654", "subnet-03d93546de97befc3"] // [Public-privateA, Public-privateB]
 # EKS Endpoint Specific Configuration           
-  eks_port                                    = "80"
+  eks_port                                    = "443"
 /* ##FOR EKS_ENDPOINT In Public VPC
   endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 }

@@ -50,7 +50,7 @@ locals{
   endpoint_subnet_id                      = ["subnet-0c2648cca42671712", "subnet-012b87380d7c32d63"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
 
 # EKS Endpoint Specific Configuration           
-  eks_port                                    = "80"
+  eks_port                                    = "443"
 
 ## Open Search for DM specific configurations 
   os_instance_type                        = "t3.medium.elasticsearch"
