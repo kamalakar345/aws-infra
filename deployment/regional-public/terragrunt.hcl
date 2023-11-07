@@ -71,6 +71,7 @@ module "eks" {
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     aws_account                           = ${local.aws_account}
     lb_scheme                             = "internet-facing"
+    lb_internal                           = "false"
     nginx_subnet_ids                      = ${jsonencode(local.public_subnet_id)}
     private_link                          = false
     alb_controller                        = true

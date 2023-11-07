@@ -69,6 +69,7 @@ module "eks" {
     private_link                          = false
     aws_account                           = ${local.aws_account}
     lb_scheme                             = "internet-facing"
+    lb_internal                           = "false"
     nginx_subnet_ids                      = ${jsonencode(local.public_subnet_id)}
     alb_controller                        = true
     alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
