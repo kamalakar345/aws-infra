@@ -13,7 +13,7 @@ locals{
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = "1.24"       
-  instance_types                          = ["c5.2xlarge"]        
+  instance_types                          = ["c5.4xlarge"]        
   ami_type                                = "AL2_x86_64"
   desired_size                            = "5"      
   max_size                                = "8"
@@ -37,7 +37,7 @@ locals{
 #MSK Specific Configurations                                
   msk_kafka_version                       = "2.6.2"
   msk_num_of_broker_nodes                 = "2"
-  broker_node_instance_type               = "kafka.t3.small"
+  broker_node_instance_type               = "kafka.m5.large"
   broker_node_storage_info_volume_size    = "100"
   msk_security_group_ingress_cidr_ipv4    = ["10.0.0.0/8", "100.0.0.0/8"]
 
