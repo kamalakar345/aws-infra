@@ -81,8 +81,8 @@ locals {
   vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
 
 ##ACM Specific Configuration
-  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
-  subject_alternative_names               = ["*.aware-${local.env}-regional-public.qualcomm.com", "*.aware-${local.env}-global-public.qualcomm.com", "*.aware-${local.env}-global-private.qualcomm.com"]
+  domain                                  = "na-rpv.demo.aware.qualcomm.com"
+  subject_alternative_names               = ["*.na-rpb.demo.aware.qualcomm.com", "*.na-gpb.demo.aware.qualcomm.com", "*.na-gpv.demo.aware.qualcomm.com"]
 
 # EKS Endpoint Specific Configuration           
   eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
@@ -92,7 +92,7 @@ locals {
   os_domain                               = "${local.env}-${local.component}-dm"
   os_instance_type                        = local.env_vars.locals.os_instance_type
 ## NLB Specific Configurations 
-  public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
+  public_cert_domain                      = "na-rpb.demo.aware.qualcomm.com"
   nlbname                                 = "nlb-regional-pub-priv"
 # target group for ALB which will have Endpoint IPS and attached as a rule to ALB controller from Helm
   alb_svc_portal_tg                       = "alb-svc-portal-reg-public-tg"

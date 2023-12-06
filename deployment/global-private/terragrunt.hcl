@@ -81,15 +81,15 @@ locals {
   vpc_endpoint_tag                        = "${local.env}-${local.component}-msk-ep"
 
 ##ACM Specific Configuration
-  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
-  subject_alternative_names               = ["*.aware-${local.env}-regional-public.qualcomm.com", "*.aware-${local.env}-regional-private.qualcomm.com", "*.aware-${local.env}-global-public.qualcomm.com"]
+  domain                                  = "na-gpv.demo.aware.qualcomm.com"
+  subject_alternative_names               = ["*.na-gpv.demo.aware.qualcomm.com", "*.na-rpv.demo.aware.qualcomm.com", "*.na-gpb.demo.aware.qualcomm.com"]
 
 # EKS Endpoint Specific Configuration           
   eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
   eks_port                                = local.env_vars.locals.eks_port   
 
 ## NLB Specific Configurations 
-  public_cert_domain                      = "aware-${local.env}-global-public.qualcomm.com"
+  public_cert_domain                      = "na-gpb.demo.aware.qualcomm.com"
   nlbname                                 = "nlb-global-pub-priv"
 # target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
   ops_portal_tg_required                  = true

@@ -32,7 +32,7 @@ locals {
   /* allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block */
   /* eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[0]}-private-eks-eps" */
 # ACM Specific Configuration
-  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
+  domain                                  = "na-rpb.demo.aware.qualcomm.com"
 
 # alb-contoller specific Configurations
   public_subnet_id                        = local.env_vars.locals.public_subnet_id
@@ -40,7 +40,7 @@ locals {
 ## Lambda Speicific Configurations
   service_function_name                   = "service_portal_logout_reload"
   service_logout_tg                       = "service-portal-logout-reload-tg"
-  service_portal_name                     = "portal.aware-${local.env}-regional-public.qualcomm.com"
+  service_portal_name                     = "portal.na-rpb.demo.aware.qualcomm.com"
 }
 # Include the common.hcl
 include "common"{
