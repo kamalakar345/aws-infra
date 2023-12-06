@@ -32,7 +32,7 @@ locals {
   # allowed_cidr_block                      = local.env_vars.locals.allowed_cidr_block
   /* eks_endpoint_service_tag                = "${local.env}-${split("-", "${local.component}")[0]}-private-eks-eps" */
 # ACM Specific Configuration
-  domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
+  domain                                  = "na-gpb.demo.aware.qualcomm.com"
 # Nginx NLB LB specific Configurations
   public_subnet_id                        = local.env_vars.locals.public_subnet_id
 }
