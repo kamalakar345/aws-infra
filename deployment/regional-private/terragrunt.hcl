@@ -154,6 +154,17 @@ module "eks" {
     depends_on                            = [ module.ACM ]
 }
 
+module "rds-read" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
+    vpc_id                                = "${local.vpc_id}"
+    rds_private_subnet_ids                = ${jsonencode(local.private_subnet_ids)}
+    db_instance_class                     = "${local.db_instance_class}"     
+    db_engine                             = "${local.db_engine}"  
+    db_engine_version                     = "${local.db_engine_version}"    
+    db_username                           = "${local.db_username}"  
+    db_password                           = "${local.db_password}"  
+    db_identifier                         = "${local.db_identifier}-read"
+}
 module "rds" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
     vpc_id                                = "${local.vpc_id}"
@@ -282,6 +293,9 @@ generate "output"{
   }
   
   output "RDS" {
+      value = module.rds
+  }
+  output "rds-read" {
       value = module.rds
   }
   
