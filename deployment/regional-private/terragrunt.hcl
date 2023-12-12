@@ -93,8 +93,8 @@ locals {
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
   nlbname                                 = "nlb-regional-pub-priv"
-# target group for NLB which will have COAP PL NLB-ENI IPS and attached as a rule to ALB controller from Helm
-  service_api_tg                          = "service-portal-api-tg"
+# # target group for NLB which will have COAP PL NLB-ENI IPS and attached as a rule to ALB controller from Helm
+#   service_api_tg                          = "service-portal-api-tg"
 # target group for ALB which will have Endpoint IPS and attached as a rule to ALB controller from Helm
   alb_svc_portal_tg                       = "alb-svc-portal-reg-public-tg"
 
@@ -257,7 +257,6 @@ module "nlb" {
     eks_endpointid                        = module.eks_endpoint.endpointid
     alb_tg_coap_pl_subnets                = ${jsonencode(local.endpoint_subnet_id)}
     alb_tg_coap_pl_vpc_id                 = "${local.endpoint_vpc_id}"
-    alb_eks_endpoint_tg                   = "${local.service_api_tg}"
     alb_svc_portal_tg_required            = true
     alb_svc_portal_tg_name                = "${local.alb_svc_portal_tg}"
     depends_on                            = [ module.eks_endpoint ]
@@ -296,7 +295,7 @@ generate "output"{
       value = module.rds
   }
   output "rds-read" {
-      value = module.rds
+      value = module.rds-read
   }
   
   output "REDIS" {
