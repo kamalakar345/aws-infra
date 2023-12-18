@@ -45,33 +45,33 @@ stage('Terragrunt-Init'){
                         }
 
 
-// Plan all the terraform requested resources
-stage('Terragrunt-Plan'){
-        steps{
-            dir('deployment') {
-            script  {
-                    env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
-                    // sh "printenv"
-                    // sh "terragrunt --version"
-                    sh "aws sts get-caller-identity"
-                        for (int i = 0; i < folders.size(); ++i) {
-                            if ("${folders[i]}" != "common"){
-                            try{
-                                sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
-                            }
-                            catch (Exception e) {
-                                echo "cluster not there yet !! " 
-                            }
-                            }
-                        dir("${folders[i]}"){
-                        sh  "terragrunt plan -compact-warnings"
-                                            }
-                                                                }
-                    }
+// //Plan all the terraform requested resources
+// stage('Terragrunt-Plan'){
+//         steps{
+//             dir('deployment') {
+//             script  {
+//                     env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
+//                     // sh "printenv"
+//                     // sh "terragrunt --version"
+//                     sh "aws sts get-caller-identity"
+//                         for (int i = 0; i < folders.size(); ++i) {
+//                             if ("${folders[i]}" != "common"){
+//                             try{
+//                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
+//                             }
+//                             catch (Exception e) {
+//                                 echo "cluster not there yet !! "
+//                             }
+//                             }
+//                         dir("${folders[i]}"){
+//                         sh  "terragrunt plan -compact-warnings"
+//                                             }
+//                                                                 }
+//                     }
 
-                                }
-                }
-                        }
+//                                 }
+//                 }
+//                         }
 stage('Terragrunt-Apply'){
         steps{
             dir('deployment') {

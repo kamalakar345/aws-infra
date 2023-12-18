@@ -93,11 +93,9 @@ locals {
   os_instance_type                        = local.env_vars.locals.os_instance_type
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
-  nlbname                                 = "nlb-regional-pub-priv"
-# target group for NLB which will have COAP PL NLB-ENI IPS and attached as a rule to ALB controller from Helm
-  service_api_tg                          = "service-portal-api-tg"
+  nlbname                                 = "${local.env}-nlb-regional-pub-priv"
 # target group for ALB which will have Endpoint IPS and attached as a rule to ALB controller from Helm
-  alb_svc_portal_tg                       = "alb-svc-portal-reg-public-tg"
+  alb_svc_portal_tg                       = "${local.env}-alb-svc-reg-public-tg"
 
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
@@ -165,6 +163,18 @@ module "rds" {
     db_username                           = "${local.db_username}"  
     db_password                           = "${local.db_password}"  
     db_identifier                         = "${local.db_identifier}"
+}
+
+module "rds-read" {
+    source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//RDS"
+    vpc_id                                = "${local.vpc_id}"
+    rds_private_subnet_ids                = ${jsonencode(local.private_subnet_ids)}
+    db_instance_class                     = "${local.db_instance_class}"
+    db_engine                             = "${local.db_engine}"
+    db_engine_version                     = "${local.db_engine_version}"
+    db_username                           = "${local.db_username}"
+    db_password                           = "${local.db_password}"
+    db_identifier                         = "${local.db_identifier}-read"
 }
 
 module "redis" {
@@ -248,7 +258,6 @@ module "nlb" {
     eks_endpointid                        = module.eks_endpoint.endpointid
     alb_tg_coap_pl_subnets                = ${jsonencode(local.endpoint_subnet_id)}
     alb_tg_coap_pl_vpc_id                 = "${local.endpoint_vpc_id}"
-    alb_eks_endpoint_tg                   = "${local.service_api_tg}"
     alb_svc_portal_tg_required            = true
     alb_svc_portal_tg_name                = "${local.alb_svc_portal_tg}"
     depends_on                            = [ module.eks_endpoint ]
@@ -286,7 +295,10 @@ generate "output"{
   output "RDS" {
       value = module.rds
   }
-  
+  output "RDS-read" {
+      value = module.rds-read
+  }
+
   output "REDIS" {
       value = module.redis
   }

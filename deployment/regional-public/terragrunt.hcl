@@ -38,8 +38,8 @@ locals {
   public_subnet_id                        = local.env_vars.locals.public_subnet_id
 
 ## Lambda Speicific Configurations
-  service_function_name                   = "service_portal_logout_reload"
-  service_logout_tg                       = "service-portal-logout-reload-tg"
+  service_function_name                   = "${local.env}-service_logout_reload"
+  service_logout_tg                       = "${local.env}-service-logout-reload-tg"
   service_portal_name                     = "portal.aware-${local.env}-regional-public.qualcomm.com"
 }
 # Include the common.hcl
@@ -71,6 +71,7 @@ module "eks" {
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     aws_account                           = ${local.aws_account}
     lb_scheme                             = "internet-facing"
+    lb_internal                           = "false"
     nginx_subnet_ids                      = ${jsonencode(local.public_subnet_id)}
     private_link                          = false
     alb_controller                        = true

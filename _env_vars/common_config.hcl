@@ -19,7 +19,6 @@ locals{
 
 ## Global Private VPC Details
   glb_priv_vpc_id                         = "vpc-0aaaef5076cc6ff75"
-
   glb_priv_private_subnet_ids             = ["subnet-06c40b52f1e99cfd2", "subnet-09619c9c6693d2bf8"] //privateA and privateB
 
 ## Global Public VPC Details
