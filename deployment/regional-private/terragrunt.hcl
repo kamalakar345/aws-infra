@@ -68,6 +68,7 @@ locals {
   broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
   broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
   msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
+  msk_enhanced_monitoring                 = local.env_vars.locals.msk_enhanced_monitoring
 ##FOR MSK_PRIVATE_LINK
   msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
   msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
@@ -209,6 +210,7 @@ module "msk" {
     broker_node_instance_type             = "${local.broker_node_instance_type}"
     broker_node_storage_info_volume_size  = "${local.broker_node_storage_info_volume_size}"
     msk_security_group_ingress_cidr_ipv4  = ${jsonencode(local.msk_security_group_ingress_cidr_ipv4)}
+    msk_enhanced_monitoring               = "${local.msk_enhanced_monitoring}"
 
 ##FOR MSK_PRIVATE_LINK
     privatelink_subnet_id                 = ${jsonencode(local.private_subnet_ids)}
