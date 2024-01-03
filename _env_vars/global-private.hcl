@@ -15,9 +15,9 @@ locals{
   version_no                              = "1.24"       
   instance_types                          = ["c5.2xlarge"]        
   ami_type                                = "AL2_x86_64"
-  desired_size                            = "5"
-  max_size                                = "8"
-  min_size                                = "2"     
+  desired_size                            = "7"
+  max_size                                = "9"
+  min_size                                = "5"     
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
   db_instance_class                       = "db.m5.large"
   db_engine                               = "postgres"
