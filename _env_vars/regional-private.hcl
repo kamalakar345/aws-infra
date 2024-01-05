@@ -13,11 +13,11 @@ locals{
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = "1.24"       
-  instance_types                          = ["c5.4xlarge"]        
+  instance_types                          = ["c6a.48xlarge"]        
   ami_type                                = "AL2_x86_64"
-  desired_size                            = "5"      
-  max_size                                = "8"
-  min_size                                = "2"     
+  desired_size                            = "14"      
+  max_size                                = "20"
+  min_size                                = "14"     
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
   db_instance_class                       = "db.m5.large"
