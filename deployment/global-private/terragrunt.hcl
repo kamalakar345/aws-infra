@@ -99,7 +99,7 @@ locals {
 ## Lambda Speicific Configurations
   ops_function_name                       = "ops_portal_logout_reload"
   ops_logout_tg                           = "ops-portal-logout-reload-tg"
-  ops_portal_name                         = "portal.aware-${local.env}-global-private.qualcomm.com"
+  ops_portal_name                         = "portal.na-gpv.demo.aware.qualcomm.com"
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
 #   private_acm_certificate                 = local.env_vars.locals.private_acm_certificate
