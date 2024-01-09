@@ -4,24 +4,24 @@ locals{
   region                                  = "us-west-2"
   admin_contact                           = "aware.cloud.eng.devops@quicinc.com"
   service_id                              = "AWARE"
-  aws_account                             = 098222969212
-  aware_services                          = ["analytic-processor", "aware_common", "aware-common-ui", "aware-core", "aware-mock-api", "aware-notification-engine", "aware-operational-portal-ui", "aware-public-ui", "aware-publicapi-documentation", "aware-rule-engine", "aware-service-dashboard-ui", "aware-session-manager", "builder-service", "coap-client", "coap-client-dtls", "coap-protocol-adaptor", "coap-protocol-adaptor-dtls", "command-service-aware", "docsapi", "feedback-service", "global-settings-service", "inclinometer-processor", "inclinometer-service", "location-service", "logstash-aware", "mockpublicapi", "msgdispatcher-pro-aware", "notification-service-aware", "nucleus_dm", "nucleus_dm-consumer", "nucleus_um", "playground-proxy", "profile-service-aware", "prom/blackbox-exporter", "public-ui", "route-config-api-aware", "rule-definition-service", "sensor-service-aware", "shadow-service", "shipment-processor", "swagger-common-ui", "telemetry-engine-aware", "telemetry-service-aware", "tenant-service-aware", "test-awarepublicapi", "tracker-service-aware", "tracker-shipment-service", "xns-service"]
+  aws_account                             = 607644472201
+  aware_services                          = ["analytic-processor", "aware-common-ui", "aware-notification-alert-engine", "aware-notification-webhook-engine", "aware-operational-portal-ui", "aware-rnd-mockapi", "aware-rnd-mockapi-proxy", "aware-rnd-playground-proxy_catalogue", "aware-rnd-proxy", "aware-rnd-translation", "aware-rule-engine", "aware-service-dashboard-ui", "aware-session-manager", "coap-client-dtls", "coap-protocol-adaptor-dtls", "command-service-aware", "dm_global_private", "dm_regional_private", "dmconsumer_global_private", "dmconsumer_regional_private", "feedback-service", "global-settings-service", "inclinometer-processor", "inclinometer-service", "location-service", "msgdispatcher-pro-aware", "notification-persistence-service", "notification-service-aware", "playgroundproxy-test-publicapi", "profile-service-aware", "route-config-api-aware", "rule-definition-service", "saga_um_global_pvt", "saga_um_regional_pvt", "sensor-service-aware", "shadow-service", "shipment-processor", "storage-service", "swagger-common-ui", "telemetry-engine-aware", "telemetry-service-aware", "tenant-service-aware", "tracker-service-aware", "tracker-shipment-service", "xns-service"]
 # Glp-priv to Reg-priv Specific Configuration
 
 ## Reg private VPC Details
-  reg_priv_vpc_id                         = "vpc-06b5a0014044ee4aa"
-  reg_priv_private_subnet_ids             = ["subnet-09aa3a9354da74d9c", "subnet-00ab87025981519d4"] //privateA and privateB
+  reg_priv_vpc_id                         = "vpc-0f4a759403cf33bb1"
+  reg_priv_private_subnet_ids             = ["subnet-0a2a50f785da5a0b1", "subnet-0586625bbae0f5683", "subnet-0c7026c5f8425e030"] //privateA and privateB and privateC
 
 ## Reg Public VPC Details
 
-  reg_pub_vpc_id                          = "vpc-09ee7634b8fcfc251" // Public VPC-ID
-  reg_pub_private_subnet_ids              = ["subnet-0b1812b1bb3be4c75", "subnet-0d2d487515ababff7"] //Public VPC-ID privateA and privateB
+  reg_pub_vpc_id                          = "vpc-0c6d1887dcc478750" // Public VPC-ID
+  reg_pub_private_subnet_ids              = ["subnet-0f33779d4b8828a68", "subnet-026adba5c45fdb754", "subnet-0c0a6145cf0a2600e"]//Public VPC-ID privateA and privateB and privateC
 
 ## Global Private VPC Details
-  glb_priv_vpc_id                         = "vpc-0aaaef5076cc6ff75"
-  glb_priv_private_subnet_ids             = ["subnet-06c40b52f1e99cfd2", "subnet-09619c9c6693d2bf8"] //privateA and privateB
+  glb_priv_vpc_id                         = "vpc-0adff9db11bb6aee0"
+  glb_priv_private_subnet_ids             = ["subnet-0e30a22a1b92cfc6c", "subnet-0e9d6eb45f0c074c3", "subnet-05332e16c5782142a"] //privateA and privateB and privateC
 
 ## Global Public VPC Details
-  glb_pub_vpc_id                          = "vpc-073355ca2b946aa10" // Public VPC-ID
-  glb_pub_private_subnet_ids              = ["subnet-0b87894020d4d723c", "subnet-019043f82688bcba4"] // [Public-privateA, Public-privateB]
+  glb_pub_vpc_id                          = "vpc-0081cf4a7b9561843" // Public VPC-ID
+  glb_pub_private_subnet_ids              = ["subnet-0b1b662b5e5e0598a", "subnet-01402984a57e38df9", "subnet-0c2fdc9381feac90a"] // [Public-privateA, Public-privateB, Public-privateC]
 }
