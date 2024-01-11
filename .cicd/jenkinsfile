@@ -31,7 +31,7 @@ stage('Terragrunt-Init'){
                             }
                             }
                         dir("${folders[i]}"){
-                        sh  "terragrunt init --reconfigure"
+                        sh  "terragrunt init --reconfigure --terragrunt-non-interactive"
                         
                         // sh  "ls -lrta deployment/${folders[i]}"
                                             }
