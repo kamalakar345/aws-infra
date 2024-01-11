@@ -20,7 +20,7 @@ locals{
   min_size                                = "14"     
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
-  db_instance_class                       = "db.m5.large"
+  db_instance_class                       = "db.r5.16xlarge"
   db_engine                               = "postgres"
   db_engine_version                       = "14.7"
   db_username                             = "postgressuperuser"
@@ -30,14 +30,14 @@ locals{
   redis_engine                            = "redis"              
   redis_engine_version                    = "5.0.6"        
   redis_parameter_group_name              = "default.redis5.0"
-  redis_instance_type                     = "cache.t2.small"               
+  redis_instance_type                     = "cache.m5.xlarge"             
   redis_port                              = "6379"                        
   redis_node_count                        = "2"              
 
 #MSK Specific Configurations                                
   msk_kafka_version                       = "2.6.2"
   msk_num_of_broker_nodes                 = "2"
-  broker_node_instance_type               = "kafka.m5.large"
+  broker_node_instance_type               = "kafka.m5.4xlarge"
   broker_node_storage_info_volume_size    = "100"
   msk_security_group_ingress_cidr_ipv4    = ["10.0.0.0/8", "100.0.0.0/8"]
 
