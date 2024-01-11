@@ -92,6 +92,7 @@ locals {
 ## Open Search for DM specific configurations 
   os_domain                               = "${local.env}-${local.component}-dm"
   os_instance_type                        = local.env_vars.locals.os_instance_type
+  availability_zones                      = local.env_vars.locals.availability_zones
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-regional-public.qualcomm.com"
   nlbname                                 = "${local.env}-nlb-regional-pub-priv"
@@ -273,6 +274,7 @@ module "opensearch" {
     environment                           = "${local.env}"
     vpc_id                                = "${local.vpc_id}"
     instance_type                         = "${local.os_instance_type}"
+    availability_zones                    = "${local.availability_zones}"
     private_subnet_ids                    = ${jsonencode(local.private_subnet_ids)}
     private_cidr_block                    = ${jsonencode(local.allowed_cidr_block)}
 }
