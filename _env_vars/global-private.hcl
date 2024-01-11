@@ -35,7 +35,7 @@ locals{
 
 #MSK Specific Configurations                                
   msk_kafka_version                       = "2.6.2"
-  msk_num_of_broker_nodes                 = "2"
+  msk_num_of_broker_nodes                 = "3"
   broker_node_instance_type               = "kafka.t3.small"
   broker_node_storage_info_volume_size    = "100"
   msk_security_group_ingress_cidr_ipv4    = ["10.0.0.0/8", "100.0.0.0/8"]
