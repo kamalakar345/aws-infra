@@ -1,18 +1,18 @@
 locals{
 
 # VPC Details
-  vpc_id                                  = "vpc-0adff9db11bb6aee0"
-  vpc_cidr                                = ["10.166.72.0/22"]
-  private_subnet_ids                      = ["subnet-0e30a22a1b92cfc6c", "subnet-0e9d6eb45f0c074c3", "subnet-05332e16c5782142a"] //privateA and privateB and privateC
-  rds_private_subnet_ids                  = ["subnet-089bc6972a885c5af", "subnet-05eb7530d268818e5", "subnet-083d7acde92ddb919"] //privateDB-A and privateDB-B and privateDB-C
+  vpc_id                                  = "vpc-04d592619ab4426b8"
+  vpc_cidr                                = ["10.198.174.0/23"]
+  private_subnet_ids                      = ["subnet-0c26a3a6ca43e6c5f", "subnet-0867a354e15281b76"] //privateA and privateB
+  rds_private_subnet_ids                  = ["subnet-07fb5fae00fa47c86", "subnet-0767ce1a4dd10e8b6"] //privateDB-A and privateDB-B
   //public_subnet_id                        = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [publicA, publicB]
 # Keyspace related Configuration
 
   ## Keyspace Endpoint Related Configs 
-  kubernetes_subnet_ids                   = ["subnet-0b09e19d18063286f", "subnet-0dd57e0a628a07887", "subnet-0aa1dfa55961f7561"] // [private-KubernetesA, Private-KubernetesB, Private-KubernetesC] since the CNI is enabled it needs to K8s subnet
+  kubernetes_subnet_ids                   = ["subnet-063c8185feb0a4c87", "subnet-053906d6be18dc1c3"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                              = "1.24"       
+  version_no                              = "1.27"       
   instance_types                          = ["c5.2xlarge"]        
   ami_type                                = "AL2_x86_64"
   desired_size                            = "5"
@@ -45,11 +45,11 @@ locals{
   msk_port                                = "9092"         
 
 ##FOR MSK_ENDPOINT In Public VPC
-  endpoint_vpc_id                         = "vpc-0081cf4a7b9561843" // Global Public VPC-ID
-  endpoint_cidr_block                     = ["10.166.68.0/22","10.0.0.0/8", "100.0.0.0/8"]     // Public VPC CIDR and qualnet CIDR ranges
-  endpoint_subnet_id                      = ["subnet-0b1b662b5e5e0598a", "subnet-01402984a57e38df9", "subnet-0c2fdc9381feac90a"] // [Public-privateA, Public-privateB, Public-privateC]
+  endpoint_vpc_id                         = "vpc-0cfc23d53dd0bc3ee" // Global Public VPC-ID
+  endpoint_cidr_block                     = ["10.198.174.0/23", "100.0.0.0/8"]     // Public VPC CIDR and qualnet CIDR ranges
+  endpoint_subnet_id                      = ["subnet-06c6d9a88cde1f9fb", "subnet-0c2e2ed2f3f633297"] // [Public-privateA, Public-privateB]
 # EKS Endpoint Specific Configuration           
   eks_port                                    = "443"
 /* ##FOR EKS_ENDPOINT In Public VPC
-  endpoint_public_subnet_id               = ["subnet-0d945319e5a0aa311", "subnet-00f8ccdeff7555177"] // [Public-publicA, Public-publicB] */
+  endpoint_public_subnet_id               = ["subnet-0f974b8f7d42dccc9", "subnet-032d32ba83c5f9bb8"] // [Public-publicA, Public-publicB] */
 }
