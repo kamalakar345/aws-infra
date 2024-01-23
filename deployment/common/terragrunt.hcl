@@ -135,8 +135,32 @@ module "msk-global-private-prv-hz" {
 
 }
 
+
+module "athenaQuicksight" {
+  source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Athena"
+  environment = "${local.env}"
+  region = "{local.region}"
+  aws_profile = "${local.env}"
+  aws_account_id = "${local.aws_account}"
+  quicksight_enabled = false  ## if quicksight_account is already existing please disable this flag , or enable to create the Quicksight account
+  admin_user  = false   ## if quicksight_enabled is disable please disable this flag as well, as admin user is already created
+  quicksight_email = "aygu@qti.qualcomm.com"
+  start_time = "2024-01-25T12:30:35"
+  
+ }
+
+
+module "firehose" {
+  source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//firhose"
+  environment = "${local.env}"
+  region = "{local.region}"
+  depends_on = [ module.athenaQuicksight ]
+}
+
+
 EOF
 }
+
 
 
 # Generating Output.tf 
