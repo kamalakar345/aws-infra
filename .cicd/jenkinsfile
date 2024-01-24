@@ -90,10 +90,10 @@ stage('Terragrunt-Apply'){
                             }
                             }
                         dir("${folders[i]}"){
-                        sh  "terragrunt apply -auto-approve -compact-warnings"
-                        echo "=========Details of the Generated Resources for ${folders[i]}======="
-                        sh "terragrunt output"
-                        cleanWs()
+                        // sh  "terragrunt apply -auto-approve -compact-warnings"
+                        // echo "=========Details of the Generated Resources for ${folders[i]}======="
+                        // sh "terragrunt output"
+                        // cleanWs()
                                             }
                                                                 }
                     }

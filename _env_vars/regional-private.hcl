@@ -12,7 +12,7 @@ locals{
   kubernetes_subnet_ids                   = ["subnet-02d697cd9cf55661e", "subnet-053b4480a8832e076"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                              = "1.24"       
+  version_no                              = "1.25"
   instance_types                          = ["c5.2xlarge"]        
   ami_type                                = "AL2_x86_64"
   desired_size                            = "5"      
