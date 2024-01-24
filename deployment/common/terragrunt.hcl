@@ -47,6 +47,11 @@ locals {
   globalnlbname                           = "${local.env}-global-private-ep-nlb"
   globalTargetgroupName                   = "${local.env}-global-private-ep-nlb-tg" // might need to shorten this
 
+## Custom configs for quicksight Module
+  quicksight_enabled                      = local.common_vars.locals.quicksight_enabled
+  admin_user                              = local.common_vars.locals.admin_user
+  quicksight_email                        = local.common_vars.locals.quicksight_email
+  start_time                              = local.common_vars.locals.start_time
 }
 
 # Include the common.hcl
@@ -139,13 +144,13 @@ module "msk-global-private-prv-hz" {
 module "athenaQuicksight" {
   source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Athena"
   environment = "${local.env}"
-  region = "{local.region}"
+  region = "${local.region}"
   aws_profile = "${local.env}"
   aws_account_id = "${local.aws_account}"
-  quicksight_enabled = false  ## if quicksight_account is already existing please disable this flag , or enable to create the Quicksight account
-  admin_user  = false   ## if quicksight_enabled is disable please disable this flag as well, as admin user is already created
-  quicksight_email = "aygu@qti.qualcomm.com"
-  start_time = "2024-01-25T12:30:35"
+  quicksight_enabled = "${local.quicksight_enabled}"   ## if quicksight_account is already existing please disable this flag , or enable to create the Quicksight account
+  admin_user  = "${local.admin_user}"               ## if quicksight_enabled is disable please disable this flag as well, as admin user is already created
+  quicksight_email = "${local.quicksight_email}"
+  start_time = "${local.start_time}"
   
  }
 
@@ -153,7 +158,7 @@ module "athenaQuicksight" {
 module "firehose" {
   source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//firhose"
   environment = "${local.env}"
-  region = "{local.region}"
+  region = "${local.region}"
   depends_on = [ module.athenaQuicksight ]
 }
 

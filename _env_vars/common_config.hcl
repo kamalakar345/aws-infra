@@ -25,4 +25,11 @@ locals{
 ## Global Public VPC Details
   glb_pub_vpc_id                          = "vpc-0bab03f8a8a362ae3" // Public VPC-ID
   glb_pub_private_subnet_ids              = ["subnet-00d27d96702c74654", "subnet-03d93546de97befc3"] // [Public-privateA, Public-privateB]
+
+## quicksite Details
+   quicksight_enabled                     = false
+   admin_user                             = false
+   quicksight_email                       = "choudha@qti.qualcomm.com"
+   start_time                             = "2024-01-25T12:30:35"
+
 }
