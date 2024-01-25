@@ -143,7 +143,7 @@ module "msk-global-private-prv-hz" {
 
 module "athenaQuicksight" {
   source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Athena"
-  environment = "${local.env}"
+  environment = "${local.env}rnd"
   region = "${local.region}"
   aws_profile = "${local.env}"
   aws_account_id = "${local.aws_account}"
@@ -157,7 +157,7 @@ module "athenaQuicksight" {
 
 module "firehose" {
   source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//firhose"
-  environment = "${local.env}"
+  environment = "${local.env}rnd"
   region = "${local.region}"
   depends_on = [ module.athenaQuicksight ]
 }
@@ -189,6 +189,12 @@ generate "output"{
   }
   output "msk-global-private-prv-hz"{
     value = module.msk-global-private-prv-hz
+  }
+  output "athenaQuicksight"{
+    value = module.athenaQuicksight
+  }
+  output "firehose"{
+    value = module.firehose
   }
 EOF
 }
