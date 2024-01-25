@@ -78,7 +78,7 @@ stage('Terragrunt-Apply') {
                 env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
 
                 def userInput=input(id:"userInput",
-                message:"Proceed to Apply AWS resources in \"${aws_env}\" environment",
+                message:"Proceed to Apply AWS resources in \"${env.BRANCH_NAME}\" environment",
                 parameters: [booleanParam(defaultValue: false,name: 'Confirm',description: 'Ensure confirmation to deploy resources')],
                 submitter: 'sda,sakinmul,kfontain,lmallone')
 
