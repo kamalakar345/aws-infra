@@ -80,7 +80,7 @@ stage('Terragrunt-Apply') {
                 def userInput=input(id:"userInput",
                 message:"Proceed to Apply AWS resources in \"${env.BRANCH_NAME}\" environment",
                 parameters: [booleanParam(defaultValue: false,name: 'Confirm',description: 'Ensure confirmation to deploy resources')],
-                submitter: 'gwolfing,giribhag,calvpoon,achavan')
+                submitter: 'gwolfing,giribhag,calvpoon,achavan,choudha,aygu,purwar')
 
                 if ("${userInput}"=='true') {
                     sh "aws sts get-caller-identity"
