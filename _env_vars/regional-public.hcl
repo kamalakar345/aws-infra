@@ -6,7 +6,7 @@ locals{
   vpc_cidr                                = ["10.155.246.0/23"]// First CIDR in the VPC */
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                              = "1.27"
+  version_no                              = "1.28"
   instance_types                          = ["c5.2xlarge"]        
   ami_type                                = "AL2_x86_64"
   desired_size                            = "2"      
