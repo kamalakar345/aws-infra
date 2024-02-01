@@ -39,7 +39,8 @@ locals {
   db_engine_version                       = local.env_vars.locals.db_engine_version     
   db_username                             = local.env_vars.locals.db_username           
   db_password                             = local.env_vars.locals.db_password           
-  db_identifier                           = "${local.env}-${local.component}-rds"         
+  db_identifier                           = "${local.env}-${local.component}-rds"
+  allocated_storage                       = local.env_vars.locals.allocated_storage        
 
 #Redis Specific Configurations                        
   # redis_cluster_name                      = local.env_vars.locals.redis_cluster_name
