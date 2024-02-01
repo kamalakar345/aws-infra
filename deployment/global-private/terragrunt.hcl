@@ -166,6 +166,7 @@ module "rds" {
     db_username                           = "${local.db_username}"  
     db_password                           = "${local.db_password}"  
     db_identifier                         = "${local.db_identifier}"
+    allocated_storage                     = "${local.allocated_storage}"
 }
 
 module "redis" {
