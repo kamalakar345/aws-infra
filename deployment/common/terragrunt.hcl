@@ -148,7 +148,7 @@ module "athenaQuicksight" {
   aws_profile                             = "${local.env}"
   aws_account_id                          = "${local.aws_account}"
   quicksight_enabled                      = "${local.quicksight_enabled}"  ## flag , disable or enable to create the Quicksight account
-  admin_user                              = "${local.admin_user}"               ## list of admin users
+  admin_user                              = ${jsonencode(local.admin_user)}             ## list of admin users
   quicksight_email                        = "${local.quicksight_email}"
   start_time                              = "${local.start_time}"
 
