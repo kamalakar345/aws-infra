@@ -4,23 +4,21 @@ def get_branch(branch_name) {
 }
 
 pipeline {
-  agent { label 'aware-jenkins' }
-  environment {
-    region = "us-west-2"
-    account = "914410644643"
-  }
-  
-stages{
-// Initialize all the terraform Scripts    
-stage('Terragrunt-Init'){
-        steps{
-            dir('deployment') {
-            script  {
-                //     cleanWs()
-                    env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
-                    // sh "printenv"
-                    // sh "terragrunt --version"
-                    sh "aws sts get-caller-identity"
+    agent { label 'aware-jenkins' }
+    environment {
+        region = "us-west-2"
+        account = "914410644643"
+    }
+
+    stages{
+    // Initialize all the terraform Scripts    
+        stage('Terragrunt-Init'){
+            steps{
+                dir('deployment') {
+                    script  {
+                        //cleanWs()
+                        env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
+                        sh "aws sts get-caller-identity"
                         for (int i = 0; i < folders.size(); ++i) { 
                             if ("${folders[i]}" != "common"){
                             try{
@@ -30,79 +28,77 @@ stage('Terragrunt-Init'){
                                 echo "cluster not there yet !! " 
                             }
                             }
-                        dir("${folders[i]}"){
-                        sh  "terragrunt init --reconfigure"
-                        
-                        // sh  "ls -lrta deployment/${folders[i]}"
-                                            }
-                                                                }
-                    }
-            // script{
-            //     sh "tree"
-            // }
-                                }
-                }
+                            dir("${folders[i]}"){
+                                sh  "terragrunt init --reconfigure"
+                                // sh  "ls -lrta deployment/${folders[i]}"
+                            }
                         }
+                    }
+                }
+            }
+        }
 
 
-// //Plan all the terraform requested resources
-// stage('Terragrunt-Plan'){
-//         steps{
-//             dir('deployment') {
-//             script  {
-//                     env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
-//                     // sh "printenv"
-//                     // sh "terragrunt --version"
-//                     sh "aws sts get-caller-identity"
-//                         for (int i = 0; i < folders.size(); ++i) {
-//                             if ("${folders[i]}" != "common"){
-//                             try{
-//                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
-//                             }
-//                             catch (Exception e) {
-//                                 echo "cluster not there yet !! " 
-//                             }
-//                             }
-//                         dir("${folders[i]}"){
-//                         sh  "terragrunt plan -compact-warnings"
-//                                             }
-//                                                                 }
-//                     }
-//
-//                   }
-//                 }
-//          }
-
-stage('Terragrunt-Apply'){
-        steps{
-            dir('deployment') {
-            script  {
-                    env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
-                    // sh "printenv"
-                    // sh "terragrunt --version"
-                    sh "aws sts get-caller-identity"
+        // //Plan all the terraform requested resources
+        stage('Terragrunt-Plan'){
+            steps{
+                dir('deployment') {
+                    script  {
+                        env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
+                        sh "aws sts get-caller-identity"
                         for (int i = 0; i < folders.size(); ++i) {
-                            if ("${folders[i]}" != "common"){ 
+                            if ("${folders[i]}" != "common"){
                             try{
                                 sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
                             }
                             catch (Exception e) {
-                                echo "cluster not there yet !! " 
+                                echo "cluster not there yet !! "
                             }
                             }
-                        dir("${folders[i]}"){
-                        sh  "terragrunt apply -auto-approve -compact-warnings"
-                        echo "=========Details of the Generated Resources for ${folders[i]}======="
-                        sh "terragrunt output"
-                        cleanWs()
-                                            }
-                                                                }
-                    }
-
-                                }
-                }
+                            dir("${folders[i]}"){
+                                sh  "terragrunt plan -compact-warnings"
+                            }
                         }
+                    }
+                }
+            }
+        }
 
+        stage('Terragrunt-Apply'){
+            steps{
+                dir('deployment') {
+                    script  {
+                        env.AWS_DEFAULT_PROFILE = get_branch(env.BRANCH_NAME)
+                        def userInput=input(id:"userInput",
+                    message:"Proceed to Apply AWS resources in \"${env.BRANCH_NAME}\" environment",
+                    parameters: [booleanParam(defaultValue: false,name: 'Confirm',description: 'Ensure confirmation to deploy resources')],
+                    submitter: 'gwolfing,giribhag,calvpoon,achavan,choudha,aygu,purwar')
 
-}
+                        if("${userInput}"=='true') {
+                            sh "aws sts get-caller-identity"
+                            for (int i = 0; i < folders.size(); ++i) {
+                                if ("${folders[i]}" != "common"){ 
+                                    try{
+                                        sh "kubectl config use-context arn:aws:eks:${env.region}:${env.account}:cluster/${get_branch(env.BRANCH_NAME)}-${folders[i]}-eks"
+                                    }
+                                    catch (Exception e) {
+                                        echo "cluster not there yet !! " 
+                                    }
+                                }
+                                dir("${folders[i]}"){
+                                    sh  "terragrunt apply -auto-approve -compact-warnings"
+                                    echo "=========Details of the Generated Resources for ${folders[i]}======="
+                                    sh "terragrunt output"
+                                    cleanWs()
+                                }
+                            }
+                        } 
+                        else {
+                            echo " Action rejected by User"
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
