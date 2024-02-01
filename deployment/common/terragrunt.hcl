@@ -47,6 +47,12 @@ locals {
   globalnlbname                           = "${local.env}-global-private-ep-nlb"
   globalTargetgroupName                   = "${local.env}-global-private-ep-nlb-tg" // might need to shorten this
 
+## Custom configs for quicksight Module
+  quicksight_enabled                      = local.common_vars.locals.quicksight_enabled
+  admin_user                              = local.common_vars.locals.admin_user
+  quicksight_email                        = local.common_vars.locals.quicksight_email
+  start_time                              = local.common_vars.locals.start_time
+
 }
 
 # Include the common.hcl
@@ -133,6 +139,25 @@ module "msk-global-private-prv-hz" {
     endpoint_subnet_id                    = ${jsonencode(local.glb_pub_private_subnet_ids)}
     depends_on                            = [ data.aws_msk_cluster.msk-global-private, data.aws_vpc_endpoint.global_public_ep ]
 
+}
+
+module "athenaQuicksight" {
+  source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Athena"
+  environment                             = "${local.env}rnd"
+  region                                  = "${local.region}"
+  aws_profile                             = "${local.env}"
+  aws_account_id                          = "${local.aws_account}"
+  quicksight_enabled                      = "${local.quicksight_enabled}"  ## flag , disable or enable to create the Quicksight account
+  admin_user                              = "${local.admin_user}"               ## list of admin users
+  quicksight_email                        = "${local.quicksight_email}"
+  start_time                              = "${local.start_time}"
+
+ }
+module "firehose" {
+  source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//firhose"
+  environment                             = "${local.env}rnd"
+  region                                  = "${local.region}"
+  depends_on                              = [ module.athenaQuicksight ]
 }
 
 EOF
