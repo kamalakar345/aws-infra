@@ -24,6 +24,7 @@ locals{
   db_engine_version                       = "14.7"
   db_username                             = "postgressuperuser"
   db_password                             = "P0$tgr3$$up3rus3r12E4"
+  allocated_storage                       = "110"
 
 #Redis Specific Configurations                        
   redis_engine                            = "redis"              
