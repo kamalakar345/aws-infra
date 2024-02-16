@@ -30,6 +30,6 @@ locals{
    quicksight_enabled                     = false
    admin_user                             = ["choudha@qti.qualcomm.com", "aygu@qti.qualcomm.com", "kmalugul@quicinc.com"]
    quicksight_email                       = "choudha@qti.qualcomm.com"
-   start_time                             = "2024-02-14T20:30:35"
+   
 
 }

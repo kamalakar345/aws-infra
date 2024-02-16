@@ -51,7 +51,7 @@ locals {
   quicksight_enabled                      = local.common_vars.locals.quicksight_enabled
   admin_user                              = local.common_vars.locals.admin_user
   quicksight_email                        = local.common_vars.locals.quicksight_email
-  start_time                              = local.common_vars.locals.start_time
+ 
 }
 
 # Include the common.hcl
@@ -150,7 +150,7 @@ module "athenaQuicksight" {
     quicksight_enabled = "${local.quicksight_enabled}"   ## if quicksight_account is already existing please disable this flag , or enable to create the Quicksight account
     admin_user  = ${jsonencode(local.admin_user)}               ## if quicksight_enabled is disable please disable this flag as well, as admin user is already created
     quicksight_email = "${local.quicksight_email}"
-    start_time = "${local.start_time}"
+    start_time = "${trimsuffix(timeadd(timestamp(),"8h"), "Z")}"
 }
 
 
