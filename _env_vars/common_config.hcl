@@ -28,8 +28,8 @@ locals{
 
 ## quicksite Details
    quicksight_enabled                     = false
-   admin_user                             = false
+   admin_user                             = ["choudha@qti.qualcomm.com", "aygu@qti.qualcomm.com", "kmalugul@quicinc.com"]
    quicksight_email                       = "choudha@qti.qualcomm.com"
-   start_time                             = "2024-01-25T17:30:35"
+   
 
 }

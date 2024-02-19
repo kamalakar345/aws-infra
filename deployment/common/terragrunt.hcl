@@ -51,7 +51,7 @@ locals {
   quicksight_enabled                      = local.common_vars.locals.quicksight_enabled
   admin_user                              = local.common_vars.locals.admin_user
   quicksight_email                        = local.common_vars.locals.quicksight_email
-  start_time                              = local.common_vars.locals.start_time
+ 
 }
 
 # Include the common.hcl
@@ -141,25 +141,25 @@ module "msk-global-private-prv-hz" {
 }
 
 
-# module "athenaQuicksight" {
-#   source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Athena"
-#   environment = "${local.env}rnd"
-#   region = "${local.region}"
-#   aws_profile = "${local.env}"
-#   aws_account_id = "${local.aws_account}"
-#   quicksight_enabled = "${local.quicksight_enabled}"   ## if quicksight_account is already existing please disable this flag , or enable to create the Quicksight account
-#   admin_user  = "${local.admin_user}"               ## if quicksight_enabled is disable please disable this flag as well, as admin user is already created
-#   quicksight_email = "${local.quicksight_email}"
-#   start_time = "${local.start_time}"
-#  }
+module "athenaQuicksight" {
+    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//Athena"
+    environment = "${local.env}rnd"
+    region = "${local.region}"
+    aws_profile = "${local.env}"
+    aws_account_id = "${local.aws_account}"
+    quicksight_enabled = "${local.quicksight_enabled}"   ## if quicksight_account is already existing please disable this flag , or enable to create the Quicksight account
+    admin_user  = ${jsonencode(local.admin_user)}               ## if quicksight_enabled is disable please disable this flag as well, as admin user is already created
+    quicksight_email = "${local.quicksight_email}"
+    start_time = "${trimsuffix(timeadd(timestamp(),"8h"), "Z")}"
+}
 
 
-# module "firehose" {
-#   source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//firhose"
-#   environment = "${local.env}rnd"
-#   region = "${local.region}"
-#   depends_on = [ module.athenaQuicksight ]
-# }
+module "firehose" {
+    source = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//firhose"
+    environment = "${local.env}rnd"
+    region = "${local.region}"
+    depends_on = [ module.athenaQuicksight ]
+}
 
 
 EOF
@@ -189,11 +189,11 @@ generate "output"{
   output "msk-global-private-prv-hz"{
     value = module.msk-global-private-prv-hz
   }
-  # output "athenaQuicksight"{
-  #   value = module.athenaQuicksight
-  # }
-  # output "firehose"{
-  #   value = module.firehose
-  # }
+  output "athenaQuicksight"{
+    value = module.athenaQuicksight
+  }
+  output "firehose"{
+    value = module.firehose
+  }
 EOF
 }
