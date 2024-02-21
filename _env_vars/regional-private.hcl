@@ -54,7 +54,7 @@ locals{
 
 ## Open Search for DM specific configurations 
   os_instance_type                        = "t3.medium.elasticsearch"
-  availability_zones                      = 2
+  availability_zones                      = "2"
 /* ##FOR EKS_ENDPOINT In Public VPC
   endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 }
