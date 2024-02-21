@@ -1,12 +1,13 @@
 locals{
 # VPC Details
-  vpc_id                                  = "vpc-0f92311d3fe6dadd0"
-  private_subnet_ids                      = ["subnet-05e8d9167e0a807e8", "subnet-0d33f975ef183cd3f"] //privateA and privateB
-  public_subnet_id                        = ["subnet-0828c39f559d52cff", "subnet-0ff6b748431b8dad4"] // [publicA, publicB]
-  vpc_cidr                                = ["10.198.62.0/23"]// First CIDR in the VPC */
+  vpc_id                                  = "vpc-03d8ca1ae57e06cb1"
+  vpc_cidr                                = ["10.155.240.0/23"]// First CIDR in the VPC */
+  private_subnet_ids                      = ["subnet-012c9a9a6ba42d91b", "subnet-0c39d78683642f719"] //privateA and privateB
+  public_subnet_id                        = ["subnet-0fd28108cd25e589c", "subnet-070fcc5d03b56405b"] // [publicA, publicB]
+
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                              = "1.24"       
+  version_no                              = "1.28"       
   instance_types                          = ["c5.2xlarge"]        
   ami_type                                = "AL2_x86_64"
   desired_size                            = "2"      
