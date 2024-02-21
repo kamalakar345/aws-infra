@@ -14,8 +14,8 @@ locals{
   version_no                              = "1.28"       
   instance_types                          = ["c5.2xlarge"]        
   ami_type                                = "AL2_x86_64"
-  desired_size                            = "5"      
-  max_size                                = "8"
+  desired_size                            = "8"      
+  max_size                                = "12"
   min_size                                = "2"     
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
@@ -39,6 +39,7 @@ locals{
   broker_node_instance_type               = "kafka.t3.small"
   broker_node_storage_info_volume_size    = "100"
   msk_security_group_ingress_cidr_ipv4    = ["10.0.0.0/8", "100.0.0.0/8"]
+  msk_enhanced_monitoring                 = "PER_TOPIC_PER_PARTITION"
 
 ##FOR MSK_PRIVATE_LINK
   msk_port                                = "9092"         
@@ -49,7 +50,7 @@ locals{
   endpoint_subnet_id                      = ["subnet-06e4839cc38c5616c", "subnet-0b5a8ddebdca6f07b"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
 
 # EKS Endpoint Specific Configuration           
-  eks_port                                    = "80"
+  eks_port                                    = "443"
 
 ## Open Search for DM specific configurations 
   os_instance_type                        = "t3.medium.elasticsearch"

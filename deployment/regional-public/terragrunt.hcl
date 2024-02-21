@@ -18,7 +18,7 @@ locals {
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
   vpc_cidr                                = local.env_vars.locals.vpc_cidr
-  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8", "172.28.40.0/21"])
+  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr)
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = local.env_vars.locals.version_no          
@@ -38,8 +38,8 @@ locals {
   public_subnet_id                        = local.env_vars.locals.public_subnet_id
 
 ## Lambda Speicific Configurations
-  service_function_name                   = "service_portal_logout_reload"
-  service_logout_tg                       = "service-portal-logout-reload-tg"
+  service_function_name                   = "${local.env}-service_logout_reload"
+  service_logout_tg                       = "${local.env}-service-logout-reload-tg"
   service_portal_name                     = "portal.aware-${local.env}-regional-public.qualcomm.com"
 }
 # Include the common.hcl
@@ -71,6 +71,7 @@ module "eks" {
     vpc_cidr                              = ${jsonencode(local.vpc_cidr)}
     aws_account                           = ${local.aws_account}
     lb_scheme                             = "internet-facing"
+    lb_internal                           = "false"
     nginx_subnet_ids                      = ${jsonencode(local.public_subnet_id)}
     private_link                          = false
     alb_controller                        = true

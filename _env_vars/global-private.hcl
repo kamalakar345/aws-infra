@@ -38,6 +38,7 @@ locals{
   broker_node_instance_type               = "kafka.t3.small"
   broker_node_storage_info_volume_size    = "100"
   msk_security_group_ingress_cidr_ipv4    = ["10.0.0.0/8", "100.0.0.0/8"]
+  msk_enhanced_monitoring                 = "PER_TOPIC_PER_PARTITION"
 
 ##FOR MSK_PRIVATE_LINK
   msk_port                                = "9092"         
@@ -47,7 +48,7 @@ locals{
   endpoint_cidr_block                     = ["10.155.240.0/23"]     // Public VPC CIDR 
   endpoint_subnet_id                      = ["subnet-012c9a9a6ba42d91b", "subnet-0c39d78683642f719"] // [Public-privateA, Public-privateB]
 # EKS Endpoint Specific Configuration           
-  eks_port                                    = "80"
+  eks_port                                    = "443"
 /* ##FOR EKS_ENDPOINT In Public VPC
   endpoint_public_subnet_id               = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [Public-publicA, Public-publicB] */
 }
