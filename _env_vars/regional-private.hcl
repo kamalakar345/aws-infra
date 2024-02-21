@@ -1,22 +1,21 @@
 locals{
 
 # VPC Details
-  vpc_id                                  = "vpc-0d1e952fc353044a4"
-  vpc_cidr                                = ["10.155.186.0/23"]// First CIDR in the VPC */
-  private_subnet_ids                      = ["subnet-0424a3be9f4a2dcd1", "subnet-009826ec6d2eacddd"] //privateA and privateB
-  rds_private_subnet_ids                  = ["subnet-0df0c1265aed87672", "subnet-01a89421daca3d7e2"] //privateDB-A and privateDB-B
-  //public_subnet_id                        = ["subnet-0b9c81b616f6d4dd5", "subnet-0c442e7a570e01d2c"] // [publicA, publicB]
+  vpc_id                                  = "vpc-04afd173a696245b1"
+  vpc_cidr                                = ["10.101.160.0/23"]// First CIDR in the VPC */
+  private_subnet_ids                      = ["subnet-0941c676485a06137", "subnet-01b72b7b92a82fe59"] //privateA and privateB
+  rds_private_subnet_ids                  = ["subnet-02a13707faf06dd33", "subnet-09b1f932f40592243"] //privateDB-A and privateDB-B
 # Keyspace related Configuration
 
   ## Keyspace Endpoint Related Configs 
-  kubernetes_subnet_ids                   = ["subnet-0e0d747d0b5854908", "subnet-08f95bbeec6f309c8"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
+  kubernetes_subnet_ids                   = ["subnet-0dd883bda102238e2", "subnet-0b6596be930eeeded"] // [private-KubernetesA, Private-KubernetesB] since the CNI is enabled it needs to K8s subnet
 
 # EKS Speicific Configs coming from <env-component>.hcl
-  version_no                              = "1.24"       
+  version_no                              = "1.28"       
   instance_types                          = ["c5.2xlarge"]        
   ami_type                                = "AL2_x86_64"
-  desired_size                            = "5"      
-  max_size                                = "8"
+  desired_size                            = "8"      
+  max_size                                = "12"
   min_size                                = "2"     
 
 # Cluster specific variables coming from <env-component>.hcl for RDS Module
@@ -40,17 +39,18 @@ locals{
   broker_node_instance_type               = "kafka.t3.small"
   broker_node_storage_info_volume_size    = "100"
   msk_security_group_ingress_cidr_ipv4    = ["10.0.0.0/8", "100.0.0.0/8"]
+  msk_enhanced_monitoring                 = "PER_TOPIC_PER_PARTITION"
 
 ##FOR MSK_PRIVATE_LINK
   msk_port                                = "9092"         
 
 ##FOR MSK_ENDPOINT In Public VPC
-  endpoint_vpc_id                         = "vpc-006fddfb83fd3d82f" // Public VPC-ID
-  endpoint_cidr_block                     = ["10.155.188.0/23"]     // Public VPC CIDR
-  endpoint_subnet_id                      = ["subnet-07ecc7b9ce267f52c", "subnet-0fa79d4c1a0b540fb"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
+  endpoint_vpc_id                         = "vpc-0ab7f3268a0718551" // Public VPC-ID
+  endpoint_cidr_block                     = ["10.197.38.0/23"]     // Public VPC CIDR
+  endpoint_subnet_id                      = ["subnet-06e4839cc38c5616c", "subnet-0b5a8ddebdca6f07b"] // [Public-privateA, Public-privateB] if CNI then it needs to K8s subnet
 
 # EKS Endpoint Specific Configuration           
-  eks_port                                    = "80"
+  eks_port                                    = "443"
 
 ## Open Search for DM specific configurations 
   os_instance_type                        = "t3.medium.elasticsearch"

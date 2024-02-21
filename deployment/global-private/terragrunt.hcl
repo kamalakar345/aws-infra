@@ -18,7 +18,7 @@ locals {
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
   vpc_cidr                                = local.env_vars.locals.vpc_cidr
-  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8", "172.28.40.0/21"])
+  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr)
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = local.env_vars.locals.version_no          
@@ -68,6 +68,7 @@ locals {
   broker_node_instance_type               = local.env_vars.locals.broker_node_instance_type           
   broker_node_storage_info_volume_size    = local.env_vars.locals.broker_node_storage_info_volume_size
   msk_security_group_ingress_cidr_ipv4    = local.env_vars.locals.msk_security_group_ingress_cidr_ipv4
+  msk_enhanced_monitoring                 = local.env_vars.locals.msk_enhanced_monitoring
 ##FOR MSK_PRIVATE_LINK
   msk_nlb_name                            = "${local.env}-${local.component}-msk-nlb"
   msk_endpoint_service_tag                = "${local.env}-${local.component}-msk-eps"
@@ -82,6 +83,7 @@ locals {
 
 ##ACM Specific Configuration
   domain                                  = "aware-${local.env}-${local.component}.qualcomm.com"
+  subject_alternative_names               = ["*.aware-${local.env}-regional-public.qualcomm.com", "*.aware-${local.env}-regional-private.qualcomm.com", "*.aware-${local.env}-global-public.qualcomm.com"]
 
 # EKS Endpoint Specific Configuration           
   eks_vpc_endpoint_tag                    = "${local.env}-${split("-", "${local.component}")[0]}-public-eks-ep"
@@ -89,13 +91,15 @@ locals {
 
 ## NLB Specific Configurations 
   public_cert_domain                      = "aware-${local.env}-global-public.qualcomm.com"
-  nlbname                                 = "nlb-global-pub-priv"
+  nlbname                                 = "${local.env}-nlb-global-pub-priv"
 # target group for NLB which will have COAP PL ENI IPS and attached as a rule to ALB controller from Helm
-  ops_api_tg                              = "ops-portal-api-tg"
+  ops_portal_tg_required                  = true
+  ops_api_tg                              = "${local.env}-ops-portal-api-tg"
+  nginx_nlb_name                          = "${local.env}-${local.component}-eks-nlb"
 
 ## Lambda Speicific Configurations
-  ops_function_name                       = "ops_portal_logout_reload"
-  ops_logout_tg                           = "ops-portal-logout-reload-tg"
+  ops_function_name                       = "${local.env}-ops_logout_reload"
+  ops_logout_tg                           = "${local.env}-ops-logout-reload-tg"
   ops_portal_name                         = "portal.aware-${local.env}-global-private.qualcomm.com"
 # #ingress-private-nlb Specific Configurations           
 #   private_vpc_cidr                        = local.env_vars.locals.private_vpc_cidr       
@@ -196,6 +200,7 @@ module "msk" {
     broker_node_instance_type             = "${local.broker_node_instance_type}"
     broker_node_storage_info_volume_size  = "${local.broker_node_storage_info_volume_size}"
     msk_security_group_ingress_cidr_ipv4  = ${jsonencode(local.msk_security_group_ingress_cidr_ipv4)}
+    msk_enhanced_monitoring               = "${local.msk_enhanced_monitoring}"
 
 ##FOR MSK_PRIVATE_LINK
     privatelink_subnet_id                 = ${jsonencode(local.private_subnet_ids)}
@@ -214,6 +219,7 @@ module "msk" {
  module "ACM" {
     source                                = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//ACM"
     domain                                = "${local.domain}"
+    subject_alternative_names             = ${jsonencode(local.subject_alternative_names)}
   }
 
 module "eks_endpoint"{
@@ -244,7 +250,9 @@ module "nlb" {
     eks_endpointid                        = module.eks_endpoint.endpointid
     alb_tg_coap_pl_subnets                = ${jsonencode(local.private_subnet_ids)}
     alb_tg_coap_pl_vpc_id                 = "${local.vpc_id}"
-    alb_eks_endpoint_tg                   = "${local.ops_api_tg}"
+    ops_portal_tg_required                = "${local.ops_portal_tg_required}"
+    nginx_nlb_name                        = "${local.nginx_nlb_name}"
+    ops_portal_tg_name                    = "${local.ops_api_tg}"
     tg_az                                 = "all"
     depends_on                            = [ module.eks_endpoint ]
 }

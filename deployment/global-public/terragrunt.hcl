@@ -18,7 +18,7 @@ locals {
 # Common Network Configuration Details
   vpc_id                                  = local.env_vars.locals.vpc_id
   vpc_cidr                                = local.env_vars.locals.vpc_cidr
-  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr, ["10.0.0.0/8", "100.0.0.0/8", "172.28.40.0/21"])
+  allowed_cidr_block                      = setunion(local.env_vars.locals.vpc_cidr)
 
 # EKS Speicific Configs coming from <env-component>.hcl
   version_no                              = local.env_vars.locals.version_no          
@@ -69,6 +69,7 @@ module "eks" {
     private_link                          = false
     aws_account                           = ${local.aws_account}
     lb_scheme                             = "internet-facing"
+    lb_internal                           = "false"
     nginx_subnet_ids                      = ${jsonencode(local.public_subnet_id)}
     alb_controller                        = true
     alb_subnet_id                         = ${jsonencode(local.private_subnet_ids)}
