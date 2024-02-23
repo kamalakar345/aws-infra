@@ -26,9 +26,8 @@ locals{
   glb_pub_private_subnet_ids              = ["subnet-012c9a9a6ba42d91b", "subnet-0c39d78683642f719"] // [Public-privateA, Public-privateB]
 
 ## quicksite Details
-   quicksight_enabled                     = true
+   quicksight_enabled                     = false
    admin_user                             = ["choudha@qti.qualcomm.com", "aygu@qti.qualcomm.com", "kmalugul@quicinc.com"]
    quicksight_email                       = "choudha@qti.qualcomm.com"
-   start_time                             = "2024-02-02T12:30:35"
 
 }
