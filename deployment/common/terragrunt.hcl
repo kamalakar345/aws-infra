@@ -51,7 +51,6 @@ locals {
   quicksight_enabled                      = local.common_vars.locals.quicksight_enabled
   admin_user                              = local.common_vars.locals.admin_user
   quicksight_email                        = local.common_vars.locals.quicksight_email
-  start_time                              = local.common_vars.locals.start_time
 
 }
 
@@ -150,7 +149,7 @@ module "athenaQuicksight" {
   quicksight_enabled                      = "${local.quicksight_enabled}"  ## flag , disable or enable to create the Quicksight account
   admin_user                              = ${jsonencode(local.admin_user)}             ## list of admin users
   quicksight_email                        = "${local.quicksight_email}"
-  start_time                              = "${local.start_time}"
+  start_time                              = "${trimsuffix(timeadd(timestamp(),"8h"), "Z")}"
  }
 module "firehose" {
   source                                  = "git@github.qualcomm.com:css-aware/aws-infra-terraform-modules.git//firhose"
@@ -184,6 +183,12 @@ generate "output"{
   }
   output "msk-global-private-prv-hz"{
     value = module.msk-global-private-prv-hz
+  }
+  output "athenaQuicksight"{
+  value = module.athenaQuicksight
+  }
+  output "firehose"{
+    value = module.firehose
   }
 EOF
 }
